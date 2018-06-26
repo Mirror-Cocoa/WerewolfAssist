@@ -12,6 +12,7 @@
 		395409A220E273650067E806 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 395409A020E273650067E806 /* Main.storyboard */; };
 		395409A420E273650067E806 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 395409A320E273650067E806 /* Assets.xcassets */; };
 		395409A720E273650067E806 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 395409A520E273650067E806 /* LaunchScreen.storyboard */; };
+		395409B220E277070067E806 /* danron_akamatsu.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 395409B120E277070067E806 /* danron_akamatsu.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		395409A320E273650067E806 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		395409A620E273650067E806 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		395409A820E273650067E806 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		395409B120E277070067E806 /* danron_akamatsu.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = danron_akamatsu.jpg; path = ../../../../Downloads/danron_akamatsu.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,6 +41,7 @@
 			isa = PBXGroup;
 			children = (
 				3954099B20E273650067E806 /* HyperWerewolfSupporter */,
+				395409B020E2766B0067E806 /* Resources */,
 				3954099A20E273650067E806 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -62,6 +65,14 @@
 				395409A820E273650067E806 /* Info.plist */,
 			);
 			path = HyperWerewolfSupporter;
+			sourceTree = "<group>";
+		};
+		395409B020E2766B0067E806 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				395409B120E277070067E806 /* danron_akamatsu.jpg */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -125,6 +136,7 @@
 			files = (
 				395409A720E273650067E806 /* LaunchScreen.storyboard in Resources */,
 				395409A420E273650067E806 /* Assets.xcassets in Resources */,
+				395409B220E277070067E806 /* danron_akamatsu.jpg in Resources */,
 				395409A220E273650067E806 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
