@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  DefaultViewController.swift
 //  HyperWerewolfSupporter
 //
 //  Created by Ichiro Miura on 2018/06/26.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class DefaultViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,7 +22,6 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-
+    
 }
 
