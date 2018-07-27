@@ -32,17 +32,11 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-    
     //MARK: - UITableView Delegate Method
     /*
      Cellが選択された際に呼び出される.
      */
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // 選択中のセルの番号、値、編集可能か？
-        print("Num: \(indexPath.row)")
-        print("Value: \(personList[indexPath.row])")
-        print("Editing: \(tableView.isEditing)")
-        
         // ダイアログを出して、名前を更新。
         // 編集モードで送信
         allocateMode(editType: .editMode, personName: personList[indexPath.row] , currentRow: indexPath.row)
@@ -64,7 +58,7 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "personCell", for: indexPath as IndexPath)
         // Cellに値を設定.
-        cell.textLabel!.text = personList[indexPath.row] as? String
+        cell.textLabel!.text = personList[indexPath.row]
         return cell
     }
     
@@ -167,7 +161,6 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
         
         present(alert, animated: true, completion: nil)
     }
-    
     
     func updateUserDefault(saveText: Array<String>) {
         userDefaults.set(personList, forKey: "person")
