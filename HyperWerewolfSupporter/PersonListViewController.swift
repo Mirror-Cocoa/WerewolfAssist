@@ -13,21 +13,23 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
     enum Mode {
         case addMode, editMode
     }
-    var myItems: NSMutableArray = ["TEST1", "TEST2", "TEST3", "+"]
 
     @IBOutlet var personTableView: UITableView!
     
+    let userDefaults = UserDefaults.standard
+    var personList: Array<String> = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = "人物登録"
         
         // ナビゲーションバーの右側に編集ボタンを追加.
-        self.editButtonItem.title = "削除"
+        self.editButtonItem.title = "追加・削除"
         self.navigationItem.rightBarButtonItem = self.editButtonItem
-    
-
         
+        if let loadData = userDefaults.object(forKey: "person") {
+            personList = loadData as! Array<String>
+        }
     }
     
     
@@ -38,17 +40,12 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // 選択中のセルの番号、値、編集可能か？
         print("Num: \(indexPath.row)")
-        print("Value: \(myItems[indexPath.row])")
+        print("Value: \(personList[indexPath.row])")
         print("Editing: \(tableView.isEditing)")
         
-        // ダイアログを出して、名前を更新。一番下なら追加。
-        if indexPath.row != myItems.count - 1 {
-            // 編集モード
-            allocateMode(editType: .editMode, personName: myItems[indexPath.row] as! String, currentRow: indexPath.row)
-        } else {
-            // 追加モード
-            allocateMode(editType: .addMode, personName: myItems[indexPath.row] as! String, currentRow: indexPath.row)
-        }
+        // ダイアログを出して、名前を更新。
+        // 編集モードで送信
+        allocateMode(editType: .editMode, personName: personList[indexPath.row] , currentRow: indexPath.row)
         
         // TableViewを再読み込み
         personTableView.reloadData()
@@ -58,7 +55,7 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
      Cellの総数を返す
      */
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return myItems.count
+        return personList.count
     }
     
     /*
@@ -67,7 +64,7 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "personCell", for: indexPath as IndexPath)
         // Cellに値を設定.
-        cell.textLabel!.text = myItems[indexPath.row] as? String
+        cell.textLabel!.text = personList[indexPath.row] as? String
         return cell
     }
     
@@ -88,7 +85,7 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
             self.navigationItem.setLeftBarButton(addButton, animated: true)
         } else {
             print("通常モード")
-            self.editButtonItem.title = "削除"
+            self.editButtonItem.title = "追加・削除"
             self.navigationItem.setLeftBarButton(nil, animated: true)
         }
     }
@@ -97,57 +94,35 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
      addButtonが押された際呼び出される
      */
     @objc func addCell(sender: AnyObject) {
-        // myItemsに追加.
-        myItems.add("add Cell")
+        allocateMode(editType: .addMode, personName: "" , currentRow: -1)
     }
 
     /*
      Cellを挿入または削除しようとした際に呼び出される
      */
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        
-//        let deleteButton: UITableViewRowAction = UITableViewRowAction(style: .normal, title: "削除") { (action, index) -> Void in
-//            self.myItems.remove(indexPath.row)
-//            tableView.deleteRows(at: [indexPath], with: .fade)
-//
-//            self.personTableView.reloadData()
-//        }
         // 削除のとき.
-        if editingStyle == UITableViewCellEditingStyle.delete {
-            print("削除")
-            // 指定されたセルのオブジェクトをmyItemsから削除する.
-            myItems.removeObject(at: indexPath.row)
+        if (editingStyle == UITableViewCellEditingStyle.delete) {
+            // 指定されたセルのオブジェクトをpersonListから削除する.
+            personList.remove(at: indexPath.row)
+            
+            // UserDefaultに書き込み
+            self.updateUserDefault(saveText: self.personList)
             
             // TableViewを再読み込み.
             personTableView.reloadData()
         }
-        
-        
-        
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-    
-    
+
     //MARK: - Private Method
     func allocateMode(editType: Mode, personName: String, currentRow: Int) {
-        var alertTitle:String = ""
-        var alertMsg:String = ""
-        
-        // 追加or編集？
-        switch editType {
-        case .editMode:
-            alertTitle = "人物の編集を行います。"
-            alertMsg = "編集したい人の名前を編集してください。"
-            break
-        case .addMode:
-            alertTitle = "人物の登録を行います。"
-            alertMsg = "登録したい人の名前を入力してください。"
-            break
-        }
-        
+        let alertTitle:String = String(format: "人物の%@を行います。", (editType == .editMode) ? "編集" : "登録")
+        let alertMsg:String = String(format: "%@したい人の名前を入力してください。", (editType == .editMode) ? "編集" : "登録")
+
         // アラートの初期設定
         let alert: UIAlertController = UIAlertController(title: alertTitle, message: alertMsg, preferredStyle:  UIAlertControllerStyle.alert)
         
@@ -157,18 +132,16 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
             action in
             let textFields:Array<UITextField>? = alert.textFields as Array<UITextField>?
             
-            if textFields != nil {
+            if (textFields != nil) {
                 for textField:UITextField in textFields! {
-                    switch editType {
-                    case .editMode:
+                    if (editType == .editMode) {
                         // テーブルの変更
-                        self.myItems[currentRow] = textField.text!;
-                        break
-                    case .addMode:
+                        self.personList[currentRow] = textField.text!;
+                    } else if (editType == .addMode) {
                         // テーブルの追加
-                        self.myItems.insert(textField.text!, at: self.myItems.count - 1)
-                        break
+                        self.personList.append(textField.text!)
                     }
+                    self.updateUserDefault(saveText: self.personList)
                 }
             }
             
@@ -184,7 +157,7 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
         alert.addTextField(configurationHandler: {(text:UITextField!) -> Void in
             text.placeholder = "入力してください"
             if (editType == .editMode) {
-                text.text = self.myItems[currentRow] as? String
+                text.text = self.personList[currentRow]
             }
             let label:UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
             label.text = "人物名"
@@ -194,6 +167,11 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
         
         present(alert, animated: true, completion: nil)
     }
+    
+    
+    func updateUserDefault(saveText: Array<String>) {
+        userDefaults.set(personList, forKey: "person")
+        userDefaults.synchronize()
+    }
+   
 }
-
-
