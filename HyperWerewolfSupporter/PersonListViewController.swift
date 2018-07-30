@@ -101,7 +101,7 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
             personList.remove(at: indexPath.row)
             
             // UserDefaultに書き込み
-            self.updateUserDefault(saveText: self.personList)
+            self.updateUserDefault()
             
             // TableViewを再読み込み.
             personTableView.reloadData()
@@ -135,7 +135,7 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
                         // テーブルの追加
                         self.personList.append(textField.text!)
                     }
-                    self.updateUserDefault(saveText: self.personList)
+                    self.updateUserDefault()
                 }
             }
             
@@ -162,7 +162,7 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
         present(alert, animated: true, completion: nil)
     }
     
-    func updateUserDefault(saveText: Array<String>) {
+    func updateUserDefault() {
         userDefaults.set(personList, forKey: "person")
         userDefaults.synchronize()
     }
