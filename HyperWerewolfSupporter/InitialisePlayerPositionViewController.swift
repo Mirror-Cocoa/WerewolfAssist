@@ -185,16 +185,16 @@ class InitialisePlayerPositionViewController: UIViewController {
      * 内部テーブルのポジショニング指定
      */
     func innerTablePisitioning(positionList: [Int], outerRect: CGRect) -> [CGRect] {
-        let innerTableSize = CGSize(width: outerRect.width / 6, height: outerRect.height / 6)
+        let innerTableSize = CGSize(width: outerRect.width / 7, height: outerRect.height / 6)
         var innerTableList: Array<CGRect> = Array(repeating: CGRect.zero, count: self.personNum)
         
         /*
-            x  1  2  3  4  x
-            5              9
-            6             10
-            7             11
-            8             12
-            x 13 14 15 16  x
+            1  2  3  4  5  6  7
+            8                12
+            9                13
+           10                14
+           11                15
+           16 17 18 19 20 21 22
          
         */
         
