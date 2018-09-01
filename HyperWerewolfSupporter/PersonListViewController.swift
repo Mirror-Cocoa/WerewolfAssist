@@ -30,6 +30,10 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
         if let loadData = userDefaults.object(forKey: "person") {
             personList = loadData as! Array<String>
         }
+        
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(cellLongPressed(gesture:)))
+        personTableView.addGestureRecognizer(longPressGesture)
+        
     }
     
     //MARK: - UITableView Delegate Method
@@ -166,5 +170,16 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
         userDefaults.set(personList, forKey: "person")
         userDefaults.synchronize()
     }
-   
+    
+    /* 長押しした際に呼ばれるメソッド */
+    @objc func cellLongPressed(gesture: UILongPressGestureRecognizer) {
+        if (gesture.state == UIGestureRecognizerState.began) {
+            let indexPath = personTableView.indexPathForRow(at: gesture.location(in: personTableView))
+            if (indexPath != nil) {
+                NSLog("\(personList[indexPath!.row])")
+            }
+        }
+    }
+    
+    
 }
