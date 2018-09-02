@@ -11,13 +11,13 @@ import UIKit
 class PersonListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     // 編集
     enum Mode {
-        case addMode, editMode
+        case addMode, editMode, normalMode
     }
 
     @IBOutlet var personTableView: UITableView!
     
     let userDefaults = UserDefaults.standard
-    var personList: Array<String> = []
+    var personList: Array<[String:String]> = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,7 +28,7 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
         self.navigationItem.rightBarButtonItem = self.editButtonItem
         
         if let loadData = userDefaults.object(forKey: "person") {
-            personList = loadData as! Array<String>
+            personList = loadData as! Array<[String:String]>
         }
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(cellLongPressed(gesture:)))
@@ -43,7 +43,7 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // ダイアログを出して、名前を更新。
         // 編集モードで送信
-        allocateMode(editType: .editMode, personName: personList[indexPath.row] , currentRow: indexPath.row)
+        allocateMode(editType: .editMode, personName: personList[indexPath.row]["name"]! , currentRow: indexPath.row)
         
         // TableViewを再読み込み
         personTableView.reloadData()
@@ -62,7 +62,8 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "personCell", for: indexPath as IndexPath)
         // Cellに値を設定.
-        cell.textLabel!.text = personList[indexPath.row]
+        cell.textLabel!.text = personList[indexPath.row]["name"]
+        cell.detailTextLabel?.text = personList[indexPath.row]["yourself"]
         return cell
     }
     
@@ -134,10 +135,12 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
                 for textField:UITextField in textFields! {
                     if (editType == .editMode) {
                         // テーブルの変更
-                        self.personList[currentRow] = textField.text!;
+                        self.personList[currentRow]["name"] = textField.text!
                     } else if (editType == .addMode) {
                         // テーブルの追加
-                        self.personList.append(textField.text!)
+                        var personDict = [String:String]()
+                        personDict["name"] = textField.text!
+                        self.personList.append(personDict)
                     }
                     self.updateUserDefault()
                 }
@@ -155,7 +158,7 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
         alert.addTextField(configurationHandler: {(text:UITextField!) -> Void in
             text.placeholder = "入力してください"
             if (editType == .editMode) {
-                text.text = self.personList[currentRow]
+                text.text = (self.personList[currentRow]["name"] != nil) ?  self.personList[currentRow]["name"] : ""
             }
             let label:UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
             label.text = "人物名"
@@ -171,12 +174,19 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
         userDefaults.synchronize()
     }
     
-    /* 長押しした際に呼ばれるメソッド */
+    // 長押しした際に呼ばれるメソッド
+    // 通常モードでは、「あなた」登録、編集モードではテーブルのソートを行う
     @objc func cellLongPressed(gesture: UILongPressGestureRecognizer) {
         if (gesture.state == UIGestureRecognizerState.began) {
             let indexPath = personTableView.indexPathForRow(at: gesture.location(in: personTableView))
             if (indexPath != nil) {
-                NSLog("\(personList[indexPath!.row])")
+                for i in 0..<personList.count {
+                    self.personList[i]["yourself"] = nil
+                }
+                self.personList[indexPath!.row]["yourself"] = "あなた"
+                NSLog("\(personList)")
+                updateUserDefault()
+                personTableView.reloadData()
             }
         }
     }
