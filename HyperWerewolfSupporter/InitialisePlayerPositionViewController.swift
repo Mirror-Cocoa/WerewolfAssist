@@ -11,15 +11,24 @@ import UIKit
 class InitialisePlayerPositionViewController: UIViewController {
     
     var personNum = 10
+    let userDefaults = UserDefaults.standard
+    var personList: Array<[String:String]> = []
+    @IBOutlet weak var outerTable: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // ユーザ情報を取得
+        if let loadData = userDefaults.object(forKey: "person") {
+            personList = loadData as! Array<[String:String]>
+        }
         
         // 戻るを消す
 //        self.navigationItem.hidesBackButton = true
         // アラートをセット
         initSetAlert()
     }
+    
     
     
     /**
@@ -135,31 +144,25 @@ class InitialisePlayerPositionViewController: UIViewController {
      * 机を描画する
      */
     func squareTablePositionSet() {
-        let outerTableRect = CGRect.init(x: CGFloat(10.0),
-                                         y: (self.navigationController?.navigationBar.frame.size.height)! + 10,
-                                         width: self.view.frame.width / 2 - 10,
-                                         height: self.view.frame.width / 2 - 10
-        )
-        let outerTable = UIView.init(frame: outerTableRect)
-        outerTable.backgroundColor = UIColor.gray
-        self.view.addSubview(outerTable)
-        
-        innerTableSetting(outerRect: outerTableRect)
-        
-        
-    }
-    
-    /**
-     * 内部テーブルの設置
-     */
-    func innerTableSetting(outerRect: CGRect) {
-        
         
         var innerTableList: Array<CGRect> = Array(repeating: CGRect.zero, count: self.personNum)
         
-        innerTableList = innerTablePisitioning(positionCount: self.personNum, outerRect: outerRect)
+        innerTableList = innerTablePisitioning(positionCount: self.personNum, outerRect: self.outerTable.frame)
+        
+        var targetPerson = 0
+        
+        for _ in 0..<personList.count {
+            if (self.personList[targetPerson]["yourself"] != nil) {
+                break
+            }
+            targetPerson += 1
+        }
+        
+        self.personList.insert(self.personList[targetPerson], at:0)
+        self.personList.remove(at: targetPerson + 1)
         
         var cnt = 0
+        
         for innerTableRect in innerTableList {
             let innerTable = UIView.init(frame: innerTableRect)
             innerTable.backgroundColor = UIColor.init(red: 230/255, green: 255/255, blue: 230/255, alpha: 90/100)
@@ -180,16 +183,43 @@ class InitialisePlayerPositionViewController: UIViewController {
 //            default:
 //                break
 //            }
+            
+            //上線のCALayerを作成
+            let topBorder = CALayer()
+            topBorder.frame = CGRect(x: 0, y: 0, width: innerTable.frame.width, height: 1.0)
+            topBorder.backgroundColor = UIColor.black.cgColor
+            innerTable.layer.addSublayer(topBorder)
+            
+            //左線のCALayerを作成
+            let leftBorder = CALayer()
+            leftBorder.frame = CGRect(x: 0, y: 0, width: 1.0, height:innerTable.frame.height)
+            leftBorder.backgroundColor = UIColor.black.cgColor
+            innerTable.layer.addSublayer(leftBorder)
+            
+            //下線のCALayerを作成
+            let bottomBorder = CALayer()
+            bottomBorder.frame = CGRect(x: 0, y: innerTable.frame.height, width: innerTable.frame.width, height:-1.0)
+            bottomBorder.backgroundColor = UIColor.black.cgColor
+            innerTable.layer.addSublayer(bottomBorder)
+            
+            //右線のCALayerを作成
+            let rightBorder = CALayer()
+            rightBorder.frame = CGRect(x: innerTable.frame.width, y: 0, width: -1.0, height:innerTable.frame.height)
+            rightBorder.backgroundColor = UIColor.black.cgColor
+            innerTable.layer.addSublayer(rightBorder)
+            
             self.view.addSubview(innerTable)
             
             let label: UILabel = UILabel(frame:CGRect(x:0,y:0,width:innerTableRect.width,height:innerTableRect.height))
-            label.text = String(cnt)
+            
+            label.text = (personList.count > cnt) ? personList[cnt]["name"] : "モブ"
             label.textColor = UIColor.black
             label.textAlignment = NSTextAlignment.center
+            label.adjustsFontSizeToFitWidth = true
             
             innerTable.addSubview(label)
             
-            cnt = cnt + 1
+            cnt += 1
         }
         
     }
@@ -202,10 +232,10 @@ class InitialisePlayerPositionViewController: UIViewController {
         var innerTableList: Array<CGRect> = Array(repeating: CGRect.zero, count: self.personNum)
         
         let wholeDistance = outerRect.width * 2 + outerRect.height * 2 - innerTableSize.width * 2 - innerTableSize.height * 2
-        let moveDistance = (wholeDistance / CGFloat(positionCount))
+        let moveDistance = (wholeDistance / (CGFloat(positionCount)))
         
         let rightX = outerRect.maxX - innerTableSize.width
-        let underY = outerRect.maxY - innerTableSize.height
+        let underY = outerRect.maxY - innerTableSize.height + (self.navigationController?.navigationBar.frame.size.height)!
         
         let initXPosition = outerRect.maxX - ((outerRect.width + innerTableSize.width) / 2)
         let initYPosition = underY
@@ -225,7 +255,7 @@ class InitialisePlayerPositionViewController: UIViewController {
             if (yPosition == underY) {
                 // xPositionが最低限を超えていたら
                 if (xPosition - moveDistance < outerRect.minX) {
-                    yPosition -= abs(moveDistance - xPosition)
+                    yPosition -= abs(moveDistance - xPosition)+(self.navigationController?.navigationBar.frame.size.height)!
                     xPosition = outerRect.minX
                 } else {
                     xPosition -= moveDistance
@@ -235,16 +265,16 @@ class InitialisePlayerPositionViewController: UIViewController {
             // X軸が左にいたら
             else if (xPosition == outerRect.minX) {
                 // yPositionが最低限を超えていたら
-                if (yPosition - moveDistance < outerRect.minY) {
-                    xPosition += abs(moveDistance - yPosition)
-                    yPosition = outerRect.minY
+                if (yPosition - moveDistance - (self.navigationController?.navigationBar.frame.size.height)! < outerRect.minY) {
+                    xPosition += abs(moveDistance - yPosition)-(self.navigationController?.navigationBar.frame.size.height)!
+                    yPosition = outerRect.minY + (self.navigationController?.navigationBar.frame.size.height)!
                 } else {
                     yPosition -= moveDistance
                 }
             }
             
             // Y軸が上にいたら
-            else if (yPosition == outerRect.minY) {
+            else if (yPosition - (self.navigationController?.navigationBar.frame.size.height)! == outerRect.minY) {
                 // xPositionが最上限を超えていたら
                 if (xPosition + moveDistance > rightX) {
                     yPosition += moveDistance - (rightX - xPosition)
