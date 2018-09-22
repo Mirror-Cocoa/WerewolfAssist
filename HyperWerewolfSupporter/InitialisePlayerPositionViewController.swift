@@ -8,12 +8,15 @@
 
 import UIKit
 
-class InitialisePlayerPositionViewController: UIViewController {
+class InitialisePlayerPositionViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
     var personNum = 10
     let userDefaults = UserDefaults.standard
     var personList: Array<[String:String]> = []
     @IBOutlet weak var outerTable: UIView!
+    @IBOutlet weak var memberList: UITableView!
+    
+    var checkMarks: [Bool] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +25,11 @@ class InitialisePlayerPositionViewController: UIViewController {
         if let loadData = userDefaults.object(forKey: "person") {
             personList = loadData as! Array<[String:String]>
         }
+        
+        checkMarks = [Bool](repeating: false, count: personList.count)
+        
+        memberList.dataSource = self
+        memberList.delegate = self
         
         // 戻るを消す
 //        self.navigationItem.hidesBackButton = true
@@ -301,6 +309,36 @@ class InitialisePlayerPositionViewController: UIViewController {
         }
         
         return innerTableList
+    }
+    
+    /*
+     Cellの総数を返す
+     */
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return personList.count
+    }
+    
+    /*
+     Cellに値を設定する
+     */
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "memberCell", for: indexPath as IndexPath)
+        // Cellに値を設定.
+//        if (personList[indexPath.row]["yourself"] != "あなた"){
+            cell.textLabel!.text = personList[indexPath.row]["name"]
+//        }
+        cell.accessoryType = UITableViewCellAccessoryType.checkmark
+        return cell
+    }
+    
+    /*
+     Cellがタップされた時
+     */
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let cell = tableView.cellForRow(at: indexPath as IndexPath) {
+            cell.accessoryType = (cell.accessoryType == .none) ? .checkmark :.none
+        }
+        tableView.deselectRow(at: indexPath as IndexPath, animated: true)
     }
     
     override func didReceiveMemoryWarning() {
