@@ -15,8 +15,10 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
     var personList: Array<[String:String]> = []
     @IBOutlet weak var outerTable: UIView!
     @IBOutlet weak var memberList: UITableView!
+    var memberLabelList: [UILabel] = []
     
     var checkMarks: [Bool] = []
+    var checkTrueList: [Int] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,7 +28,9 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             personList = loadData as! Array<[String:String]>
         }
         
-        checkMarks = [Bool](repeating: false, count: personList.count)
+        self.checkMarks = [Bool](repeating: false, count: personList.count)
+        self.checkMarks[0] = true
+        self.checkTrueList.append(0)
         
         memberList.dataSource = self
         memberList.delegate = self
@@ -97,6 +101,7 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             }
             if (success){
                 // 大テーブルをセット
+                self.memberList.reloadData()
                 self.squareTablePositionSet()
             }
         })
@@ -171,6 +176,8 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
         
         var cnt = 0
         
+        self.memberLabelList = [UILabel](repeating: UILabel(frame:.zero), count: personList.count)
+        
         for innerTableRect in innerTableList {
             let innerTable = UIView.init(frame: innerTableRect)
             innerTable.backgroundColor = UIColor.init(red: 230/255, green: 255/255, blue: 230/255, alpha: 90/100)
@@ -218,14 +225,14 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             
             self.view.addSubview(innerTable)
             
-            let label: UILabel = UILabel(frame:CGRect(x:0,y:0,width:innerTableRect.width,height:innerTableRect.height))
+            self.memberLabelList[cnt] = UILabel(frame:CGRect(x:0,y:0,width:innerTableRect.width,height:innerTableRect.height))
             
-            label.text = (personList.count > cnt) ? personList[cnt]["name"] : "モブ"
-            label.textColor = UIColor.black
-            label.textAlignment = NSTextAlignment.center
-            label.adjustsFontSizeToFitWidth = true
+            self.memberLabelList[cnt].text = (cnt == 0) ? personList[cnt]["name"] : "モブ"
+            self.memberLabelList[cnt].textColor = UIColor.black
+            self.memberLabelList[cnt].textAlignment = NSTextAlignment.center
+            self.memberLabelList[cnt].adjustsFontSizeToFitWidth = true
             
-            innerTable.addSubview(label)
+            innerTable.addSubview(self.memberLabelList[cnt])
             
             cnt += 1
         }
@@ -324,10 +331,19 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "memberCell", for: indexPath as IndexPath)
         // Cellに値を設定.
-//        if (personList[indexPath.row]["yourself"] != "あなた"){
-            cell.textLabel!.text = personList[indexPath.row]["name"]
-//        }
-        cell.accessoryType = UITableViewCellAccessoryType.checkmark
+        var targetPerson = 0
+        
+        for _ in 0..<personList.count {
+            if (self.personList[targetPerson]["yourself"] != nil) {
+                break
+            }
+            targetPerson += 1
+        }
+//        NSLog("\(personList)")
+        self.personList.insert(self.personList[targetPerson], at:0)
+        self.personList.remove(at: targetPerson + 1)
+        cell.textLabel!.text = personList[indexPath.row]["name"]
+        cell.accessoryType = (self.checkMarks[indexPath.row]) ? .checkmark :.none
         return cell
     }
     
@@ -336,8 +352,30 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
      */
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let cell = tableView.cellForRow(at: indexPath as IndexPath) {
-            cell.accessoryType = (cell.accessoryType == .none) ? .checkmark :.none
+            if (self.personList[indexPath.row]["yourself"] == nil) {
+                cell.accessoryType = (cell.accessoryType == .none) ? .checkmark :.none
+                
+                self.checkMarks[indexPath.row] = !self.checkMarks[indexPath.row]
+
+                if (self.checkMarks[indexPath.row]) {
+                    self.checkTrueList.append(indexPath.row)
+                } else {
+                    var findList = 0
+                    for list in 0..<self.checkTrueList.count {
+                        if (self.checkTrueList[list] == indexPath.row) {
+                            findList = list
+                            break
+                        }
+                    }
+                    self.checkTrueList.remove(at: findList)
+                }
+                
+                for person in 0..<personNum {
+                    self.memberLabelList[person].text = (person < self.checkTrueList.count) ?  self.personList[self.checkTrueList[person]]["name"] : "モブ"
+                }
+            }
         }
+        
         tableView.deselectRow(at: indexPath as IndexPath, animated: true)
     }
     
