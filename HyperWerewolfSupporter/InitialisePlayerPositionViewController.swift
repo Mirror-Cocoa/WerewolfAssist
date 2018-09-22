@@ -8,7 +8,7 @@
 
 import UIKit
 
-class InitialisePlayerPositionViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
+class InitialisePlayerPositionViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIDragInteractionDelegate, UIDropInteractionDelegate {
     
     var personNum = 10
     let userDefaults = UserDefaults.standard
@@ -20,8 +20,13 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
     var checkMarks: [Bool] = []
     var checkTrueList: [Int] = []
     
+    var innerTableList: [UIView] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // ナビゲーションバーの右側に編集ボタンを追加.
+        self.editButtonItem.title = "次へ"
         
         // ユーザ情報を取得
         if let loadData = userDefaults.object(forKey: "person") {
@@ -158,9 +163,9 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
      */
     func squareTablePositionSet() {
         
-        var innerTableList: Array<CGRect> = Array(repeating: CGRect.zero, count: self.personNum)
+        var innerTableRectList: Array<CGRect> = Array(repeating: CGRect.zero, count: self.personNum)
         
-        innerTableList = innerTablePisitioning(positionCount: self.personNum, outerRect: self.outerTable.frame)
+        innerTableRectList = innerTablePisitioning(positionCount: self.personNum, outerRect: self.outerTable.frame)
         
         var targetPerson = 0
         
@@ -178,7 +183,8 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
         
         self.memberLabelList = [UILabel](repeating: UILabel(frame:.zero), count: personNum)
         
-        for innerTableRect in innerTableList {
+        
+        for innerTableRect in innerTableRectList {
             let innerTable = UIView.init(frame: innerTableRect)
             innerTable.backgroundColor = UIColor.init(red: 230/255, green: 255/255, blue: 230/255, alpha: 90/100)
             
@@ -212,10 +218,21 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             // 小テーブルにラベルの追加
             self.memberLabelList[cnt] = UILabel(frame:CGRect(x:0,y:0,width:innerTableRect.width,height:innerTableRect.height))
             
+            let dragDelegate: UIDragInteractionDelegate = self
+            let dragInteraction = UIDragInteraction(delegate: dragDelegate)
+            dragInteraction.isEnabled = true    // iPhoneの場合はデフォルトがfalseになっている
+            innerTable.addInteraction(dragInteraction)
+            self.innerTableList.append(innerTable)
+            
+            let dropDelegate: UIDropInteractionDelegate = self
+            let dropInteraction = UIDropInteraction(delegate: dropDelegate)
+            innerTable.addInteraction(dropInteraction)
+            
             self.memberLabelList[cnt].text = (cnt == 0) ? personList[cnt]["name"] : "モブ"
             self.memberLabelList[cnt].textColor = UIColor.black
             self.memberLabelList[cnt].textAlignment = NSTextAlignment.center
             self.memberLabelList[cnt].adjustsFontSizeToFitWidth = true
+            self.memberLabelList[cnt].isUserInteractionEnabled = (cnt != 0)
             
             innerTable.addSubview(self.memberLabelList[cnt])
             
@@ -414,6 +431,66 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             
         present(alert, animated: true, completion: nil)
         
+    }
+    
+    func dragInteraction(_ interaction: UIDragInteraction, itemsForBeginning session: UIDragSession) -> [UIDragItem] {
+        
+        for idx in 1..<self.innerTableList.count {
+            // ドラッグされた位置を取得します
+            let points = session.location(in: self.innerTableList[idx])
+            // ドラッグされた位置にラベルがあれば、そのラベルの文字列をドラッグします。
+            // Note: UILabelをhitTestで見つけるためには、ラベルのuserInteractionEnabledを
+            // trueにしておく必要があります。
+            if let hitView = self.innerTableList[idx].hitTest(points, with: nil) {
+                if let label = hitView as? UILabel {
+                    let text = (label.text ?? "") as NSString
+                    let dragItem = UIDragItem(itemProvider: NSItemProvider(object: text))
+                    dragItem.localObject = label  // ドラッグ対象を紐付けておく
+                    return [dragItem]
+                }
+            }
+        }
+
+        // ドラッグ位置にラベルがなければドラッグ可能ではありません。
+        return []
+    }
+    
+    func dropInteraction(_ interaction: UIDropInteraction,
+                         sessionDidUpdate session: UIDropSession) -> UIDropProposal {
+        for idx in 1..<self.innerTableList.count {
+            // ドロップできない場所では .forbidden を返します。
+            let point = session.location(in: self.innerTableList[idx])
+            guard self.innerTableList[idx] != self.innerTableList[idx].hitTest(point, with: nil) else {
+                return UIDropProposal(operation: .forbidden)
+            }
+            
+            // ドラッグ中のアイテムが文字列を含んでいる場合はドロップできます。
+            if session.canLoadObjects(ofClass: NSString.self) {
+                return UIDropProposal(operation: .copy)
+            } else {
+                return UIDropProposal(operation: .cancel)
+            }
+        }
+        return UIDropProposal(operation: .cancel)
+    }
+    
+    func dropInteraction(_ interaction: UIDropInteraction,
+                         performDrop session: UIDropSession) {
+        for item in session.items {
+            // 文字列をロードできないアイテムはスキップします
+            if item.itemProvider.canLoadObject(ofClass: NSString.self) {
+                item.itemProvider.loadObject(ofClass: NSString.self) { (object, error) in
+                    // アイテムのロードは非同期に行われます
+                    // ロードが終わるとここにやってきます
+                    if let string = object as? NSString {
+                        // UIへの反映はメインスレッドで行います
+                        DispatchQueue.main.async {
+//                            self.memberLabelList[0].text = String(format: "Dropped string - %@", string)
+                        }
+                    }
+                }
+            }
+        }
     }
     
     override func didReceiveMemoryWarning() {
