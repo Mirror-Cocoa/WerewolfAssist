@@ -336,14 +336,21 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
      */
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let cell = tableView.cellForRow(at: indexPath as IndexPath) {
+            let isAdd = !self.checkMarks[indexPath.row]
+            // チェックをつける際
             if (self.personList[indexPath.row]["yourself"] == nil) {
-                cell.accessoryType = (cell.accessoryType == .none) ? .checkmark :.none
-                
-                self.checkMarks[indexPath.row] = !self.checkMarks[indexPath.row]
 
-                if (self.checkMarks[indexPath.row]) {
-                    self.checkTrueList.append(indexPath.row)
+                if (isAdd) {
+                    // 人数オーバーしていたら何もしない
+                    if (self.checkTrueList.count >= personNum) {
+                        tableView.deselectRow(at: indexPath as IndexPath, animated: true)
+                        return
+                    } else {
+                        cell.accessoryType = .checkmark
+                        self.checkTrueList.append(indexPath.row)
+                    }
                 } else {
+                    cell.accessoryType = .none
                     var findList = 0
                     for list in 0..<self.checkTrueList.count {
                         if (self.checkTrueList[list] == indexPath.row) {
@@ -353,6 +360,8 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
                     }
                     self.checkTrueList.remove(at: findList)
                 }
+                
+                self.checkMarks[indexPath.row] = !self.checkMarks[indexPath.row]
                 
                 for person in 0..<personNum {
                     self.memberLabelList[person].text = (person < self.checkTrueList.count) ?  self.personList[self.checkTrueList[person]]["name"] : "モブ"
