@@ -15,8 +15,8 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
     var personList: Array<[String:String]> = []
     @IBOutlet weak var outerTable: UIView!
     @IBOutlet weak var memberList: UITableView!
-    var memberLabelList: [UILabel] = []
     
+    var memberLabelList: [UILabel] = []
     var checkMarks: [Bool] = []
     var checkTrueList: [Int] = []
     
@@ -361,6 +361,50 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
         }
         
         tableView.deselectRow(at: indexPath as IndexPath, animated: true)
+    }
+    
+    
+    @IBAction func memberAdd(_ sender: Any) {
+        let alertTitle:String = "人物の登録を行います。"
+        let alertMsg:String = "登録したい人の名前を入力してください。"
+        
+        // アラートの初期設定
+        let alert: UIAlertController = UIAlertController(title: alertTitle, message: alertMsg, preferredStyle:  UIAlertControllerStyle.alert)
+        
+        // OKボタンの処理
+        let defaultAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler:{
+            action in
+            let textFields:Array<UITextField>? = alert.textFields as Array<UITextField>?
+            
+            if (textFields != nil) {
+                for textField:UITextField in textFields! {
+                    // テーブルの追加
+                    var personDict = [String:String]()
+                    personDict["name"] = textField.text!
+                    self.personList.append(personDict)
+                }
+                // userDefaultsに追加
+                self.userDefaults.set(self.personList, forKey: "person")
+                self.userDefaults.synchronize()
+            }
+            self.checkMarks.append(false)
+            // TableViewを再読み込み
+            self.memberList.reloadData()
+        })
+        alert.addAction(UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.cancel))
+        alert.addAction(defaultAction)
+            
+        // テキストフィールドの設置
+        alert.addTextField(configurationHandler: {(text:UITextField!) -> Void in
+            text.placeholder = "入力してください"
+            let label:UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+            label.text = "人物名"
+            text.leftView = label
+            text.leftViewMode = UITextFieldViewMode.always
+        })
+            
+        present(alert, animated: true, completion: nil)
+        
     }
     
     override func didReceiveMemoryWarning() {
