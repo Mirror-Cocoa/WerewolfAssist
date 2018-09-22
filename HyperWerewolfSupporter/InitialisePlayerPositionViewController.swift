@@ -176,28 +176,11 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
         
         var cnt = 0
         
-        self.memberLabelList = [UILabel](repeating: UILabel(frame:.zero), count: personList.count)
+        self.memberLabelList = [UILabel](repeating: UILabel(frame:.zero), count: personNum)
         
         for innerTableRect in innerTableList {
             let innerTable = UIView.init(frame: innerTableRect)
             innerTable.backgroundColor = UIColor.init(red: 230/255, green: 255/255, blue: 230/255, alpha: 90/100)
-            
-//            switch cnt{
-//            case 0:
-//                innerTable.backgroundColor = UIColor.blue
-//                break
-//            case 1:
-//                innerTable.backgroundColor = UIColor.red
-//                break
-//            case 2:
-//                innerTable.backgroundColor = UIColor.yellow
-//                break
-//            case 3:
-//                innerTable.backgroundColor = UIColor.green
-//                break
-//            default:
-//                break
-//            }
             
             //上線のCALayerを作成
             let topBorder = CALayer()
@@ -223,8 +206,10 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             rightBorder.backgroundColor = UIColor.black.cgColor
             innerTable.layer.addSublayer(rightBorder)
             
+            // 小テーブルの追加
             self.view.addSubview(innerTable)
             
+            // 小テーブルにラベルの追加
             self.memberLabelList[cnt] = UILabel(frame:CGRect(x:0,y:0,width:innerTableRect.width,height:innerTableRect.height))
             
             self.memberLabelList[cnt].text = (cnt == 0) ? personList[cnt]["name"] : "モブ"
@@ -339,10 +324,9 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             }
             targetPerson += 1
         }
-//        NSLog("\(personList)")
         self.personList.insert(self.personList[targetPerson], at:0)
         self.personList.remove(at: targetPerson + 1)
-        cell.textLabel!.text = personList[indexPath.row]["name"]
+        cell.textLabel!.text = (indexPath.row < personList.count) ? personList[indexPath.row]["name"] : "モブ"
         cell.accessoryType = (self.checkMarks[indexPath.row]) ? .checkmark :.none
         return cell
     }
