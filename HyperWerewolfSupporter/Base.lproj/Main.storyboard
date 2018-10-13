@@ -92,16 +92,25 @@
                                             <outlet property="delegate" destination="fpf-3p-R7f" id="an1-GC-ADj"/>
                                         </connections>
                                     </tableView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bpk-MY-QJU">
+                                        <rect key="frame" x="426" y="12" width="92" height="30"/>
+                                        <state key="normal" title="メンバー追加"/>
+                                        <connections>
+                                            <action selector="memberAdd:" destination="fpf-3p-R7f" eventType="touchDown" id="Ung-xP-d6S"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="vGZ-As-DLm" firstAttribute="top" secondItem="iH3-Mc-CmA" secondAttribute="top" constant="50" id="1N0-0I-uwO"/>
                                     <constraint firstItem="Gjb-nF-HyS" firstAttribute="top" secondItem="iH3-Mc-CmA" secondAttribute="top" constant="50" id="3QQ-UL-uyt"/>
+                                    <constraint firstItem="Gjb-nF-HyS" firstAttribute="top" secondItem="bpk-MY-QJU" secondAttribute="bottom" constant="8" id="DOe-8w-v6a"/>
                                     <constraint firstAttribute="trailing" secondItem="Gjb-nF-HyS" secondAttribute="trailing" constant="50" id="JFY-8G-Ome"/>
                                     <constraint firstItem="vGZ-As-DLm" firstAttribute="bottom" secondItem="iH3-Mc-CmA" secondAttribute="bottom" constant="-50" id="LNI-JA-x0X"/>
                                     <constraint firstItem="vGZ-As-DLm" firstAttribute="leading" secondItem="iH3-Mc-CmA" secondAttribute="leading" constant="50" id="OiU-9V-rdi"/>
                                     <constraint firstItem="vGZ-As-DLm" firstAttribute="trailing" secondItem="iH3-Mc-CmA" secondAttribute="centerX" id="RyQ-Ze-Q1k"/>
                                     <constraint firstAttribute="bottom" secondItem="Gjb-nF-HyS" secondAttribute="bottom" constant="50" id="Z19-Q6-OGo"/>
+                                    <constraint firstAttribute="trailing" secondItem="bpk-MY-QJU" secondAttribute="trailing" constant="50" id="Zja-1r-OlO"/>
                                     <constraint firstItem="Gjb-nF-HyS" firstAttribute="leading" secondItem="vGZ-As-DLm" secondAttribute="trailing" id="bXY-s5-llT"/>
                                 </constraints>
                             </view>

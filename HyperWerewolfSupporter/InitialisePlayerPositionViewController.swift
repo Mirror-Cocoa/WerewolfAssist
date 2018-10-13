@@ -22,6 +22,9 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
     
     var innerTableList: [UIView] = []
     
+    var dragIdx = 0
+    var dropIdx = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -228,7 +231,7 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             let dropInteraction = UIDropInteraction(delegate: dropDelegate)
             innerTable.addInteraction(dropInteraction)
             
-            self.memberLabelList[cnt].text = (cnt == 0) ? personList[cnt]["name"] : "モブ"
+            self.memberLabelList[cnt].text = (cnt == 0) ? personList[cnt]["name"] : ""
             self.memberLabelList[cnt].textColor = UIColor.black
             self.memberLabelList[cnt].textAlignment = NSTextAlignment.center
             self.memberLabelList[cnt].adjustsFontSizeToFitWidth = true
@@ -381,7 +384,7 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
                 self.checkMarks[indexPath.row] = !self.checkMarks[indexPath.row]
                 
                 for person in 0..<personNum {
-                    self.memberLabelList[person].text = (person < self.checkTrueList.count) ?  self.personList[self.checkTrueList[person]]["name"] : "モブ"
+                    self.memberLabelList[person].text = (person < self.checkTrueList.count) ?  self.personList[self.checkTrueList[person]]["name"] : ""
                 }
             }
         }
@@ -446,6 +449,7 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
                     let text = (label.text ?? "") as NSString
                     let dragItem = UIDragItem(itemProvider: NSItemProvider(object: text))
                     dragItem.localObject = label  // ドラッグ対象を紐付けておく
+                    self.dragIdx = idx
                     return [dragItem]
                 }
             }
@@ -457,21 +461,37 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
     
     func dropInteraction(_ interaction: UIDropInteraction,
                          sessionDidUpdate session: UIDropSession) -> UIDropProposal {
+        // 自分以外は .forbidden を返します。
+        guard self.innerTableList[0] != self.innerTableList[0].hitTest(
+            session.location(in: self.innerTableList[0]), with: nil) else {
+            return UIDropProposal(operation: .forbidden)
+        }
+        
+        // 現在の位置を取得
+        let currentPoint = session.location(in: self.view)
+        
+        // ドロップ先のinnerTableを取得
         for idx in 1..<self.innerTableList.count {
-            // ドロップできない場所では .forbidden を返します。
-            let point = session.location(in: self.innerTableList[idx])
-            guard self.innerTableList[idx] != self.innerTableList[idx].hitTest(point, with: nil) else {
-                return UIDropProposal(operation: .forbidden)
-            }
-            
-            // ドラッグ中のアイテムが文字列を含んでいる場合はドロップできます。
-            if session.canLoadObjects(ofClass: NSString.self) {
-                return UIDropProposal(operation: .copy)
-            } else {
-                return UIDropProposal(operation: .cancel)
+            if (self.innerTableList[idx].frame.minX <= currentPoint.x && currentPoint.x <= self.innerTableList[idx].frame.maxX &&
+                self.innerTableList[idx].frame.minY <= currentPoint.y && currentPoint.y <= self.innerTableList[idx].frame.maxY) {
+                self.dropIdx = idx
+                // 同一人物ならforbidden
+                if (self.dragIdx == self.dropIdx) { return UIDropProposal(operation: .forbidden) }
+                break
             }
         }
-        return UIDropProposal(operation: .cancel)
+        
+        // ドラッグ中のアイテムが文字列を含んでいる場合はドロップできます。
+        return (session.canLoadObjects(ofClass: NSString.self)) ? UIDropProposal(operation: .copy) :  UIDropProposal(operation: .cancel)
+    }
+    
+    /*
+     * ドロップできないものをさっさと弾く
+     */
+    func dropInteraction(_ interaction: UIDropInteraction,
+                         canHandle session: UIDropSession) -> Bool {
+        // 文字列を取り出せるものしかドロップできない
+        return session.canLoadObjects(ofClass: NSString.self)
     }
     
     func dropInteraction(_ interaction: UIDropInteraction,
@@ -485,7 +505,10 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
                     if let string = object as? NSString {
                         // UIへの反映はメインスレッドで行います
                         DispatchQueue.main.async {
-//                            self.memberLabelList[0].text = String(format: "Dropped string - %@", string)
+                            // ラベルの入れ替え
+                            let tmp = self.memberLabelList[self.dropIdx].text
+                            self.memberLabelList[self.dropIdx].text = string as String
+                            self.memberLabelList[self.dragIdx].text = tmp
                         }
                     }
                 }
