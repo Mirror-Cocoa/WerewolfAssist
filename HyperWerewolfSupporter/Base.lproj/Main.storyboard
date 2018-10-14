@@ -51,7 +51,7 @@
             </objects>
             <point key="canvasLocation" x="222.63868065967017" y="32.799999999999997"/>
         </scene>
-        <!--Initialise Player Position View Controller-->
+        <!--初期配置登録-->
         <scene sceneID="RDo-O7-WLI">
             <objects>
                 <viewController id="fpf-3p-R7f" customClass="InitialisePlayerPositionViewController" customModule="HyperWerewolfSupporter" customModuleProvider="target" sceneMemberID="viewController">
@@ -124,9 +124,16 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="pMe-5X-Cdb"/>
                     </view>
-                    <navigationItem key="navigationItem" id="IrF-dI-RS2"/>
+                    <navigationItem key="navigationItem" title="初期配置登録" id="IrF-dI-RS2">
+                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="次へ" id="XbS-R5-ZEy">
+                            <connections>
+                                <action selector="onClickNextButton:" destination="fpf-3p-R7f" id="A1m-bG-eC2"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="memberList" destination="Gjb-nF-HyS" id="jm9-lx-8nY"/>
+                        <outlet property="nextButton" destination="XbS-R5-ZEy" id="S2E-pb-DWT"/>
                         <outlet property="outerTable" destination="vGZ-As-DLm" id="IOW-Rm-AWm"/>
                     </connections>
                 </viewController>
