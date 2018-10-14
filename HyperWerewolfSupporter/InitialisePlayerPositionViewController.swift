@@ -15,6 +15,7 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
     var personList: Array<[String:String]> = []
     @IBOutlet weak var outerTable: UIView!
     @IBOutlet weak var memberList: UITableView!
+    @IBOutlet weak var nextButton: UIBarButtonItem!
     
     var memberLabelList: [UILabel] = []
     var checkMarks: [Bool] = []
@@ -28,9 +29,6 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // ナビゲーションバーの右側に編集ボタンを追加.
-        self.editButtonItem.title = "次へ"
-        
         // ユーザ情報を取得
         if let loadData = userDefaults.object(forKey: "person") {
             personList = loadData as! Array<[String:String]>
@@ -43,8 +41,6 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
         memberList.dataSource = self
         memberList.delegate = self
         
-        // 戻るを消す
-//        self.navigationItem.hidesBackButton = true
         // アラートをセット
         initSetAlert()
     }
@@ -388,7 +384,8 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
                 }
             }
         }
-        
+        // チェックが揃っていれば次へボタンの有効化
+        self.nextButton.isEnabled = self.checkTrueList.count == self.personNum
         tableView.deselectRow(at: indexPath as IndexPath, animated: true)
     }
     
@@ -520,4 +517,14 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    /*
+     次へボタンが押された際に呼び出される
+     */
+    @IBAction func onClickNextButton(_ sender: Any) {
+        print("tap")
+    }
+    
+    
+    
 }
