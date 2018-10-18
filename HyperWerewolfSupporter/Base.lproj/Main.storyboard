@@ -128,6 +128,7 @@
                         <barButtonItem key="rightBarButtonItem" enabled="NO" title="次へ" id="XbS-R5-ZEy">
                             <connections>
                                 <action selector="onClickNextButton:" destination="fpf-3p-R7f" id="A1m-bG-eC2"/>
+                                <segue destination="g9q-gb-fy8" kind="show" animates="NO" id="g3G-rd-OYs"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -205,6 +206,60 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ngU-jz-GjM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-790" y="33"/>
+        </scene>
+        <!--議論中-->
+        <scene sceneID="tAI-ou-DZg">
+            <objects>
+                <viewController id="g9q-gb-fy8" customClass="UnderDiscussionViewController" customModule="HyperWerewolfSupporter" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="rhj-2J-66F">
+                        <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lcf-33-q9Z" userLabel="Adjust View">
+                                <rect key="frame" x="0.0" y="32" width="568" height="288"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OoO-zT-XCF">
+                                        <rect key="frame" x="50" y="50" width="234" height="188"/>
+                                        <color key="backgroundColor" red="0.85414585990000003" green="0.84567043050000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                                <integer key="value" value="1"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="layer.borderUIColor">
+                                                <color key="value" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="OoO-zT-XCF" firstAttribute="trailing" secondItem="Lcf-33-q9Z" secondAttribute="centerX" id="IDi-Ud-coo"/>
+                                    <constraint firstItem="OoO-zT-XCF" firstAttribute="top" secondItem="Lcf-33-q9Z" secondAttribute="top" constant="50" id="SQk-13-rGT"/>
+                                    <constraint firstItem="OoO-zT-XCF" firstAttribute="bottom" secondItem="Lcf-33-q9Z" secondAttribute="bottom" constant="-50" id="WO6-UF-ebK"/>
+                                    <constraint firstItem="OoO-zT-XCF" firstAttribute="leading" secondItem="Lcf-33-q9Z" secondAttribute="leading" constant="50" id="leF-HA-03g"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Lcf-33-q9Z" firstAttribute="trailing" secondItem="rhj-2J-66F" secondAttribute="trailing" id="GIM-2O-duw"/>
+                            <constraint firstItem="Lcf-33-q9Z" firstAttribute="top" secondItem="rhj-2J-66F" secondAttribute="top" constant="32" id="aTD-GE-TmD"/>
+                            <constraint firstItem="Lcf-33-q9Z" firstAttribute="leading" secondItem="rhj-2J-66F" secondAttribute="leading" id="iEi-li-ybt"/>
+                            <constraint firstItem="Lcf-33-q9Z" firstAttribute="bottom" secondItem="rhj-2J-66F" secondAttribute="bottom" id="qVz-sT-8p5"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="hDN-od-Jno"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="議論中" id="gS3-g0-56f">
+                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="次へ" id="y9s-cL-YW5">
+                            <connections>
+                                <action selector="onClickNextButton:" destination="g9q-gb-fy8" id="gZt-4p-RHY"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Q6D-Lv-iHZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1736" y="-1391"/>
         </scene>
     </scenes>
     <resources>
