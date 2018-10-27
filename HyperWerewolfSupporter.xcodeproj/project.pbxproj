@@ -16,6 +16,7 @@
 		395409B420E692E70067E806 /* InitialisePlayerPositionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395409B320E692E70067E806 /* InitialisePlayerPositionViewController.swift */; };
 		395409B620E6944B0067E806 /* PersonListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395409B520E6944B0067E806 /* PersonListViewController.swift */; };
 		39673546217333DF00D05D81 /* UnderDiscussionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39673545217333DF00D05D81 /* UnderDiscussionViewController.swift */; };
+		39673548217F5FDE00D05D81 /* TableDrawUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39673547217F5FDE00D05D81 /* TableDrawUtil.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		395409B320E692E70067E806 /* InitialisePlayerPositionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialisePlayerPositionViewController.swift; sourceTree = "<group>"; };
 		395409B520E6944B0067E806 /* PersonListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonListViewController.swift; sourceTree = "<group>"; };
 		39673545217333DF00D05D81 /* UnderDiscussionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderDiscussionViewController.swift; sourceTree = "<group>"; };
+		39673547217F5FDE00D05D81 /* TableDrawUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableDrawUtil.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +69,7 @@
 				3954099E20E273650067E806 /* DefaultViewController.swift */,
 				395409B320E692E70067E806 /* InitialisePlayerPositionViewController.swift */,
 				39673545217333DF00D05D81 /* UnderDiscussionViewController.swift */,
+				39673547217F5FDE00D05D81 /* TableDrawUtil.swift */,
 				395409B520E6944B0067E806 /* PersonListViewController.swift */,
 				395409A020E273650067E806 /* Main.storyboard */,
 				395409A320E273650067E806 /* Assets.xcassets */,
@@ -161,6 +164,7 @@
 				3954099D20E273650067E806 /* AppDelegate.swift in Sources */,
 				39673546217333DF00D05D81 /* UnderDiscussionViewController.swift in Sources */,
 				395409B420E692E70067E806 /* InitialisePlayerPositionViewController.swift in Sources */,
+				39673548217F5FDE00D05D81 /* TableDrawUtil.swift in Sources */,
 				395409B620E6944B0067E806 /* PersonListViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

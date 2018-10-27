@@ -22,6 +22,7 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
     var checkTrueList: [Int] = []
     
     var innerTableList: [UIView] = []
+    var innerTableRectList: [CGRect] = []
     
     var dragIdx = 0
     var dropIdx = 0
@@ -162,9 +163,7 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
      */
     func squareTablePositionSet() {
         
-        var innerTableRectList: Array<CGRect> = Array(repeating: CGRect.zero, count: self.personNum)
-        
-        innerTableRectList = innerTablePisitioning(positionCount: self.personNum, outerRect: self.outerTable.frame)
+        self.innerTableRectList = innerTablePisitioning(positionCount: self.personNum, outerRect: outerTable.frame)
         
         var targetPerson = 0
         
@@ -187,30 +186,21 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             let innerTable = UIView.init(frame: innerTableRect)
             innerTable.backgroundColor = UIColor.init(red: 230/255, green: 255/255, blue: 230/255, alpha: 90/100)
             
-            //上線のCALayerを作成
-            let topBorder = CALayer()
-            topBorder.frame = CGRect(x: 0, y: 0, width: innerTable.frame.width, height: 1.0)
-            topBorder.backgroundColor = UIColor.black.cgColor
-            innerTable.layer.addSublayer(topBorder)
+            //上下左右のCALayerを作成
+            let rectArray = [
+                CGRect(x: 0, y: 0, width: innerTable.frame.width, height: 1.0),
+                CGRect(x: 0, y: 0, width: 1.0, height:innerTable.frame.height),
+                CGRect(x: 0, y: innerTable.frame.height, width: innerTable.frame.width, height:-1.0),
+                CGRect(x: innerTable.frame.width, y: 0, width: -1.0, height:innerTable.frame.height)
+            ]
             
-            //左線のCALayerを作成
-            let leftBorder = CALayer()
-            leftBorder.frame = CGRect(x: 0, y: 0, width: 1.0, height:innerTable.frame.height)
-            leftBorder.backgroundColor = UIColor.black.cgColor
-            innerTable.layer.addSublayer(leftBorder)
-            
-            //下線のCALayerを作成
-            let bottomBorder = CALayer()
-            bottomBorder.frame = CGRect(x: 0, y: innerTable.frame.height, width: innerTable.frame.width, height:-1.0)
-            bottomBorder.backgroundColor = UIColor.black.cgColor
-            innerTable.layer.addSublayer(bottomBorder)
-            
-            //右線のCALayerを作成
-            let rightBorder = CALayer()
-            rightBorder.frame = CGRect(x: innerTable.frame.width, y: 0, width: -1.0, height:innerTable.frame.height)
-            rightBorder.backgroundColor = UIColor.black.cgColor
-            innerTable.layer.addSublayer(rightBorder)
-            
+            for idx in 0..<rectArray.count {
+                let border = CALayer()
+                border.frame = rectArray[idx]
+                border.backgroundColor = UIColor.black.cgColor
+                innerTable.layer.addSublayer(border)
+            }
+
             // 小テーブルの追加
             self.view.addSubview(innerTable)
             
@@ -519,12 +509,27 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
     }
     
     /*
-     次へボタンが押された際に呼び出される
+     次へボタンが押された際に呼び出される(Segueへ)
      */
     @IBAction func onClickNextButton(_ sender: Any) {
-        print("tap")
+        performSegue(withIdentifier: "underDiscussion",sender: nil)
     }
     
+    /*
+     segue 準備
+     */
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if (segue.identifier == "underDiscussion") {
+            let under: UnderDiscussionViewController = (segue.destination as? UnderDiscussionViewController)!
+            // 次のビューに値渡し
+            under.personNum = self.personNum
+            under.personList = self.personList
+            under.outerTable = self.outerTable
+            under.memberLabelList = self.memberLabelList
+            under.innerTableList = self.innerTableList
+            under.innerTableRectList =  self.innerTableRectList
+        }
+    }
     
     
 }

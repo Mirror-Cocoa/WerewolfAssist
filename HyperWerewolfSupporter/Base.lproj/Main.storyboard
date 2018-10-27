@@ -128,7 +128,7 @@
                         <barButtonItem key="rightBarButtonItem" enabled="NO" title="次へ" id="XbS-R5-ZEy">
                             <connections>
                                 <action selector="onClickNextButton:" destination="fpf-3p-R7f" id="A1m-bG-eC2"/>
-                                <segue destination="g9q-gb-fy8" kind="show" animates="NO" id="g3G-rd-OYs"/>
+                                <segue destination="g9q-gb-fy8" kind="show" identifier="underDiscussion" animates="NO" id="g3G-rd-OYs"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -256,6 +256,9 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="outerTable" destination="OoO-zT-XCF" id="pbN-QO-EYX"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Q6D-Lv-iHZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
