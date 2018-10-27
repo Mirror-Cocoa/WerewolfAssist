@@ -12,11 +12,11 @@
 		395409A220E273650067E806 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 395409A020E273650067E806 /* Main.storyboard */; };
 		395409A420E273650067E806 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 395409A320E273650067E806 /* Assets.xcassets */; };
 		395409A720E273650067E806 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 395409A520E273650067E806 /* LaunchScreen.storyboard */; };
-		395409B220E277070067E806 /* danron_akamatsu.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 395409B120E277070067E806 /* danron_akamatsu.jpg */; };
 		395409B420E692E70067E806 /* InitialisePlayerPositionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395409B320E692E70067E806 /* InitialisePlayerPositionViewController.swift */; };
 		395409B620E6944B0067E806 /* PersonListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395409B520E6944B0067E806 /* PersonListViewController.swift */; };
 		39673546217333DF00D05D81 /* UnderDiscussionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39673545217333DF00D05D81 /* UnderDiscussionViewController.swift */; };
 		39673548217F5FDE00D05D81 /* TableDrawUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39673547217F5FDE00D05D81 /* TableDrawUtil.swift */; };
+		3967354A2184197500D05D81 /* sozai_cman_jp_20181027123932.gif in Resources */ = {isa = PBXBuildFile; fileRef = 396735492184197500D05D81 /* sozai_cman_jp_20181027123932.gif */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,11 +27,11 @@
 		395409A320E273650067E806 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		395409A620E273650067E806 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		395409A820E273650067E806 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		395409B120E277070067E806 /* danron_akamatsu.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = danron_akamatsu.jpg; path = ../../../../Downloads/danron_akamatsu.jpg; sourceTree = "<group>"; };
 		395409B320E692E70067E806 /* InitialisePlayerPositionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialisePlayerPositionViewController.swift; sourceTree = "<group>"; };
 		395409B520E6944B0067E806 /* PersonListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonListViewController.swift; sourceTree = "<group>"; };
 		39673545217333DF00D05D81 /* UnderDiscussionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderDiscussionViewController.swift; sourceTree = "<group>"; };
 		39673547217F5FDE00D05D81 /* TableDrawUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableDrawUtil.swift; sourceTree = "<group>"; };
+		396735492184197500D05D81 /* sozai_cman_jp_20181027123932.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = sozai_cman_jp_20181027123932.gif; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,7 +82,7 @@
 		395409B020E2766B0067E806 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				395409B120E277070067E806 /* danron_akamatsu.jpg */,
+				396735492184197500D05D81 /* sozai_cman_jp_20181027123932.gif */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -148,8 +148,8 @@
 			files = (
 				395409A720E273650067E806 /* LaunchScreen.storyboard in Resources */,
 				395409A420E273650067E806 /* Assets.xcassets in Resources */,
-				395409B220E277070067E806 /* danron_akamatsu.jpg in Resources */,
 				395409A220E273650067E806 /* Main.storyboard in Resources */,
+				3967354A2184197500D05D81 /* sozai_cman_jp_20181027123932.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

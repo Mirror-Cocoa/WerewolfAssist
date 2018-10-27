@@ -91,84 +91,8 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         
     }
     
-    /**
-     * 内部テーブルのポジショニング指定
-     */
-    func innerTablePisitioning(positionCount: Int, outerRect: CGRect) -> [CGRect] {
-        let innerTableSize = CGSize(width: outerRect.width / 7, height: outerRect.height / 6)
-        var innerTableList: Array<CGRect> = Array(repeating: CGRect.zero, count: self.personNum!)
-        
-        let wholeDistance = outerRect.width * 2 + outerRect.height * 2 - innerTableSize.width * 2 - innerTableSize.height * 2
-        let moveDistance = (wholeDistance / (CGFloat(positionCount)))
-        
-        let rightX = outerRect.maxX - innerTableSize.width
-        let underY = outerRect.maxY - innerTableSize.height + (self.navigationController?.navigationBar.frame.size.height)!
-        
-        let initXPosition = outerRect.maxX - ((outerRect.width + innerTableSize.width) / 2)
-        let initYPosition = underY
-        
-        var xPosition = initXPosition
-        var yPosition = initYPosition
-        
-        for pos in 0..<positionCount {
-            if (pos == 0) {
-                innerTableList[pos] = CGRect.init(
-                    x: xPosition, y: yPosition, width: innerTableSize.width, height: innerTableSize.height
-                )
-                continue
-            }
-            
-            // Y軸が下にいたら
-            if (yPosition == underY) {
-                // xPositionが最低限を超えていたら
-                if (xPosition - moveDistance < outerRect.minX) {
-                    yPosition -= abs(moveDistance - xPosition)+(self.navigationController?.navigationBar.frame.size.height)!
-                    xPosition = outerRect.minX
-                } else {
-                    xPosition -= moveDistance
-                }
-                
-            }
-                // X軸が左にいたら
-            else if (xPosition == outerRect.minX) {
-                // yPositionが最低限を超えていたら
-                if (yPosition - moveDistance - (self.navigationController?.navigationBar.frame.size.height)! < outerRect.minY) {
-                    xPosition += abs(moveDistance - yPosition)-(self.navigationController?.navigationBar.frame.size.height)!
-                    yPosition = outerRect.minY + (self.navigationController?.navigationBar.frame.size.height)!
-                } else {
-                    yPosition -= moveDistance
-                }
-            }
-                
-                // Y軸が上にいたら
-            else if (yPosition - (self.navigationController?.navigationBar.frame.size.height)! == outerRect.minY) {
-                // xPositionが最上限を超えていたら
-                if (xPosition + moveDistance > rightX) {
-                    yPosition += moveDistance - (rightX - xPosition)
-                    xPosition = rightX
-                } else {
-                    xPosition += moveDistance
-                }
-            }
-                
-                // X軸が右にいたら
-            else if (xPosition == rightX) {
-                // yPositionが最上限を超えていたら
-                if (yPosition + moveDistance > underY) {
-                    xPosition -= moveDistance - (underY - yPosition)
-                    yPosition = underY
-                } else {
-                    yPosition += moveDistance
-                }
-            }
-            
-            innerTableList[pos] = CGRect.init(
-                x: xPosition, y: yPosition, width: innerTableSize.width, height: innerTableSize.height
-            )
-        }
-        
-        return innerTableList
-    }
+    
+    
     
     
 }

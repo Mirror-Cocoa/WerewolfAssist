@@ -117,7 +117,7 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
 //        alert.view.addSubview(createStepper())
         
         alert.addTextField(configurationHandler: {(text:UITextField!) -> Void in
-            text.text = "\(self.personNum)"
+//            text.placeholder = "\(self.personNum)"
             text.keyboardType = UIKeyboardType.numberPad
 
             let label:UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
