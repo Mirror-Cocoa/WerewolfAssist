@@ -26,6 +26,8 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     
     @IBOutlet weak var outerTable: UIView!
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         print(self.personNum)
