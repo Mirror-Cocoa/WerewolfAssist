@@ -246,8 +246,12 @@
                                     <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="H7W-Yi-1cb" userLabel="Calendar Stepper">
                                         <rect key="frame" x="451" y="49" width="94" height="29"/>
                                     </stepper>
-                                    <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="k0b-zy-Mbd" userLabel="Time Stepper">
+                                    <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="600" stepValue="30" translatesAutoresizingMaskIntoConstraints="NO" id="k0b-zy-Mbd" userLabel="Time Stepper">
                                         <rect key="frame" x="451" y="10" width="94" height="29"/>
+                                        <connections>
+                                            <action selector="onStepperChange:" destination="g9q-gb-fy8" eventType="valueChanged" id="Zvb-jq-vZD"/>
+                                            <action selector="onStepperTouch:" destination="g9q-gb-fy8" eventType="touchDown" id="mNG-a3-cSG"/>
+                                        </connections>
                                     </stepper>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" bouncesZoom="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o7o-EC-Pjc" userLabel="Icon Scroll View">
                                         <rect key="frame" x="334" y="88" width="159" height="70"/>
@@ -475,6 +479,9 @@
                                             <constraint firstAttribute="height" constant="29" id="TYJ-1F-gkS"/>
                                         </constraints>
                                         <state key="normal" image="time_start"/>
+                                        <connections>
+                                            <action selector="tapStart:" destination="g9q-gb-fy8" eventType="touchDown" id="a2o-Ez-IQS"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cZ3-nl-Za8" userLabel="time_stop">
                                         <rect key="frame" x="323" y="10" width="29" height="29"/>
@@ -483,6 +490,9 @@
                                             <constraint firstAttribute="height" constant="29" id="mXS-8f-lET"/>
                                         </constraints>
                                         <state key="normal" image="time_stop"/>
+                                        <connections>
+                                            <action selector="tapStop:" destination="g9q-gb-fy8" eventType="touchDown" id="5fy-04-BYr"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TcR-Po-znF" userLabel="fortune Button">
                                         <rect key="frame" x="503" y="95" width="15" height="16"/>
@@ -555,6 +565,8 @@
                     </navigationItem>
                     <connections>
                         <outlet property="outerTable" destination="OoO-zT-XCF" id="pbN-QO-EYX"/>
+                        <outlet property="timeStartButton" destination="CxE-fM-AvK" id="oIX-nq-zOm"/>
+                        <outlet property="timeStopButton" destination="cZ3-nl-Za8" id="XDO-Dv-kLF"/>
                         <outlet property="timerLabel" destination="yeo-aE-ImM" id="SL2-b8-Yez"/>
                         <outlet property="timerStepper" destination="k0b-zy-Mbd" id="Nae-DB-0lV"/>
                     </connections>

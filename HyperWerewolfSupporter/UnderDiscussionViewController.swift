@@ -26,12 +26,17 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     
     @IBOutlet weak var outerTable: UIView!
     
-    
+    @IBOutlet weak var timeStartButton: UIButton!
+    @IBOutlet weak var timeStopButton: UIButton!
     @IBOutlet weak var timerLabel: UILabel!
     @IBOutlet weak var timerStepper: UIStepper!
     
-    
-    
+    var timer = Timer()
+    var timerDisplay : Int = 0
+    var timerGoing = false
+    var startTime: TimeInterval = 0     // Startボタンを押した時刻
+    var elapsedTime: Double = 0.0       // Stopボタンを押した時点で経過していた時間
+    var time : Double = 0.0             // ラベルに表示する時間
     
     
     override func viewDidLoad() {
@@ -41,7 +46,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         self.squareTablePositionSet()
         
         // 暫定用に何か時間を
-        
+        self.timerInitSetting()
         
     }
     
@@ -106,9 +111,74 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
      * タイマーの初期設定
      */
     func timerInitSetting() {
+        // 暫定04:00にする。(0埋めはしておこう。)
+        timerStepper.value = 240
+        self.timeDisplay()
+    }
+    
+    
+    /**
+     * タイマーの表示
+     */
+    func timeDisplay() {
+        timerLabel.text = NSString(format: "%02d:%02d",
+                                   Int(self.timerStepper.value)/60,
+                                   Int(self.timerStepper.value)%60) as String
+    }
+    
+    /**
+     * スタートボタン or 一時停止ボタンが押された時
+     */
+    @IBAction func tapStart(_ sender: Any) {
+//         状態切り替え
+        self.timerGoing = !self.timerGoing
+        let timerButton = (sender as! UIButton)
+        
+        if self.timerGoing {
+            // 画像切り替え
+            timerButton.setImage(UIImage(named: "time_pause"), for: .normal)
+            startTime = Date().timeIntervalSince1970
+            // 1秒おきに関数「update」を呼び出す
+            self.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
+        } else {
+            timerButton.setImage(UIImage(named: "time_start"), for: .normal)
+            timer.invalidate()
+        }
+        
+    }
+    // 1秒ごとに呼び出される処理
+    @objc func update() {
+        self.timerStepper.value -= 1
+        // 「ss:mm」形式でラベルに表示する
+        self.timeDisplay()
+        
+        // ステッパーの管理条件はまた今度。。。
+//        if(Int(self.timerStepper.value) % 30 == 0) {
+//            self.timerStepper.stepValue += Double(Int(self.timerStepper.value) % 30);
+//        } else {
+//            self.timerStepper.stepValue = 30
+//        }
+        
         
     }
     
+    @IBAction func tapStop(_ sender: Any) {
+        if self.timerGoing {
+            (sender as! UIButton).setImage(UIImage(named: "time_start"), for: .normal)
+        }
+        self.timerGoing = false
+        timer.invalidate()
+        self.timerStepper.value = 0
+        self.timeDisplay()
+    }
+    @IBAction func onStepperTouch(_ sender: Any) {
+        
+    }
+    
+    @IBAction func onStepperChange(_ sender: Any) {
+        self.timeDisplay()
+        self.timerStepper.stepValue = 30
+    }
     
     
     
