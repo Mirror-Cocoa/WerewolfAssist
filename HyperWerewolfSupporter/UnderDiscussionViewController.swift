@@ -27,12 +27,21 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     @IBOutlet weak var outerTable: UIView!
     
     
+    @IBOutlet weak var timerLabel: UILabel!
+    @IBOutlet weak var timerStepper: UIStepper!
+    
+    
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         print(self.personNum)
         print(self.personList)
         self.squareTablePositionSet()
+        
+        // 暫定用に何か時間を
+        
         
     }
     
@@ -93,6 +102,12 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         
     }
     
+    /**
+     * タイマーの初期設定
+     */
+    func timerInitSetting() {
+        
+    }
     
     
     
