@@ -231,23 +231,23 @@
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sozai_cman_jp_20181027123932.gif" translatesAutoresizingMaskIntoConstraints="NO" id="Kk0-rD-QGL">
-                                        <rect key="frame" x="414" y="10" width="29" height="29"/>
+                                        <rect key="frame" x="412" y="10" width="29" height="29"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="29" id="1WY-m6-PAM"/>
                                             <constraint firstAttribute="height" constant="29" id="zFs-g1-4di"/>
                                         </constraints>
                                     </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="10:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yeo-aE-ImM">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="10:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yeo-aE-ImM">
                                         <rect key="frame" x="362" y="10" width="44" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="H7W-Yi-1cb" userLabel="Calendar Stepper">
-                                        <rect key="frame" x="451" y="49" width="94" height="29"/>
+                                        <rect key="frame" x="449" y="49" width="94" height="29"/>
                                     </stepper>
                                     <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="600" stepValue="30" translatesAutoresizingMaskIntoConstraints="NO" id="k0b-zy-Mbd" userLabel="Time Stepper">
-                                        <rect key="frame" x="451" y="10" width="94" height="29"/>
+                                        <rect key="frame" x="449" y="10" width="94" height="29"/>
                                         <connections>
                                             <action selector="onStepperChange:" destination="g9q-gb-fy8" eventType="valueChanged" id="Zvb-jq-vZD"/>
                                             <action selector="onStepperTouch:" destination="g9q-gb-fy8" eventType="touchDown" id="mNG-a3-cSG"/>
@@ -460,14 +460,14 @@
                                         </userDefinedRuntimeAttributes>
                                     </scrollView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="days_1" translatesAutoresizingMaskIntoConstraints="NO" id="VBK-zU-CMR">
-                                        <rect key="frame" x="367" y="41" width="29" height="35"/>
+                                        <rect key="frame" x="365" y="41" width="29" height="35"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="35" id="5Ie-gJ-qUy"/>
                                             <constraint firstAttribute="width" constant="29" id="l0B-Iw-5HX"/>
                                         </constraints>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="日目" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PCJ-bQ-veU">
-                                        <rect key="frame" x="406" y="49" width="35" height="21"/>
+                                        <rect key="frame" x="404" y="49" width="35" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -520,6 +520,7 @@
                                     <constraint firstItem="Kk0-rD-QGL" firstAttribute="top" secondItem="Lcf-33-q9Z" secondAttribute="top" constant="10" id="ACR-dN-5Sq"/>
                                     <constraint firstItem="o7o-EC-Pjc" firstAttribute="leading" secondItem="OoO-zT-XCF" secondAttribute="trailing" constant="50" id="Ccq-kE-Wp2"/>
                                     <constraint firstItem="H7W-Yi-1cb" firstAttribute="leading" secondItem="PCJ-bQ-veU" secondAttribute="trailing" constant="10" id="EJK-OI-kKT"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="yeo-aE-ImM" secondAttribute="trailing" constant="20" symbolic="YES" id="EJk-f1-xJx"/>
                                     <constraint firstItem="VBK-zU-CMR" firstAttribute="top" secondItem="yeo-aE-ImM" secondAttribute="bottom" constant="10" id="Ge9-E3-B5f"/>
                                     <constraint firstItem="k0b-zy-Mbd" firstAttribute="trailing" secondItem="H7W-Yi-1cb" secondAttribute="trailing" id="HBQ-Wm-iJz"/>
                                     <constraint firstItem="OoO-zT-XCF" firstAttribute="trailing" secondItem="Lcf-33-q9Z" secondAttribute="centerX" id="IDi-Ud-coo"/>
@@ -539,7 +540,7 @@
                                     <constraint firstItem="yeo-aE-ImM" firstAttribute="top" secondItem="Lcf-33-q9Z" secondAttribute="top" constant="10" id="n0M-7c-wmN"/>
                                     <constraint firstItem="fIu-Vr-LCw" firstAttribute="top" secondItem="o7o-EC-Pjc" secondAttribute="bottom" constant="12" id="nZO-Gt-Cqf"/>
                                     <constraint firstItem="cZ3-nl-Za8" firstAttribute="top" secondItem="Lcf-33-q9Z" secondAttribute="top" constant="10" id="oEf-9y-KIz"/>
-                                    <constraint firstItem="Kk0-rD-QGL" firstAttribute="leading" secondItem="yeo-aE-ImM" secondAttribute="trailing" constant="8" id="qAU-6G-ETO"/>
+                                    <constraint firstItem="Kk0-rD-QGL" firstAttribute="leading" secondItem="yeo-aE-ImM" secondAttribute="leading" constant="50" id="qAU-6G-ETO"/>
                                     <constraint firstItem="o7o-EC-Pjc" firstAttribute="bottom" secondItem="qI2-Bw-vHf" secondAttribute="bottom" constant="7" id="r8A-oq-cEH"/>
                                     <constraint firstAttribute="trailing" secondItem="TcR-Po-znF" secondAttribute="trailing" constant="50" id="s2i-gU-ReX"/>
                                     <constraint firstItem="CxE-fM-AvK" firstAttribute="top" secondItem="Lcf-33-q9Z" secondAttribute="top" constant="10" id="uZm-LH-T1F"/>
