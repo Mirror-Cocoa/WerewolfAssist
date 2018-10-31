@@ -164,7 +164,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     
     @IBAction func tapStop(_ sender: Any) {
         if self.timerGoing {
-            (sender as! UIButton).setImage(UIImage(named: "time_start"), for: .normal)
+            self.timeStartButton.setImage(UIImage(named: "time_start"), for: .normal)
         }
         self.timerGoing = false
         timer.invalidate()
