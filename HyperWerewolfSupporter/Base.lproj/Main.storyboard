@@ -253,7 +253,6 @@
                                         <rect key="frame" x="449" y="10" width="94" height="29"/>
                                         <connections>
                                             <action selector="onStepperChange:" destination="g9q-gb-fy8" eventType="valueChanged" id="Zvb-jq-vZD"/>
-                                            <action selector="onStepperTouch:" destination="g9q-gb-fy8" eventType="touchDown" id="mNG-a3-cSG"/>
                                         </connections>
                                     </stepper>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" bouncesZoom="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o7o-EC-Pjc" userLabel="Icon Scroll View">
@@ -453,6 +452,22 @@
                                     </scrollView>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" bouncesZoom="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fIu-Vr-LCw" userLabel="Result Scroll View">
                                         <rect key="frame" x="334" y="170" width="184" height="68"/>
+                                        <subviews>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pTE-HB-MXd" userLabel="ContentView">
+                                                <rect key="frame" x="0.0" y="0.0" width="870" height="68"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="870" id="7RO-lP-T49"/>
+                                                </constraints>
+                                            </view>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="pTE-HB-MXd" firstAttribute="leading" secondItem="fIu-Vr-LCw" secondAttribute="leading" id="JuY-nd-ZS8"/>
+                                            <constraint firstItem="pTE-HB-MXd" firstAttribute="centerY" secondItem="fIu-Vr-LCw" secondAttribute="centerY" id="ROx-n4-oVr"/>
+                                            <constraint firstItem="pTE-HB-MXd" firstAttribute="top" secondItem="fIu-Vr-LCw" secondAttribute="top" id="dKH-81-QM2"/>
+                                            <constraint firstAttribute="bottom" secondItem="pTE-HB-MXd" secondAttribute="bottom" id="fRp-Up-uqH"/>
+                                            <constraint firstAttribute="trailing" secondItem="pTE-HB-MXd" secondAttribute="trailing" id="xQ0-tO-55l"/>
+                                        </constraints>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
                                                 <integer key="value" value="1"/>
@@ -571,6 +586,8 @@
                         <outlet property="calendar" destination="VBK-zU-CMR" id="oie-3V-Soe"/>
                         <outlet property="calendarStepper" destination="H7W-Yi-1cb" id="4hx-IQ-2oT"/>
                         <outlet property="outerTable" destination="OoO-zT-XCF" id="pbN-QO-EYX"/>
+                        <outlet property="resultContentView" destination="pTE-HB-MXd" id="VSQ-nj-Xm2"/>
+                        <outlet property="resultTable" destination="fIu-Vr-LCw" id="fUZ-7F-hnf"/>
                         <outlet property="timeStartButton" destination="CxE-fM-AvK" id="oIX-nq-zOm"/>
                         <outlet property="timeStopButton" destination="cZ3-nl-Za8" id="XDO-Dv-kLF"/>
                         <outlet property="timerLabel" destination="yeo-aE-ImM" id="SL2-b8-Yez"/>

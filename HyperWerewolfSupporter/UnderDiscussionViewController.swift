@@ -41,7 +41,9 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     @IBOutlet weak var calendar: UIImageView!
     @IBOutlet weak var calendarStepper: UIStepper!
     
+    @IBOutlet weak var resultTable: UIScrollView!
     
+    @IBOutlet weak var resultContentView: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,7 +53,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         
         // 暫定用に何か時間を
         self.timerInitSetting()
-        
+        self.createResultTable()
     }
     
     /**
@@ -116,6 +118,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
      */
     func timerInitSetting() {
         // 暫定04:00にする。(0埋めはしておこう。)
+        // 後で人数に合わせよう。
         timerStepper.value = 240
         self.timeDisplay()
     }
@@ -162,8 +165,42 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
 //        } else {
 //            self.timerStepper.stepValue = 30
 //        }
+    }
+    
+    func createResultTable() {
+        for idx in 0..<15 {
+            let tableHeader = UIView.init(frame: CGRect.init(x: 0, y: 0, width: 58, height: 29))
+            tableHeader.translatesAutoresizingMaskIntoConstraints = false
+            //上下左のCALayerを作成
+            let rectArray = [
+                CGRect(x: 0, y: 0, width: tableHeader.frame.width, height: 1.0),
+                CGRect(x: 0, y: 0, width: 1.0, height:tableHeader.frame.height),
+                CGRect(x: 0, y: tableHeader.frame.height, width: tableHeader.frame.width, height:-1.0)
+            ]
+            
+            for idx in 0..<rectArray.count {
+                let border = CALayer()
+                border.frame = rectArray[idx]
+                border.backgroundColor = UIColor.black.cgColor
+                tableHeader.layer.addSublayer(border)
+            }
+            self.resultTable.addSubview(tableHeader)
         
+            // 制約を制定
+            tableHeader.leadingAnchor.constraint(equalTo: self.resultTable.leadingAnchor, constant: CGFloat(idx * 58)).isActive = true
+            tableHeader.topAnchor.constraint(equalTo: self.resultTable.topAnchor, constant: 0).isActive = true
+            tableHeader.widthAnchor.constraint(equalTo: self.resultTable.widthAnchor, constant: 58).isActive = true
+            tableHeader.heightAnchor.constraint(equalTo: self.resultTable.heightAnchor, constant: 29).isActive = true
         
+            // 結果テーブルにラベルの追加
+            let resultLabel = UILabel(frame:CGRect(x:0,y:0,width:tableHeader.frame.size.width,height:tableHeader.frame.size.height))
+            resultLabel.text = String(idx + 1) + "日目"
+            resultLabel.textColor = UIColor.black
+            resultLabel.textAlignment = NSTextAlignment.center
+            resultLabel.adjustsFontSizeToFitWidth = true
+            resultLabel.isUserInteractionEnabled = false
+            tableHeader.addSubview(resultLabel)
+        }
     }
     
     @IBAction func tapStop(_ sender: Any) {
@@ -175,13 +212,10 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         self.timerStepper.value = 0
         self.timeDisplay()
     }
-    @IBAction func onStepperTouch(_ sender: Any) {
-        
-    }
     
     @IBAction func onStepperChange(_ sender: Any) {
         self.timeDisplay()
-        self.timerStepper.stepValue = 30
+//        self.timerStepper.stepValue = 30
     }
     
     @IBAction func calendarChange(_ sender: Any) {
