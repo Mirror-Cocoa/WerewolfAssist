@@ -243,8 +243,11 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="H7W-Yi-1cb" userLabel="Calendar Stepper">
+                                    <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minimumValue="1" maximumValue="15" translatesAutoresizingMaskIntoConstraints="NO" id="H7W-Yi-1cb" userLabel="Calendar Stepper">
                                         <rect key="frame" x="449" y="49" width="94" height="29"/>
+                                        <connections>
+                                            <action selector="calendarChange:" destination="g9q-gb-fy8" eventType="valueChanged" id="WG1-1X-3cb"/>
+                                        </connections>
                                     </stepper>
                                     <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="600" stepValue="30" translatesAutoresizingMaskIntoConstraints="NO" id="k0b-zy-Mbd" userLabel="Time Stepper">
                                         <rect key="frame" x="449" y="10" width="94" height="29"/>
@@ -565,6 +568,8 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="calendar" destination="VBK-zU-CMR" id="oie-3V-Soe"/>
+                        <outlet property="calendarStepper" destination="H7W-Yi-1cb" id="4hx-IQ-2oT"/>
                         <outlet property="outerTable" destination="OoO-zT-XCF" id="pbN-QO-EYX"/>
                         <outlet property="timeStartButton" destination="CxE-fM-AvK" id="oIX-nq-zOm"/>
                         <outlet property="timeStopButton" destination="cZ3-nl-Za8" id="XDO-Dv-kLF"/>

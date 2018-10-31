@@ -38,6 +38,10 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     var elapsedTime: Double = 0.0       // Stopボタンを押した時点で経過していた時間
     var time : Double = 0.0             // ラベルに表示する時間
     
+    @IBOutlet weak var calendar: UIImageView!
+    @IBOutlet weak var calendarStepper: UIStepper!
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -180,6 +184,9 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         self.timerStepper.stepValue = 30
     }
     
+    @IBAction func calendarChange(_ sender: Any) {
+        self.calendar.image = UIImage(named: "days_" + String(Int(self.calendarStepper.value)))
+    }
     
     
 }
