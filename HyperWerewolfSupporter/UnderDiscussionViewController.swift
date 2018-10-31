@@ -137,6 +137,8 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
      * スタートボタン or 一時停止ボタンが押された時
      */
     @IBAction func tapStart(_ sender: Any) {
+        // 0秒なら返す
+        if(self.timerStepper.value == 0) { return }
 //         状態切り替え
         self.timerGoing = !self.timerGoing
         let timerButton = (sender as! UIButton)
@@ -165,6 +167,14 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
 //        } else {
 //            self.timerStepper.stepValue = 30
 //        }
+        // 0秒になったら全て止める。
+        if(self.timerStepper.value == 0) {
+            if self.timerGoing {
+                self.timeStartButton.setImage(UIImage(named: "time_start"), for: .normal)
+            }
+            self.timerGoing = false
+            timer.invalidate()
+        }
     }
     
     func createResultTable() {
