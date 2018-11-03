@@ -169,11 +169,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
 //        }
         // 0秒になったら全て止める。
         if(self.timerStepper.value == 0) {
-            if self.timerGoing {
-                self.timeStartButton.setImage(UIImage(named: "time_start"), for: .normal)
-            }
-            self.timerGoing = false
-            timer.invalidate()
+            self.timerStop()
         }
     }
     
@@ -214,18 +210,25 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     }
     
     @IBAction func tapStop(_ sender: Any) {
+        self.timerStop()
+        self.timeDisplay()
+    }
+    
+    @IBAction func onStepperChange(_ sender: Any) {
+        if self.timerStepper.stepValue == 0 {
+            self.timerStop()
+        }
+        self.timeDisplay()
+//        self.timerStepper.stepValue = 30
+    }
+    
+    func timerStop () {
         if self.timerGoing {
             self.timeStartButton.setImage(UIImage(named: "time_start"), for: .normal)
         }
         self.timerGoing = false
         timer.invalidate()
         self.timerStepper.value = 0
-        self.timeDisplay()
-    }
-    
-    @IBAction func onStepperChange(_ sender: Any) {
-        self.timeDisplay()
-//        self.timerStepper.stepValue = 30
     }
     
     @IBAction func calendarChange(_ sender: Any) {
