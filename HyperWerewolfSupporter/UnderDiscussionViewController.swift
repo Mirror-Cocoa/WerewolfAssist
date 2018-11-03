@@ -173,41 +173,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         }
     }
     
-    func createResultTable() {
-        for idx in 0..<15 {
-            let tableHeader = UIView.init(frame: CGRect.init(x: 0, y: 0, width: 58, height: 29))
-            tableHeader.translatesAutoresizingMaskIntoConstraints = false
-            //上下左のCALayerを作成
-            let rectArray = [
-                CGRect(x: 0, y: 0, width: tableHeader.frame.width, height: 1.0),
-                CGRect(x: 0, y: 0, width: 1.0, height:tableHeader.frame.height),
-                CGRect(x: 0, y: tableHeader.frame.height, width: tableHeader.frame.width, height:-1.0)
-            ]
-            
-            for idx in 0..<rectArray.count {
-                let border = CALayer()
-                border.frame = rectArray[idx]
-                border.backgroundColor = UIColor.black.cgColor
-                tableHeader.layer.addSublayer(border)
-            }
-            self.resultTable.addSubview(tableHeader)
-        
-            // 制約を制定
-            tableHeader.leadingAnchor.constraint(equalTo: self.resultTable.leadingAnchor, constant: CGFloat(idx * 58)).isActive = true
-            tableHeader.topAnchor.constraint(equalTo: self.resultTable.topAnchor, constant: 0).isActive = true
-            tableHeader.widthAnchor.constraint(equalTo: self.resultTable.widthAnchor, constant: 58).isActive = true
-            tableHeader.heightAnchor.constraint(equalTo: self.resultTable.heightAnchor, constant: 29).isActive = true
-        
-            // 結果テーブルにラベルの追加
-            let resultLabel = UILabel(frame:CGRect(x:0,y:0,width:tableHeader.frame.size.width,height:tableHeader.frame.size.height))
-            resultLabel.text = String(idx + 1) + "日目"
-            resultLabel.textColor = UIColor.black
-            resultLabel.textAlignment = NSTextAlignment.center
-            resultLabel.adjustsFontSizeToFitWidth = true
-            resultLabel.isUserInteractionEnabled = false
-            tableHeader.addSubview(resultLabel)
-        }
-    }
+    
     
     @IBAction func tapStop(_ sender: Any) {
         self.timerStop()
@@ -235,5 +201,71 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         self.calendar.image = UIImage(named: "days_" + String(Int(self.calendarStepper.value)))
     }
     
+    func createResultTable() {
+        let fLength = 29
+        let fLength2 = fLength * 2
+        
+        let tableFrame = UIView.init(frame: CGRect.init(x: 0, y: 0, width: fLength, height: fLength))
+
+        self.resultTable.addSubview(createBorder(v: tableFrame))
+        // 制約を制定
+        constraintsInit(v: tableFrame)
+        tableFrame.leadingAnchor.constraint(equalTo: self.resultTable.leadingAnchor, constant: 0).isActive = true
+        tableFrame.topAnchor.constraint(equalTo: self.resultTable.topAnchor, constant: 0).isActive = true
+        
+        for idx in 0..<15 {
+            let longTableFrame = UIView.init(frame: CGRect.init(x: 0, y: 0, width: fLength2, height: fLength))
+            self.resultTable.addSubview(createBorder(v: longTableFrame))
+            
+            // 制約を制定
+            constraintsInit(v: longTableFrame)
+            longTableFrame.leadingAnchor.constraint(equalTo: self.resultTable.leadingAnchor, constant: CGFloat(idx * fLength2 + fLength)).isActive = true
+            longTableFrame.topAnchor.constraint(equalTo: self.resultTable.topAnchor, constant: 0).isActive = true
+            
+            // 結果テーブルにラベルの追加
+            longTableFrame.addSubview(createLabel(txt: String(idx + 1) + "日目", v: longTableFrame))
+        }
+        
+        
+        
+        
+    }
+    
+    func createBorder(v: UIView) -> UIView {
+        //上下左のCALayerを作成
+        let rectArray = [
+            CGRect(x: 0, y: 0, width: v.frame.width, height: 1.0),
+            CGRect(x: 0, y: 0, width: 1.0, height:v.frame.height),
+            CGRect(x: 0, y: v.frame.height, width: v.frame.width, height:-1.0)
+        ]
+        
+        for idx in 0..<rectArray.count {
+            let border = CALayer()
+            border.frame = rectArray[idx]
+            border.backgroundColor = UIColor.black.cgColor
+            v.layer.addSublayer(border)
+        }
+        return v
+    }
+    
+    func constraintsInit(v: UIView) {
+        v.translatesAutoresizingMaskIntoConstraints = false
+        v.widthAnchor.constraint(equalTo: self.resultTable.widthAnchor, constant: v.frame.size.width).isActive = true
+        v.heightAnchor.constraint(equalTo: self.resultTable.heightAnchor, constant: v.frame.size.height).isActive = true
+    }
+    
+    func createLabel(txt: String, v:UIView) -> UILabel {
+        let resultLabel = UILabel(frame:CGRect(x:0,y:0,width:v.frame.size.width,height:v.frame.size.height))
+        resultLabel.text = txt
+        resultLabel.textColor = UIColor.black
+        resultLabel.textAlignment = NSTextAlignment.center
+        resultLabel.adjustsFontSizeToFitWidth = true
+        resultLabel.isUserInteractionEnabled = false
+        return resultLabel
+    }
+    
+    func createTableBody () {
+        
+    }
     
 }
