@@ -535,6 +535,15 @@
                                             <constraint firstAttribute="width" constant="29" id="lr1-Yc-Ids"/>
                                         </constraints>
                                     </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G5f-k3-pUX" userLabel="descriptionLabel">
+                                        <rect key="frame" x="323" y="278" width="0.0" height="0.0"/>
+                                        <accessibility key="accessibilityConfiguration">
+                                            <accessibilityTraits key="traits" staticText="YES" adjustable="YES"/>
+                                        </accessibility>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -544,8 +553,10 @@
                                     <constraint firstItem="fIu-Vr-LCw" firstAttribute="leading" secondItem="OoO-zT-XCF" secondAttribute="trailing" constant="50" id="6nH-B0-TRx"/>
                                     <constraint firstItem="Kk0-rD-QGL" firstAttribute="top" secondItem="Lcf-33-q9Z" secondAttribute="top" constant="10" id="ACR-dN-5Sq"/>
                                     <constraint firstItem="o7o-EC-Pjc" firstAttribute="leading" secondItem="OoO-zT-XCF" secondAttribute="trailing" constant="50" id="Ccq-kE-Wp2"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="G5f-k3-pUX" secondAttribute="trailing" constant="20" symbolic="YES" id="DIy-15-K1T"/>
                                     <constraint firstItem="H7W-Yi-1cb" firstAttribute="leading" secondItem="PCJ-bQ-veU" secondAttribute="trailing" constant="10" id="EJK-OI-kKT"/>
                                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="yeo-aE-ImM" secondAttribute="trailing" constant="20" symbolic="YES" id="EJk-f1-xJx"/>
+                                    <constraint firstAttribute="bottom" secondItem="G5f-k3-pUX" secondAttribute="bottom" constant="10" id="G7c-r7-Egg"/>
                                     <constraint firstItem="VBK-zU-CMR" firstAttribute="top" secondItem="yeo-aE-ImM" secondAttribute="bottom" constant="10" id="Ge9-E3-B5f"/>
                                     <constraint firstItem="k0b-zy-Mbd" firstAttribute="trailing" secondItem="H7W-Yi-1cb" secondAttribute="trailing" id="HBQ-Wm-iJz"/>
                                     <constraint firstItem="OoO-zT-XCF" firstAttribute="trailing" secondItem="Lcf-33-q9Z" secondAttribute="centerX" id="IDi-Ud-coo"/>
@@ -572,6 +583,7 @@
                                     <constraint firstItem="CxE-fM-AvK" firstAttribute="top" secondItem="Lcf-33-q9Z" secondAttribute="top" constant="10" id="uZm-LH-T1F"/>
                                     <constraint firstAttribute="bottom" secondItem="62b-ms-rej" secondAttribute="bottom" constant="10" id="vAM-k5-tqC"/>
                                     <constraint firstItem="k0b-zy-Mbd" firstAttribute="leading" secondItem="Kk0-rD-QGL" secondAttribute="trailing" constant="8" id="vBT-So-LKS"/>
+                                    <constraint firstItem="G5f-k3-pUX" firstAttribute="leading" secondItem="62b-ms-rej" secondAttribute="trailing" constant="10" id="zET-Sz-lYM"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -596,8 +608,10 @@
                         <outlet property="calendar" destination="VBK-zU-CMR" id="oie-3V-Soe"/>
                         <outlet property="calendarStepper" destination="H7W-Yi-1cb" id="4hx-IQ-2oT"/>
                         <outlet property="currentView" destination="62b-ms-rej" id="PZa-gZ-b7n"/>
+                        <outlet property="descriptionLabel" destination="G5f-k3-pUX" id="6Ec-GQ-bH5"/>
                         <outlet property="fortuneView" destination="FJr-kc-f5t" id="PEq-XD-Nar"/>
                         <outlet property="hunterView" destination="4UB-l7-6Gv" id="OaH-pg-A3b"/>
+                        <outlet property="iconView" destination="IOh-3R-KtE" id="OiX-TT-hEB"/>
                         <outlet property="madmanView" destination="kz6-Fn-dgk" id="eF1-at-kef"/>
                         <outlet property="outerTable" destination="OoO-zT-XCF" id="pbN-QO-EYX"/>
                         <outlet property="resultContentView" destination="pTE-HB-MXd" id="VSQ-nj-Xm2"/>

@@ -27,6 +27,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     @IBOutlet weak var outerTable: UIView!
     @IBOutlet weak var adjustView: UIView!
     
+    @IBOutlet weak var iconView: UIView!
     
     @IBOutlet weak var timeStartButton: UIButton!
     @IBOutlet weak var timeStopButton: UIButton!
@@ -55,7 +56,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     @IBOutlet weak var spiritView: UIView!
     
     @IBOutlet weak var currentView: UIImageView!
-    
+    @IBOutlet weak var descriptionLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,6 +74,8 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         self.madmanView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(iconTapped(sender:))))
         self.werewolfView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(iconTapped(sender:))))
         self.spiritView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(iconTapped(sender:))))
+        
+        descriptionLabel.adjustsFontSizeToFitWidth = true
     }
     
     /**
@@ -323,6 +326,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     @objc func iconTapped(sender: UITapGestureRecognizer) {
         print(sender.view!)
         if let currentV = sender.view {
+            // 画像のコピー
             // ビットマップ画像のcontextを作成.
             UIGraphicsBeginImageContextWithOptions(currentV.bounds.size, false, 0.0)
             // 対象のview内の描画をcontextに複写する.
@@ -331,9 +335,23 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             self.currentView.image = UIGraphicsGetImageFromCurrentImageContext()!
             // contextを閉じる.
             UIGraphicsEndImageContext()
-
             // 縦横比率を保ちつつ画像をUIImageViewの大きさに合わせる.
             self.currentView.contentMode = UIViewContentMode.scaleAspectFit
+            
+            // ラベルの設定
+            if currentV.frame.minY == self.iconView.frame.minY {
+                let descModeArray = ["COのみ", "白判定", "黒判定", "溶かした"]
+                var description = ""
+                for idx in 0..<descModeArray.count {
+                    if (self.descriptionLabel.text?.contains(descModeArray[idx]))! {
+                        description = descModeArray[(idx + 1 != descModeArray.count) ? idx + 1 : 0]
+                        break
+                    }
+                }
+                self.descriptionLabel.text =  String(format: "占い系能力：%@", (description == "") ? descModeArray[0] : description)
+            } else {
+                self.descriptionLabel.text = "その他能力：プレイヤーをタップしてください"
+            }
         }
     }
 }
