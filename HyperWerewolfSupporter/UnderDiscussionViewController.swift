@@ -25,6 +25,8 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     var dropIdx = 0
     
     @IBOutlet weak var outerTable: UIView!
+    @IBOutlet weak var adjustView: UIView!
+    
     
     @IBOutlet weak var timeStartButton: UIButton!
     @IBOutlet weak var timeStopButton: UIButton!
@@ -45,6 +47,16 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     
     @IBOutlet weak var resultContentView: UIView!
     
+    @IBOutlet weak var fortuneView: UIView!
+    @IBOutlet weak var hunterView: UIView!
+    @IBOutlet weak var sharerView: UIView!
+    @IBOutlet weak var madmanView: UIView!
+    @IBOutlet weak var werewolfView: UIView!
+    @IBOutlet weak var spiritView: UIView!
+    
+    @IBOutlet weak var currentView: UIImageView!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         print(self.personNum)
@@ -54,6 +66,13 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         // 暫定用に何か時間を
         self.timerInitSetting()
         self.createResultTable()
+        
+        self.fortuneView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(iconTapped(sender:))))
+        self.hunterView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(iconTapped(sender:))))
+        self.sharerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(iconTapped(sender:))))
+        self.madmanView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(iconTapped(sender:))))
+        self.werewolfView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(iconTapped(sender:))))
+        self.spiritView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(iconTapped(sender:))))
     }
     
     /**
@@ -298,5 +317,23 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         return resultLabel
     }
     
-    
+    /*
+     * ラベルが押されたら
+     */
+    @objc func iconTapped(sender: UITapGestureRecognizer) {
+        print(sender.view!)
+        if let currentV = sender.view {
+            // ビットマップ画像のcontextを作成.
+            UIGraphicsBeginImageContextWithOptions(currentV.bounds.size, false, 0.0)
+            // 対象のview内の描画をcontextに複写する.
+            currentV.layer.render(in: UIGraphicsGetCurrentContext()!)
+            // 現在のcontextのビットマップをUIImageとして取得.
+            self.currentView.image = UIGraphicsGetImageFromCurrentImageContext()!
+            // contextを閉じる.
+            UIGraphicsEndImageContext()
+
+            // 縦横比率を保ちつつ画像をUIImageViewの大きさに合わせる.
+            self.currentView.contentMode = UIViewContentMode.scaleAspectFit
+        }
+    }
 }

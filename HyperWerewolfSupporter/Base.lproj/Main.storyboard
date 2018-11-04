@@ -528,6 +528,13 @@
                                         </constraints>
                                         <state key="normal" image="plus"/>
                                     </button>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="62b-ms-rej">
+                                        <rect key="frame" x="284" y="249" width="29" height="29"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="29" id="ODA-xj-c7v"/>
+                                            <constraint firstAttribute="width" constant="29" id="lr1-Yc-Ids"/>
+                                        </constraints>
+                                    </imageView>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -548,6 +555,7 @@
                                     <constraint firstItem="OoO-zT-XCF" firstAttribute="bottom" secondItem="Lcf-33-q9Z" secondAttribute="bottom" constant="-50" id="WO6-UF-ebK"/>
                                     <constraint firstAttribute="trailing" secondItem="fIu-Vr-LCw" secondAttribute="trailing" constant="50" id="X6I-YS-cdy"/>
                                     <constraint firstItem="k0b-zy-Mbd" firstAttribute="top" secondItem="Lcf-33-q9Z" secondAttribute="top" constant="10" id="ZQ5-qq-5x3"/>
+                                    <constraint firstItem="62b-ms-rej" firstAttribute="leading" secondItem="OoO-zT-XCF" secondAttribute="trailing" id="ZgM-TE-728"/>
                                     <constraint firstAttribute="trailing" secondItem="qI2-Bw-vHf" secondAttribute="trailing" constant="50" id="a6t-Db-aK6"/>
                                     <constraint firstItem="yeo-aE-ImM" firstAttribute="leading" secondItem="cZ3-nl-Za8" secondAttribute="trailing" constant="10" id="eMT-Oa-WQW"/>
                                     <constraint firstItem="TcR-Po-znF" firstAttribute="top" secondItem="o7o-EC-Pjc" secondAttribute="top" constant="7" id="ecL-vR-5BQ"/>
@@ -562,6 +570,7 @@
                                     <constraint firstItem="o7o-EC-Pjc" firstAttribute="bottom" secondItem="qI2-Bw-vHf" secondAttribute="bottom" constant="7" id="r8A-oq-cEH"/>
                                     <constraint firstAttribute="trailing" secondItem="TcR-Po-znF" secondAttribute="trailing" constant="50" id="s2i-gU-ReX"/>
                                     <constraint firstItem="CxE-fM-AvK" firstAttribute="top" secondItem="Lcf-33-q9Z" secondAttribute="top" constant="10" id="uZm-LH-T1F"/>
+                                    <constraint firstAttribute="bottom" secondItem="62b-ms-rej" secondAttribute="bottom" constant="10" id="vAM-k5-tqC"/>
                                     <constraint firstItem="k0b-zy-Mbd" firstAttribute="leading" secondItem="Kk0-rD-QGL" secondAttribute="trailing" constant="8" id="vBT-So-LKS"/>
                                 </constraints>
                             </view>
@@ -583,15 +592,23 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="adjustView" destination="Lcf-33-q9Z" id="4sx-g3-ekr"/>
                         <outlet property="calendar" destination="VBK-zU-CMR" id="oie-3V-Soe"/>
                         <outlet property="calendarStepper" destination="H7W-Yi-1cb" id="4hx-IQ-2oT"/>
+                        <outlet property="currentView" destination="62b-ms-rej" id="PZa-gZ-b7n"/>
+                        <outlet property="fortuneView" destination="FJr-kc-f5t" id="PEq-XD-Nar"/>
+                        <outlet property="hunterView" destination="4UB-l7-6Gv" id="OaH-pg-A3b"/>
+                        <outlet property="madmanView" destination="kz6-Fn-dgk" id="eF1-at-kef"/>
                         <outlet property="outerTable" destination="OoO-zT-XCF" id="pbN-QO-EYX"/>
                         <outlet property="resultContentView" destination="pTE-HB-MXd" id="VSQ-nj-Xm2"/>
                         <outlet property="resultTable" destination="fIu-Vr-LCw" id="fUZ-7F-hnf"/>
+                        <outlet property="sharerView" destination="0u5-Xu-GwK" id="cU2-u4-Eoa"/>
+                        <outlet property="spiritView" destination="VUx-VV-Oti" id="Kck-Eo-74Z"/>
                         <outlet property="timeStartButton" destination="CxE-fM-AvK" id="oIX-nq-zOm"/>
                         <outlet property="timeStopButton" destination="cZ3-nl-Za8" id="XDO-Dv-kLF"/>
                         <outlet property="timerLabel" destination="yeo-aE-ImM" id="SL2-b8-Yez"/>
                         <outlet property="timerStepper" destination="k0b-zy-Mbd" id="Nae-DB-0lV"/>
+                        <outlet property="werewolfView" destination="hYi-MG-ppB" id="5gz-nz-SJ2"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Q6D-Lv-iHZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
