@@ -126,6 +126,9 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             
             let dropDelegate: UIDropInteractionDelegate = self
             let dropInteraction = UIDropInteraction(delegate: dropDelegate)
+            
+            innerTable.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tableTapped(sender:))))
+            
             innerTable.addInteraction(dropInteraction)
             
             innerTable.addSubview(self.memberLabelList[cnt])
@@ -266,6 +269,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         }
         
         createFortuneResult(row: 3, fLength: fLength, name: "占", target: "対象", result: "結果")
+        createFortuneResult(row: 4, fLength: fLength, name: "霊", target: "対象", result: "結果")
         
     }
     
@@ -278,9 +282,11 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             constraintsInit(v: tableFrame)
             tableFrame.leadingAnchor.constraint(equalTo: self.resultTable.leadingAnchor, constant: CGFloat(column * fLength)).isActive = true
             tableFrame.topAnchor.constraint(equalTo: self.resultTable.topAnchor, constant: CGFloat(row * fLength)).isActive = true
+//            self.resultContentView.heightAnchor.constraint(equalToConstant: CGFloat(row * fLength + fLength))
+            self.resultContentView.frame.size.height += CGFloat(row * fLength + fLength)
             
             // ラベルの追加
-            tableFrame.addSubview(createLabel(txt: (column == 0) ? "占" : (column % 2 != 0) ? target : result, v: tableFrame))
+            tableFrame.addSubview(createLabel(txt: (column == 0) ? name : (column % 2 != 0) ? target : result, v: tableFrame))
         }
     }
     
@@ -348,10 +354,52 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                         break
                     }
                 }
-                self.descriptionLabel.text =  String(format: "占い系能力：%@", (description == "") ? descModeArray[0] : description)
+                self.descriptionLabel.text =  String(format: "：%@", (description == "") ? descModeArray[0] : description)
             } else {
-                self.descriptionLabel.text = "その他能力：プレイヤーをタップしてください"
+                self.descriptionLabel.text = "：プレイヤーをタップしてください"
             }
         }
+    }
+    
+    @objc func tableTapped(sender: UITapGestureRecognizer) {
+        if let tableV = sender.view {
+            // 画像のコピー
+            // ビットマップ画像のcontextを作成.
+            let iconSize = CGSize(width: self.currentView.bounds.size.width, height: self.currentView.bounds.size.height)
+            UIGraphicsBeginImageContextWithOptions(iconSize, false, 0.0)
+            // 対象のview内の描画をcontextに複写する.
+            self.currentView.layer.render(in: UIGraphicsGetCurrentContext()!)
+            
+            
+            // 現在のcontextのビットマップをUIImageとして取得.
+            var imageView = UIImageView(image:UIGraphicsGetImageFromCurrentImageContext()!)
+            
+            var rect:CGRect = CGRect.zero
+            if (tableV.frame.maxY - (self.navigationController?.navigationBar.frame.size.height)! == outerTable.frame.maxY) {
+                rect = CGRect(
+                    x:tableV.frame.minX, y: tableV.frame.maxY, width:iconSize.width / 2, height:iconSize.height / 2
+                )
+            } else if (tableV.frame.minX == outerTable.frame.minX) {
+                rect = CGRect(
+                    x:tableV.frame.minX - tableV.frame.size.width, y: tableV.frame.minY, width:iconSize.width / 2, height:iconSize.height / 2
+                )
+            } else if (tableV.frame.minY - (self.navigationController?.navigationBar.frame.size.height)! == outerTable.frame.minY) {
+                rect = CGRect(
+                    x:tableV.frame.minX, y: tableV.frame.minY - tableV.frame.size.height, width:iconSize.width / 2, height:iconSize.height / 2
+                )
+            } else if (tableV.frame.maxX == outerTable.frame.maxX) {
+                rect = CGRect(
+                    x:tableV.frame.maxX, y: tableV.frame.minY, width:iconSize.width / 2, height:iconSize.height / 2
+                )
+            }
+            
+            imageView.frame = rect;
+            self.view.addSubview(imageView)
+            // contextを閉じる.
+            UIGraphicsEndImageContext()
+            // 縦横比率を保ちつつ画像をUIImageViewの大きさに合わせる.
+            imageView.contentMode = UIViewContentMode.scaleAspectFit
+        }
+        
     }
 }

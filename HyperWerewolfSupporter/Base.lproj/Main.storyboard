@@ -454,16 +454,16 @@
                                         <rect key="frame" x="334" y="170" width="184" height="68"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pTE-HB-MXd" userLabel="ContentView">
-                                                <rect key="frame" x="0.0" y="0.0" width="899" height="68"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="899" height="319"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="899" id="7RO-lP-T49"/>
+                                                    <constraint firstAttribute="height" constant="319" id="v8k-j5-BiJ"/>
                                                 </constraints>
                                             </view>
                                         </subviews>
                                         <constraints>
                                             <constraint firstItem="pTE-HB-MXd" firstAttribute="leading" secondItem="fIu-Vr-LCw" secondAttribute="leading" id="JuY-nd-ZS8"/>
-                                            <constraint firstItem="pTE-HB-MXd" firstAttribute="centerY" secondItem="fIu-Vr-LCw" secondAttribute="centerY" id="ROx-n4-oVr"/>
                                             <constraint firstItem="pTE-HB-MXd" firstAttribute="top" secondItem="fIu-Vr-LCw" secondAttribute="top" id="dKH-81-QM2"/>
                                             <constraint firstAttribute="bottom" secondItem="pTE-HB-MXd" secondAttribute="bottom" id="fRp-Up-uqH"/>
                                             <constraint firstAttribute="trailing" secondItem="pTE-HB-MXd" secondAttribute="trailing" id="xQ0-tO-55l"/>
