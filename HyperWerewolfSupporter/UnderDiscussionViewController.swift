@@ -41,6 +41,19 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     var elapsedTime: Double = 0.0       // Stopボタンを押した時点で経過していた時間
     var time : Double = 0.0             // ラベルに表示する時間
     
+    enum Mode {
+        case fortune, hunter, sharer, madman, werewolf, spirit, none
+    }
+    var currentMode: Mode  = .none
+    
+    let fortuneArray = ["COのみ", "白判定", "黒判定", "溶かした", "CO撤回"]
+    let spiritArray = ["COのみ", "白判定", "黒判定", "CO撤回"]
+    let hunterArray = ["CO", "CO撤回"]
+    let sharerArray = ["CO", "CO撤回"]
+    let werewolfArray = ["疑惑", "CO", "CO撤回", "LWCO"]
+    let madmanArray = ["疑惑"]
+    
+    
     @IBOutlet weak var calendar: UIImageView!
     @IBOutlet weak var calendarStepper: UIStepper!
     
@@ -75,6 +88,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         self.werewolfView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(iconTapped(sender:))))
         self.spiritView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(iconTapped(sender:))))
         
+//        self.descriptionLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(descTapped(sender:))))
         descriptionLabel.adjustsFontSizeToFitWidth = true
     }
     
@@ -327,7 +341,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     }
     
     /*
-     * ラベルが押されたら
+     * アイコンが押されたら
      */
     @objc func iconTapped(sender: UITapGestureRecognizer) {
         print(sender.view!)
@@ -346,17 +360,76 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             
             // ラベルの設定
             if currentV.frame.minY == self.iconView.frame.minY {
-                let descModeArray = ["COのみ", "白判定", "黒判定", "溶かした"]
-                var description = ""
-                for idx in 0..<descModeArray.count {
-                    if (self.descriptionLabel.text?.contains(descModeArray[idx]))! {
-                        description = descModeArray[(idx + 1 != descModeArray.count) ? idx + 1 : 0]
-                        break
-                    }
+                self.currentMode = .fortune
+                self.descriptionLabel.text = self.fortuneArray[0]
+            }
+            
+            if currentV.frame.maxY == self.iconView.frame.maxY {
+                let viewWidth = CGFloat(39)
+                let calcWidth = CGFloat(currentV.frame.origin.x / viewWidth)
+                switch calcWidth {
+                case 0:
+                    self.currentMode = .spirit
+                    self.descriptionLabel.text = self.spiritArray[0]
+                    break
+                case 1:
+                    self.currentMode = .hunter
+                    self.descriptionLabel.text = self.hunterArray[0]
+                    break
+                case 2:
+                    self.currentMode = .sharer
+                    self.descriptionLabel.text = self.sharerArray[0]
+                    break
+                case 3:
+                    self.currentMode = .madman
+                    self.descriptionLabel.text = self.madmanArray[0]
+                    break
+                case 4:
+                    self.currentMode = .werewolf
+                    self.descriptionLabel.text = self.werewolfArray[0]
+                    break
+                default:
+                    self.currentMode = .none
+                    break
                 }
-                self.descriptionLabel.text =  String(format: "：%@", (description == "") ? descModeArray[0] : description)
-            } else {
-                self.descriptionLabel.text = "：プレイヤーをタップしてください"
+            }
+            self.descriptionLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(descTapped(sender:))))
+        }
+    }
+    
+    /*
+     * 説明ラベルが押されたら
+     */
+    @objc func descTapped(sender: UITapGestureRecognizer) {
+        print(self.currentMode)
+        var descModeArray: [String] = []
+        
+        switch self.currentMode {
+            case .fortune:
+                descModeArray = self.fortuneArray
+                break
+            case .hunter:
+                descModeArray = self.hunterArray
+                break
+            case .sharer:
+                descModeArray = self.sharerArray
+                break
+            case .madman:
+                descModeArray = self.madmanArray
+                break
+            case .werewolf:
+                descModeArray = self.werewolfArray
+                break
+            case .spirit:
+                descModeArray = self.spiritArray
+                break
+            case .none: break
+        }
+        
+        for idx in 0..<descModeArray.count {
+            if (self.descriptionLabel.text == descModeArray[idx]) {
+                self.descriptionLabel.text = descModeArray[(idx + 1 != descModeArray.count) ? idx + 1 : 0]
+                break
             }
         }
     }
