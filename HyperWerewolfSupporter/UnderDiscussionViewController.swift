@@ -46,6 +46,8 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     }
     var currentMode: Mode  = .none
     
+    var hasMemberIcon: [Int] = []
+    
     let fortuneArray = ["COのみ", "白判定", "黒判定", "溶かした", "CO撤回"]
     let spiritArray = ["COのみ", "白判定", "黒判定", "CO撤回"]
     let hunterArray = ["CO", "CO撤回"]
@@ -393,6 +395,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                     break
                 }
             }
+            self.currentView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(descTapped(sender:))))
             self.descriptionLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(descTapped(sender:))))
         }
     }
@@ -436,35 +439,42 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     
     @objc func tableTapped(sender: UITapGestureRecognizer) {
         if let tableV = sender.view {
+            
             // 画像のコピー
             // ビットマップ画像のcontextを作成.
-            let iconSize = CGSize(width: self.currentView.bounds.size.width, height: self.currentView.bounds.size.height)
-            UIGraphicsBeginImageContextWithOptions(iconSize, false, 0.0)
+            UIGraphicsBeginImageContextWithOptions(CGSize(width: self.currentView.bounds.size.width, height: self.currentView.bounds.size.height), false, 0.0)
             // 対象のview内の描画をcontextに複写する.
             self.currentView.layer.render(in: UIGraphicsGetCurrentContext()!)
             
+            let dispSize = CGSize(width: innerTableRectList[0].size.width, height: innerTableRectList[0].size.height)
             
             // 現在のcontextのビットマップをUIImageとして取得.
-            var imageView = UIImageView(image:UIGraphicsGetImageFromCurrentImageContext()!)
+            let imageView = UIImageView(image:UIGraphicsGetImageFromCurrentImageContext()!)
             
             var rect:CGRect = CGRect.zero
             if (tableV.frame.maxY - (self.navigationController?.navigationBar.frame.size.height)! == outerTable.frame.maxY) {
                 rect = CGRect(
-                    x:tableV.frame.minX, y: tableV.frame.maxY, width:iconSize.width / 2, height:iconSize.height / 2
+                    x:tableV.frame.minX, y: tableV.frame.maxY, width:dispSize.width / 2, height:dispSize.height / 2
                 )
             } else if (tableV.frame.minX == outerTable.frame.minX) {
                 rect = CGRect(
-                    x:tableV.frame.minX - tableV.frame.size.width, y: tableV.frame.minY, width:iconSize.width / 2, height:iconSize.height / 2
+                    x:tableV.frame.minX - tableV.frame.size.width, y: tableV.frame.minY, width:dispSize.width / 2, height:dispSize.height / 2
                 )
             } else if (tableV.frame.minY - (self.navigationController?.navigationBar.frame.size.height)! == outerTable.frame.minY) {
                 rect = CGRect(
-                    x:tableV.frame.minX, y: tableV.frame.minY - tableV.frame.size.height, width:iconSize.width / 2, height:iconSize.height / 2
+                    x:tableV.frame.minX, y: tableV.frame.minY - tableV.frame.size.height, width:dispSize.width / 2, height:dispSize.height / 2
                 )
             } else if (tableV.frame.maxX == outerTable.frame.maxX) {
                 rect = CGRect(
-                    x:tableV.frame.maxX, y: tableV.frame.minY, width:iconSize.width / 2, height:iconSize.height / 2
+                    x:tableV.frame.maxX, y: tableV.frame.minY, width:dispSize.width / 2, height:dispSize.height / 2
                 )
             }
+            
+            let newCanvas = UIView.init(frame: CGRect(
+                x:rect.origin.x, y: rect.origin.y, width:dispSize.width, height:dispSize.height
+            ))
+            newCanvas.backgroundColor = UIColor.white
+            self.view.addSubview(newCanvas)
             
             imageView.frame = rect;
             self.view.addSubview(imageView)
