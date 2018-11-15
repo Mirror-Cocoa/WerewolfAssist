@@ -437,8 +437,25 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         }
     }
     
+    /*
+     * テーブルの人間がタップされたら
+     */
     @objc func tableTapped(sender: UITapGestureRecognizer) {
         if let tableV = sender.view {
+            
+            var target = UILabel();
+            for childView in tableV.subviews {
+                if type(of: (childView as NSObject)).isEqual(UILabel.self) {
+                    target = childView as! UILabel;
+                }
+            }
+            
+            for idx in 0..<self.personList.count {
+                if (self.personList[idx]["name"]! == target.text) {
+                    self.personList[idx]["icon1"] = "あああ"
+                    self.personList[idx]["icon2"] = "いいい"
+                }
+            }
             
             // 画像のコピー
             // ビットマップ画像のcontextを作成.
