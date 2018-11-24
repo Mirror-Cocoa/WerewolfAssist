@@ -17,6 +17,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     let userDefaults = UserDefaults.standard
     var personList: Array<[String:String]> = []
     var memberLabelList: [UILabel] = []
+    var memberStatesViewList: [UIView] = []
     
     var innerTableList: [UIView] = []
     var innerTableRectList: [CGRect] = []
@@ -54,6 +55,8 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     let sharerArray = ["CO", "CO撤回"]
     let werewolfArray = ["疑惑", "CO", "CO撤回", "LWCO"]
     let madmanArray = ["疑惑"]
+    
+    var isFirst = true
     
     
     @IBOutlet weak var calendar: UIImageView!
@@ -134,6 +137,8 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             // 小テーブルの追加
             self.view.addSubview(innerTable)
             
+
+            
             let dragDelegate: UIDragInteractionDelegate = self
             let dragInteraction = UIDragInteraction(delegate: dragDelegate)
             dragInteraction.isEnabled = true    // iPhoneの場合はデフォルトがfalseになっている
@@ -150,6 +155,67 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             innerTable.addSubview(self.memberLabelList[cnt])
             
             cnt += 1
+        }
+        
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        // 一度だけ実行したい処理
+        _ = self.initViewLayout
+    }
+    
+    private lazy var initViewLayout : Void = {
+        self.view.layoutIfNeeded()
+        for innerTableRect in self.innerTableRectList {
+            self.statusViewSet(tableV: UIView.init(frame: innerTableRect))
+        }
+    }()
+    
+    func statusViewSet(tableV: UIView) {
+        
+        var rect:CGRect = CGRect.zero
+        if (tableV.frame.maxY - (self.navigationController?.navigationBar.frame.size.height)! == outerTable.frame.maxY) {
+            rect = CGRect(
+                x:tableV.frame.minX, y: tableV.frame.maxY, width:tableV.frame.width, height:tableV.frame.height
+            )
+        } else if (tableV.frame.minX == outerTable.frame.minX) {
+            rect = CGRect(
+                x:tableV.frame.minX - tableV.frame.size.width, y: tableV.frame.minY, width:tableV.frame.width, height:tableV.frame.height
+            )
+        } else if (tableV.frame.minY - (self.navigationController?.navigationBar.frame.size.height)! == outerTable.frame.minY) {
+            rect = CGRect(
+                x:tableV.frame.minX, y: tableV.frame.minY - tableV.frame.size.height, width:tableV.frame.width, height:tableV.frame.height
+            )
+        } else if (tableV.frame.maxX == outerTable.frame.maxX) {
+            rect = CGRect(
+                x:tableV.frame.maxX, y: tableV.frame.minY, width:tableV.frame.width, height:tableV.frame.height
+            )
+        }
+        
+        let statusView = UIView.init(frame: CGRect(
+            x:rect.origin.x, y: rect.origin.y, width:tableV.frame.width, height:tableV.frame.height
+        ))
+        
+        statusView.backgroundColor = UIColor.white
+        
+        let rectArray = [
+            CGRect(x: 0, y: 0, width: statusView.frame.width, height: 1.0),
+            CGRect(x: 0, y: 0, width: 1.0, height:statusView.frame.height),
+            CGRect(x: 0, y: statusView.frame.height, width: statusView.frame.width, height:-1.0),
+            CGRect(x: statusView.frame.width, y: 0, width: -1.0, height:statusView.frame.height)
+        ]
+        
+        for idx in 0..<rectArray.count {
+            let border = CALayer()
+            border.frame = rectArray[idx]
+            border.backgroundColor = UIColor.black.cgColor
+            statusView.layer.addSublayer(border)
+        }
+        
+        if (rect != CGRect.zero) {
+            self.memberStatesViewList.append(statusView)
+            self.view.addSubview(statusView)
         }
         
     }
@@ -443,6 +509,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     @objc func tableTapped(sender: UITapGestureRecognizer) {
         if let tableV = sender.view {
             
+            // 人名を取得
             var target = UILabel();
             for childView in tableV.subviews {
                 if type(of: (childView as NSObject)).isEqual(UILabel.self) {
@@ -452,6 +519,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             
             for idx in 0..<self.personList.count {
                 if (self.personList[idx]["name"]! == target.text) {
+                    // その人のアイコンを登録/削除する
                     self.personList[idx]["icon1"] = "あああ"
                     self.personList[idx]["icon2"] = "いいい"
                 }
@@ -487,11 +555,11 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                 )
             }
             
-            let newCanvas = UIView.init(frame: CGRect(
-                x:rect.origin.x, y: rect.origin.y, width:dispSize.width, height:dispSize.height
-            ))
-            newCanvas.backgroundColor = UIColor.white
-            self.view.addSubview(newCanvas)
+//            let newCanvas = UIView.init(frame: CGRect(
+//                x:rect.origin.x, y: rect.origin.y, width:dispSize.width, height:dispSize.height
+//            ))
+//            newCanvas.backgroundColor = UIColor.white
+//            self.view.addSubview(newCanvas)
             
             imageView.frame = rect;
             self.view.addSubview(imageView)
