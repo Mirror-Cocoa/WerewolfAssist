@@ -354,12 +354,33 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             }
         }
         
-        createFortuneResult(row: 3, fLength: fLength, name: "占", target: "対象", result: "結果")
-        createFortuneResult(row: 4, fLength: fLength, name: "霊", target: "対象", result: "結果")
-        
+        createFortuneResultTable(row: 3, fLength: fLength, name: "占", target: "対象", result: "結果")
+        createFortuneResultTable(row: 4, fLength: fLength, name: "", target: "", result: "")
+        createFortuneResultTable(row: 5, fLength: fLength, name: "", target: "", result: "")
+        createFortuneResultTable(row: 6, fLength: fLength, name: "", target: "", result: "")
+        createFortuneResultTable(row: 7, fLength: fLength, name: "霊", target: "対象", result: "結果")
+        createFortuneResultTable(row: 8, fLength: fLength, name: "", target: "", result: "")
+        createFortuneResultTable(row: 9, fLength: fLength, name: "", target: "", result: "")
+        createFortuneResultTable(row: 10, fLength: fLength, name: "", target: "", result: "")
     }
     
-    func createFortuneResult(row: Int, fLength: Int, name: String, target: String, result: String) {
+    func createResult(row: Int, column: Int, name: String) {
+        let fLength = 29
+        let fLength2 = fLength * 2
+        
+        let longTableFrame = UIView.init(frame: CGRect.init(x: 0, y: 0, width: fLength2, height: fLength))
+        self.resultTable.addSubview(createBorder(v: longTableFrame))
+        
+        // 制約を制定
+        constraintsInit(v: longTableFrame)
+        longTableFrame.leadingAnchor.constraint(equalTo: self.resultTable.leadingAnchor, constant: CGFloat(column * fLength2 + fLength)).isActive = true
+        longTableFrame.topAnchor.constraint(equalTo: self.resultTable.topAnchor, constant: CGFloat(row * fLength)).isActive = true
+        
+        // ヘッダーラベルの制定
+        longTableFrame.addSubview(createLabel(txt: name, v: longTableFrame))
+    }
+    
+    func createFortuneResultTable(row: Int, fLength: Int, name: String, target: String, result: String) {
         for column in 0..<31 {
             let tableFrame = UIView.init(frame: CGRect.init(x: 0, y: 0, width: fLength, height: fLength))
             self.resultTable.addSubview(createBorder(v: tableFrame))
@@ -589,6 +610,15 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             UIGraphicsEndImageContext()
             // 縦横比率を保ちつつ画像をUIImageViewの大きさに合わせる.
             targetStatusView.contentMode = UIViewContentMode.scaleAspectFit
+            
+            // 占い・霊能COの時、既存なら何もしない(将来的には消しますか？を実装)
+            // 既存なしなら追加を行う。
+            
+            
+            
+            
+            
+            
             
         }
         
