@@ -49,11 +49,11 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     
     var hasMemberIcon: [Int] = []
     
-    let fortuneArray = ["COのみ", "白判定", "黒判定", "溶かした", "CO撤回"]
-    let spiritArray = ["COのみ", "白判定", "黒判定", "CO撤回"]
-    let hunterArray = ["CO", "CO撤回"]
-    let sharerArray = ["CO", "CO撤回"]
-    let werewolfArray = ["疑惑", "CO", "CO撤回", "LWCO"]
+    let fortuneArray = ["COのみ", "白判定", "黒判定", "溶かした"]
+    let spiritArray = ["COのみ", "白判定", "黒判定"]
+    let hunterArray = ["CO"]
+    let sharerArray = ["CO"]
+    let werewolfArray = ["疑惑", "CO", "LWCO"]
     let madmanArray = ["疑惑"]
     
     var isFirst = true
@@ -197,10 +197,11 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             x:rect.origin.x, y: rect.origin.y, width:tableV.frame.width, height:tableV.frame.height
         ))
         
-        statusView.layer.shouldRasterize = true;
-        statusView.backgroundColor = UIColor.gray.withAlphaComponent(1.0)
+//        statusView.layer.shouldRasterize = true;
+        statusView.backgroundColor = UIColor.gray
+//            .withAlphaComponent(1.0)
 //        statusView.alpha = 1.0
-        statusView.layer.opacity = 1.0
+//        statusView.layer.opacity = 1.0
         
         let rectArray = [
             CGRect(x: 0, y: 0, width: statusView.frame.width, height: 1.0),
@@ -510,6 +511,9 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
      * テーブルの人間がタップされたら
      */
     @objc func tableTapped(sender: UITapGestureRecognizer) {
+        if currentMode == .none {
+            return
+        }
         if let tableV = sender.view {
             
             // 人名を取得
@@ -517,6 +521,15 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             for childView in tableV.subviews {
                 if type(of: (childView as NSObject)).isEqual(UILabel.self) {
                     target = childView as! UILabel;
+                    break
+                }
+            }
+            
+            for idx in 0..<self.personList.count {
+                if (self.personList[idx]["name"]! == target.text) {
+                    // その人のアイコンを登録/削除する
+                    iconChoice(idx: idx)
+                    break
                 }
             }
             
@@ -526,43 +539,122 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                 if (self.memberLabelList[idx].text == target.text!) {
                     // その人のステータスビューを取得する
                     targetStatusView = self.memberStatesViewList[idx]
+                    break
                 }
             }
             
-            for idx in 0..<self.personList.count {
-                if (self.personList[idx]["name"]! == target.text) {
-                    // その人のアイコンを登録/削除する
-                    self.personList[idx]["icon1"] = "あああ"
-                    self.personList[idx]["icon2"] = "いいい"
-                    
-                }
-            }
+            targetStatusView.backgroundColor = UIColor.white
             
+            
+            
+
             // 画像のコピー
             // ビットマップ画像のcontextを作成.
             UIGraphicsBeginImageContextWithOptions(CGSize(width: self.currentView.bounds.size.width, height: self.currentView.bounds.size.height), false, 0.0)
             // 対象のview内の描画をcontextに複写する.
             self.currentView.layer.render(in: UIGraphicsGetCurrentContext()!)
             
+            
             let dispSize = CGSize(width: targetStatusView.frame.size.width, height: targetStatusView.frame.size.height)
             
             // 現在のcontextのビットマップをUIImageとして取得.
             let imageView = UIImageView(image:UIGraphicsGetImageFromCurrentImageContext()!)
             
+            // TODO:2つの役職まで追加/削除を行う
+//            for idx in 0..<self.memberLabelList.count {
+//                for idx2 in 0..<self.personList.count {
+//                    if (self.memberLabelList[idx].text == self.personList[idx2]["name"]!) {
+//                        if (isIcon(str: self.personList[idx2]["icon1"]!)) {
+//                            imageView.frame = CGRect(x:0, y: 0, width:dispSize.width / 2, height:dispSize.height / 2)
+//                        }
+//                        if (isIcon(str: self.personList[idx2]["icon2"]!)) {
+//                            imageView.frame = CGRect(x:dispSize.width / 2, y: dispSize.height / 2, width:dispSize.width / 2, height:dispSize.height / 2)
+//                        }
+//                    }
+//                }
+//            }
+            
+            
             imageView.frame = CGRect(x:0, y: 0, width:dispSize.width / 2, height:dispSize.height / 2)
             
+            
+            
             // TODO: 重なる時、どうにかして下層部の色の影響を受けずにできないだろうか？
-            imageView.alpha = 1.0
-            imageView.layer.shouldRasterize = true;
-            imageView.layer.opacity = 1.0
+//            imageView.alpha = 1.0
+//            imageView.layer.shouldRasterize = true;
+//            imageView.layer.opacity = 1.0
             
             targetStatusView.addSubview(imageView)
             // contextを閉じる.
             UIGraphicsEndImageContext()
             // 縦横比率を保ちつつ画像をUIImageViewの大きさに合わせる.
-            imageView.contentMode = UIViewContentMode.scaleAspectFit
+            targetStatusView.contentMode = UIViewContentMode.scaleAspectFit
             
         }
         
     }
+    
+    func iconChoice(idx: Int) {
+        switch self.currentMode {
+        case .fortune:
+            iconAddDel(idx: idx, icon: "F")
+            break
+        case .hunter:
+            iconAddDel(idx: idx, icon: "H")
+            break
+        case .sharer:
+            iconAddDel(idx: idx, icon: "SH")
+            break
+        case .madman:
+            iconAddDel(idx: idx, icon: "M")
+            break
+        case .werewolf:
+            iconAddDel(idx: idx, icon: "W")
+            break
+        case .spirit:
+            iconAddDel(idx: idx, icon: "SP")
+            break
+        case .none: break
+        }
+    }
+    
+    func iconAddDel(idx: Int, icon: String) {
+        if (self.personList[idx]["icon1"] == icon) {
+            // icon1が同一の場合、icon1を消す
+            self.personList[idx]["icon1"] = ""
+            // icon2がある場合、icon1に移動し、icon2は消す
+            if (self.personList[idx]["icon2"] != nil) {
+                self.personList[idx]["icon1"] = self.personList[idx]["icon2"]
+                self.personList[idx]["icon2"] = ""
+            }
+        } else if (self.personList[idx]["icon1"] == "" || self.personList[idx]["icon1"] == nil) {
+            // icon1がない場合、icon1をiconにする
+            self.personList[idx]["icon1"] = icon
+        } else {
+            // icon1がその他の場合
+            // icon2が同一の場合、icon2を消す
+            if (self.personList[idx]["icon2"] == icon) {
+                self.personList[idx]["icon2"] = ""
+            } else if (self.personList[idx]["icon1"] == "" || self.personList[idx]["icon1"] == nil) {
+                // icon2がない場合、icon2をiconにする
+                self.personList[idx]["icon2"] = icon
+            } else {
+                // icon2がその他の場合、何もしない
+            }
+        }
+    }
+    
+    func isIcon(str: String) -> Bool {
+        switch self.currentMode {
+        case .fortune: return (str == "F")
+        case .hunter: return (str == "H")
+        case .sharer: return (str == "SH")
+        case .madman: return (str == "M")
+        case .werewolf: return (str == "W")
+        case .spirit: return (str == "SP")
+        case .none: break
+        }
+        return false
+    }
+ 
 }
