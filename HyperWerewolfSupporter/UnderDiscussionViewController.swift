@@ -197,7 +197,10 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             x:rect.origin.x, y: rect.origin.y, width:tableV.frame.width, height:tableV.frame.height
         ))
         
-        statusView.backgroundColor = UIColor.white
+        statusView.layer.shouldRasterize = true;
+        statusView.backgroundColor = UIColor.gray.withAlphaComponent(1.0)
+//        statusView.alpha = 1.0
+        statusView.layer.opacity = 1.0
         
         let rectArray = [
             CGRect(x: 0, y: 0, width: statusView.frame.width, height: 1.0),
@@ -517,11 +520,21 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                 }
             }
             
+            // 同じ人のステータスビューを取得
+            var targetStatusView = UIView()
+            for idx in 0..<self.memberLabelList.count {
+                if (self.memberLabelList[idx].text == target.text!) {
+                    // その人のステータスビューを取得する
+                    targetStatusView = self.memberStatesViewList[idx]
+                }
+            }
+            
             for idx in 0..<self.personList.count {
                 if (self.personList[idx]["name"]! == target.text) {
                     // その人のアイコンを登録/削除する
                     self.personList[idx]["icon1"] = "あああ"
                     self.personList[idx]["icon2"] = "いいい"
+                    
                 }
             }
             
@@ -531,42 +544,24 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             // 対象のview内の描画をcontextに複写する.
             self.currentView.layer.render(in: UIGraphicsGetCurrentContext()!)
             
-            let dispSize = CGSize(width: innerTableRectList[0].size.width, height: innerTableRectList[0].size.height)
+            let dispSize = CGSize(width: targetStatusView.frame.size.width, height: targetStatusView.frame.size.height)
             
             // 現在のcontextのビットマップをUIImageとして取得.
             let imageView = UIImageView(image:UIGraphicsGetImageFromCurrentImageContext()!)
             
-            var rect:CGRect = CGRect.zero
-            if (tableV.frame.maxY - (self.navigationController?.navigationBar.frame.size.height)! == outerTable.frame.maxY) {
-                rect = CGRect(
-                    x:tableV.frame.minX, y: tableV.frame.maxY, width:dispSize.width / 2, height:dispSize.height / 2
-                )
-            } else if (tableV.frame.minX == outerTable.frame.minX) {
-                rect = CGRect(
-                    x:tableV.frame.minX - tableV.frame.size.width, y: tableV.frame.minY, width:dispSize.width / 2, height:dispSize.height / 2
-                )
-            } else if (tableV.frame.minY - (self.navigationController?.navigationBar.frame.size.height)! == outerTable.frame.minY) {
-                rect = CGRect(
-                    x:tableV.frame.minX, y: tableV.frame.minY - tableV.frame.size.height, width:dispSize.width / 2, height:dispSize.height / 2
-                )
-            } else if (tableV.frame.maxX == outerTable.frame.maxX) {
-                rect = CGRect(
-                    x:tableV.frame.maxX, y: tableV.frame.minY, width:dispSize.width / 2, height:dispSize.height / 2
-                )
-            }
+            imageView.frame = CGRect(x:0, y: 0, width:dispSize.width / 2, height:dispSize.height / 2)
             
-//            let newCanvas = UIView.init(frame: CGRect(
-//                x:rect.origin.x, y: rect.origin.y, width:dispSize.width, height:dispSize.height
-//            ))
-//            newCanvas.backgroundColor = UIColor.white
-//            self.view.addSubview(newCanvas)
+            // TODO: 重なる時、どうにかして下層部の色の影響を受けずにできないだろうか？
+            imageView.alpha = 1.0
+            imageView.layer.shouldRasterize = true;
+            imageView.layer.opacity = 1.0
             
-            imageView.frame = rect;
-            self.view.addSubview(imageView)
+            targetStatusView.addSubview(imageView)
             // contextを閉じる.
             UIGraphicsEndImageContext()
             // 縦横比率を保ちつつ画像をUIImageViewの大きさに合わせる.
             imageView.contentMode = UIViewContentMode.scaleAspectFit
+            
         }
         
     }
