@@ -35,6 +35,8 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     @IBOutlet weak var timerLabel: UILabel!
     @IBOutlet weak var timerStepper: UIStepper!
     
+    var isFirstTime: [Bool] = []
+    
     var timer = Timer()
     var timerDisplay : Int = 0
     var timerGoing = false
@@ -85,6 +87,10 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         // 暫定用に何か時間を
         self.timerInitSetting()
         self.createResultTable()
+        
+        // 15日目までのフラグを生成
+        self.isFirstTime = [Bool](repeating: false, count: 15)
+        self.isFirstTime[0] = true
         
         self.fortuneView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(iconTapped(sender:))))
         self.hunterView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(iconTapped(sender:))))
@@ -308,8 +314,37 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         self.timerStepper.value = 0
     }
     
+    
+    /*
+     * カレンダーの時間が変わったら
+     */
     @IBAction func calendarChange(_ sender: Any) {
         self.calendar.image = UIImage(named: "days_" + String(Int(self.calendarStepper.value)))
+        if (!(self.isFirstTime[Int(self.calendarStepper.value) - 1])) {
+            self.createPicker()
+            self.isFirstTime[Int(self.calendarStepper.value)] = true
+            
+        }
+    }
+    
+    func createPicker() {
+        var pickerView: PickerKeyboard!
+//        pickerView = PickerKeyboard(coder: <#NSCoder#>)
+//        pickerView.delegate = pickerView
+        self.view.addSubview(pickerView)
+//        pickerView.showPicker()
+        
+        // pickerviewをプロパティとして扱う
+//        let pickerView = UIPickerView()
+//        // dataを空文字にする。セットされたらpickerViewのメソッドを呼ぶ
+//        var data: [String] = [] {
+//            didSet {
+//                pickerView.reloadAllComponents()
+//            }
+//        }
+
+        
+        
     }
     
     func createResultTable() {

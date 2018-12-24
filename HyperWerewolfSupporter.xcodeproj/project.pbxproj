@@ -17,6 +17,7 @@
 		39673546217333DF00D05D81 /* UnderDiscussionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39673545217333DF00D05D81 /* UnderDiscussionViewController.swift */; };
 		39673548217F5FDE00D05D81 /* TableDrawUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39673547217F5FDE00D05D81 /* TableDrawUtil.swift */; };
 		3967354A2184197500D05D81 /* sozai_cman_jp_20181027123932.gif in Resources */ = {isa = PBXBuildFile; fileRef = 396735492184197500D05D81 /* sozai_cman_jp_20181027123932.gif */; };
+		39CCFB3421D11FEE0085151E /* PickerKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39CCFB3321D11FEE0085151E /* PickerKeyboard.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		39673545217333DF00D05D81 /* UnderDiscussionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderDiscussionViewController.swift; sourceTree = "<group>"; };
 		39673547217F5FDE00D05D81 /* TableDrawUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableDrawUtil.swift; sourceTree = "<group>"; };
 		396735492184197500D05D81 /* sozai_cman_jp_20181027123932.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = sozai_cman_jp_20181027123932.gif; sourceTree = "<group>"; };
+		39CCFB3321D11FEE0085151E /* PickerKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerKeyboard.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +67,7 @@
 		3954099B20E273650067E806 /* HyperWerewolfSupporter */ = {
 			isa = PBXGroup;
 			children = (
+				39CCFB3321D11FEE0085151E /* PickerKeyboard.swift */,
 				3954099C20E273650067E806 /* AppDelegate.swift */,
 				3954099E20E273650067E806 /* DefaultViewController.swift */,
 				395409B320E692E70067E806 /* InitialisePlayerPositionViewController.swift */,
@@ -166,6 +169,7 @@
 				395409B420E692E70067E806 /* InitialisePlayerPositionViewController.swift in Sources */,
 				39673548217F5FDE00D05D81 /* TableDrawUtil.swift in Sources */,
 				395409B620E6944B0067E806 /* PersonListViewController.swift in Sources */,
+				39CCFB3421D11FEE0085151E /* PickerKeyboard.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
