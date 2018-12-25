@@ -8,7 +8,7 @@
 
 import UIKit
 
-class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate, UIDropInteractionDelegate {
+class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate, UIDropInteractionDelegate, AlertPickerViewDelegate, UIPickerViewDelegate {
     func dragInteraction(_ interaction: UIDragInteraction, itemsForBeginning session: UIDragSession) -> [UIDragItem] {
         return []
     }
@@ -43,6 +43,9 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     var startTime: TimeInterval = 0     // Startボタンを押した時刻
     var elapsedTime: Double = 0.0       // Stopボタンを押した時点で経過していた時間
     var time : Double = 0.0             // ラベルに表示する時間
+    
+    // pickerのviewをセット
+    var pickerView: AlertPickerView!
     
     enum Mode {
         case fortune, hunter, sharer, madman, werewolf, spirit, none
@@ -328,24 +331,47 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     }
     
     func createPicker() {
-        var pickerView: PickerKeyboard!
-//        pickerView = PickerKeyboard(coder: <#NSCoder#>)
-//        pickerView.delegate = pickerView
+//        var pickerView: PickerKeyboard!
+        self.pickerView = AlertPickerView()
         self.view.addSubview(pickerView)
-//        pickerView.showPicker()
         
-        // pickerviewをプロパティとして扱う
-//        let pickerView = UIPickerView()
-//        // dataを空文字にする。セットされたらpickerViewのメソッドを呼ぶ
-//        var data: [String] = [] {
-//            didSet {
-//                pickerView.reloadAllComponents()
-//            }
-//        }
+        var memberArray: [String] = [];
+        for val in self.memberLabelList {
+            memberArray.append(val.text!)
+        }
+        print("selected \(memberArray)")
+        self.pickerView.items = memberArray
+        self.pickerView.delegate = self
+        
+        pickerView.showPicker()
+        
 
         
         
     }
+    
+    
+    func showPicker() {
+        self.pickerView.showPicker()
+    }
+    // for delegate
+    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return self.pickerView.items.count
+    }
+    internal func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return self.pickerView.items[row]
+    }
+    func pickerView(pickerView: UIPickerView, didSelect numbers: [Int]) {
+        print("selected \(numbers)")
+    }
+    
+    func pickerViewDidHide(pickerView: UIPickerView) {
+        print("hided pickerview")
+    }
+    
     
     func createResultTable() {
         let fLength = 29
