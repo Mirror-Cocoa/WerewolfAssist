@@ -336,9 +336,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         self.view.addSubview(pickerView)
         
         var memberArray: [String] = [];
-        for val in self.memberLabelList {
-            memberArray.append(val.text!)
-        }
+        for val in self.memberLabelList { memberArray.append(val.text!) }
         print("selected \(memberArray)")
         self.pickerView.items = memberArray
         self.pickerView.delegate = self

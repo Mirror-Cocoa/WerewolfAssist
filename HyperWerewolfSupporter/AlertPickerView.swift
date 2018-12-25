@@ -65,10 +65,10 @@ class AlertPickerView: UIView {
         let space = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.fixedSpace, target: nil, action: nil)
         space.width = 12
         
-        let cancelItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.cancel, target: self, action: Selector(("cancelPicker")))
+        let cancelItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.cancel, target: self, action: #selector(cancelPicker(sender:)))
         let flexSpaceItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: self, action: nil)
         
-        let doneButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done, target: self, action: Selector(("endPicker")))
+        let doneButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done, target: self, action: #selector(endPicker(sender:)))
         
         toolbarItems! += [space, cancelItem, flexSpaceItem, doneButtonItem, space]
         pickerToolbar.setItems(toolbarItems as? [UIBarButtonItem], animated: false)
@@ -97,12 +97,12 @@ class AlertPickerView: UIView {
     
     
     
-    func cancelPicker() {
+    @objc func cancelPicker(sender: AnyObject) {
         hidePicker()
         restoreSelectedRows()
         selectedRows = nil
     }
-    func endPicker() {
+    @objc func endPicker(sender: AnyObject) {
         hidePicker()
         delegate?.pickerView?(pickerView: pickerView, didSelect: getSelectedRows())
         selectedRows = nil
