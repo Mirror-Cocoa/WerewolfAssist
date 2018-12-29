@@ -8,7 +8,7 @@
 
 import UIKit
 
-class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate, UIDropInteractionDelegate, AlertPickerViewDelegate, UIPickerViewDelegate {
+class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate, UIDropInteractionDelegate, AlertPickerViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
     func dragInteraction(_ interaction: UIDragInteraction, itemsForBeginning session: UIDragSession) -> [UIDragItem] {
         return []
     }
@@ -330,36 +330,39 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         }
     }
     
+    /*
+     * ピッカーの作成
+     */
     func createPicker() {
-//        var pickerView: PickerKeyboard!
         self.pickerView = AlertPickerView()
         self.view.addSubview(pickerView)
         
+        self.pickerView.accessibilityViewIsModal = true
+        
         var memberArray: [String] = [];
         for val in self.memberLabelList { memberArray.append(val.text!) }
-        print("selected \(memberArray)")
         self.pickerView.items = memberArray
+        
         self.pickerView.delegate = self
+        self.pickerView.dataSource = self as? AlertPickerViewDataSource
         
-        pickerView.showPicker()
-        
-
-        
-        
-    }
-    
-    
-    func showPicker() {
         self.pickerView.showPicker()
+        
     }
-    // for delegate
+    
+    /*
+     * ピッカーのデリゲートメソッド
+     */
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
     func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
         return 1
     }
-    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    func pickerView(_ namePickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return self.pickerView.items.count
     }
-    internal func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return self.pickerView.items[row]
     }
     func pickerView(pickerView: UIPickerView, didSelect numbers: [Int]) {
@@ -368,7 +371,9 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     
     func pickerViewDidHide(pickerView: UIPickerView) {
         print("hided pickerview")
+        self.pickerView.accessibilityViewIsModal = false
     }
+    
     
     
     func createResultTable() {

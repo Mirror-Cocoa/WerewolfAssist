@@ -25,6 +25,11 @@ class AlertPickerView: UIView {
             pickerView.delegate = delegate
         }
     }
+    var dataSource: AlertPickerViewDataSource? {
+        didSet {
+            pickerView.dataSource = dataSource
+        }
+    }
     private var selectedRows: [Int]?
     
     
@@ -84,6 +89,7 @@ class AlertPickerView: UIView {
             selectedRows = getSelectedRows()
         }
         delegate?.pickerViewWillShow?(pickerView: pickerView)
+        dataSource?.pickerViewWillShow?(pickerView: pickerView)
         let screenSize = UIScreen.main.bounds.size
         
         UIView.animate(withDuration: 0.2 ,animations: { () -> Void in
@@ -92,6 +98,7 @@ class AlertPickerView: UIView {
             
         }) { (completed:Bool) -> Void in
             self.delegate?.pickerViewDidSHow?(pickerView: self.pickerView)
+            self.dataSource?.pickerViewDidSHow?(pickerView: self.pickerView)
         }
     }
     
@@ -134,6 +141,17 @@ class AlertPickerView: UIView {
 
 @objc
 protocol AlertPickerViewDelegate: UIPickerViewDelegate {
+    @objc optional func pickerView(pickerView: UIPickerView, didSelect numbers: [Int])
+    @objc optional func pickerViewDidSHow(pickerView: UIPickerView)
+    @objc optional func pickerViewDidHide(pickerView: UIPickerView)
+    @objc optional func pickerViewWillHide(pickerView: UIPickerView)
+    @objc optional func pickerViewWillShow(pickerView: UIPickerView)
+    @objc optional func pickerViewDidShow(pickerView: UIPickerView)
+    
+}
+
+@objc
+protocol AlertPickerViewDataSource: UIPickerViewDataSource {
     @objc optional func pickerView(pickerView: UIPickerView, didSelect numbers: [Int])
     @objc optional func pickerViewDidSHow(pickerView: UIPickerView)
     @objc optional func pickerViewDidHide(pickerView: UIPickerView)
