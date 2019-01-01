@@ -18,6 +18,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     var personList: Array<[String:String]> = []
     var memberLabelList: [UILabel] = []
     var memberStatesViewList: [UIView] = []
+    var memberArray: [String] = [];
     
     var innerTableList: [UIView] = []
     var innerTableRectList: [CGRect] = []
@@ -50,7 +51,13 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     enum Mode {
         case fortune, hunter, sharer, madman, werewolf, spirit, none
     }
-    var currentMode: Mode  = .none
+    
+    enum Dead {
+        case hang, killed, none
+    }
+    
+    var currentMode: Mode = .none
+    var currentDead: Dead = .none
     
     var hasMemberIcon: [Int] = []
     
@@ -104,6 +111,9 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         
 //        self.descriptionLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(descTapped(sender:))))
         descriptionLabel.adjustsFontSizeToFitWidth = true
+        
+        // メンバーの配列を用意
+        for val in self.memberLabelList { self.memberArray.append(val.text!) }
     }
     
     /**
@@ -324,31 +334,52 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     @IBAction func calendarChange(_ sender: Any) {
         self.calendar.image = UIImage(named: "days_" + String(Int(self.calendarStepper.value)))
         if (!(self.isFirstTime[Int(self.calendarStepper.value) - 1])) {
+            self.currentDead = .hang
             self.createPicker()
-            self.isFirstTime[Int(self.calendarStepper.value)] = true
+            self.isFirstTime[Int(self.calendarStepper.value) - 1] = true
             
         }
     }
     
     /*
      * ピッカーの作成
+     * 処刑の場合は1つ、噛みの場合は2つ作成する
      */
     func createPicker() {
-        self.pickerView = AlertPickerView()
-        self.view.addSubview(pickerView)
         
-        self.pickerView.accessibilityViewIsModal = true
+//        if (currentDead == .hang) {
         
-        var memberArray: [String] = [];
-        for val in self.memberLabelList { memberArray.append(val.text!) }
-        self.pickerView.items = memberArray
+            self.pickerView = AlertPickerView()
+            self.view.addSubview(pickerView)
+            // モーダルをいつか作ろうね
+//            self.accessibilityViewIsModal = false
+            
         
-        self.pickerView.delegate = self
-        self.pickerView.dataSource = self as? AlertPickerViewDataSource
-        
-        self.pickerView.showPicker()
+            self.pickerView.items = self.memberArray
+            
+            self.pickerView.delegate = self
+            self.pickerView.dataSource = self as? AlertPickerViewDataSource
+            
+            self.pickerView.showPicker()
+//        } else if (currentDead == .killed) {
+//
+//            self.pickerView = AlertPickerView()
+//            self.view.addSubview(pickerView)
+//
+//            var memberArray: [String] = [];
+//            for val in self.memberLabelList { memberArray.append(val.text!) }
+//            self.pickerView.items = memberArray
+//
+//            self.pickerView.delegate = self
+//            self.pickerView.dataSource = self as? AlertPickerViewDataSource
+//
+//            self.pickerView.showPicker()
+//        }
         
     }
+    
+    
+    
     
     /*
      * ピッカーのデリゲートメソッド
@@ -367,11 +398,25 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     }
     func pickerView(pickerView: UIPickerView, didSelect numbers: [Int]) {
         print("selected \(numbers)")
+        let num = numbers[0]
+        self.memberArray.remove(value: self.memberArray[num])
+        
+        if (self.currentDead == .hang) {
+            createResult(row: 1, column: Int(self.calendarStepper.value) - 2, name: self.pickerView.items[num])
+            self.currentDead = .killed
+            self.createPicker()
+        } else if (self.currentDead == .killed) {
+            createResult(row: 2, column: Int(self.calendarStepper.value) - 2, name: self.pickerView.items[num])
+        }
+        
     }
+    
+    
     
     func pickerViewDidHide(pickerView: UIPickerView) {
         print("hided pickerview")
-        self.pickerView.accessibilityViewIsModal = false
+//        self.currentDead = .hang
+//        self.accessibilityViewIsModal = false
     }
     
     
@@ -751,4 +796,12 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         return false
     }
  
+}
+
+extension Array where Element: Equatable {
+    mutating func remove(value: Element) {
+        if let i = self.index(of: value) {
+            self.remove(at: i)
+        }
+    }
 }
