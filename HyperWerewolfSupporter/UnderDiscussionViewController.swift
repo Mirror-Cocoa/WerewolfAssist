@@ -67,6 +67,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     
     var fortunePersonArray: [String] = []
     var spiritPersonArray: [String] = []
+    var hangArray: [String] = []
     
     var isFirst = true
     
@@ -405,6 +406,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         
         if (self.currentDead == .hang) {
             createResult(row: 1, column: Int(self.calendarStepper.value) - 2, name: self.pickerView.items[num])
+            self.hangArray.append(self.pickerView.items[num])
             self.currentDead = .killed
             self.createPicker()
         } else if (self.currentDead == .killed) {
@@ -491,6 +493,8 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                     createFortuneResult(row: row, column: column, fLength: 29, name: "占", target: "対象", result: "結果", isInit: true)
                 } else if (row == 7) {
                     createFortuneResult(row: row, column: column, fLength: 29, name: "霊", target: "対象", result: "結果", isInit: true)
+                } else if (row >= 8 && (column == 1 || column == 2)) {
+                    createFortuneResult(row: row, column: column, fLength: 29, name: "", target: "-", result: "-", isInit: true)
                 } else {
                     createFortuneResult(row: row, column: column, fLength: 29, name: "", target: "", result: "", isInit: true)
                 }
@@ -710,6 +714,8 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                         self.fortunePersonArray.append(target.text!)
                         self.memberLabelList[self.memberLabelList.index(of: target)!].isUserInteractionEnabled = true
                         createFortuneResult(row: fortunePersonArray.count + 3, column: 0, fLength: 29, name: target.text!, target: "", result: "", isInit: true)
+                    } else {
+                        return
                     }
                 } else {
                     return
@@ -728,8 +734,21 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                     if (!self.spiritPersonArray.contains(target.text!)) {
                         self.spiritPersonArray.append(target.text!)
                         createFortuneResult(row: spiritPersonArray.count + 7, column: 0, fLength: 29, name: target.text!, target: "", result: "", isInit: true)
+                    } else {
+                        return
                     }
-                } else {
+                } else if(self.descriptionLabel.text == self.spiritArray[1] || self.descriptionLabel.text == self.spiritArray[2]) {
+                    // 霊能結果の反映
+                    if (Int(self.calendarStepper.value) == 0 || self.hangArray.count == 0 || !self.spiritPersonArray.contains(target.text!)) { return }
+
+                    self.createFortuneResult(row: self.spiritPersonArray.index(of: target.text!)! + 8,
+                                             column: (Int(self.calendarStepper.value) * 2) - 1,
+                                             fLength: 29,
+                                             name: "",
+                                             target: self.hangArray[Int(self.calendarStepper.value) - 2],
+                                             result: (self.descriptionLabel.text == self.spiritArray[1]) ? "白" : "黒",
+                                             isInit: false
+                    )
                     return
                 }
                 break
@@ -859,11 +878,8 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                             // 占い結果の反映
                             if (self.currentMode == .fortune) {
                                 
-                                let row = self.fortunePersonArray.index(of: string as String)! + 4
-                                let column = (Int(self.calendarStepper.value) * 2) - 1
-                                
-                                self.createFortuneResult(row: row,
-                                                         column: column,
+                                self.createFortuneResult(row: self.fortunePersonArray.index(of: string as String)! + 4,
+                                                         column: (Int(self.calendarStepper.value) * 2) - 1,
                                                          fLength: 29,
                                                          name: "",
                                                          target: self.memberLabelList[self.dropIdx].text!,
