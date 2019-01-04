@@ -9,9 +9,6 @@
 import UIKit
 
 class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate, UIDropInteractionDelegate, AlertPickerViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
-    func dragInteraction(_ interaction: UIDragInteraction, itemsForBeginning session: UIDragSession) -> [UIDragItem] {
-        return []
-    }
     
     var personNum:Int?
     let userDefaults = UserDefaults.standard
@@ -67,6 +64,9 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     let sharerArray = ["CO"]
     let werewolfArray = ["疑惑", "CO", "LWCO"]
     let madmanArray = ["疑惑"]
+    
+    var fortunePersonArray: [String] = []
+    var spiritPersonArray: [String] = []
     
     var isFirst = true
     
@@ -170,6 +170,8 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             innerTable.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tableTapped(sender:))))
             
             innerTable.addInteraction(dropInteraction)
+            
+            self.memberLabelList[cnt].isUserInteractionEnabled = false
             
             innerTable.addSubview(self.memberLabelList[cnt])
             
@@ -463,14 +465,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             }
         }
         
-        createFortuneResultTable(row: 3, fLength: fLength, name: "占", target: "対象", result: "結果")
-        createFortuneResultTable(row: 4, fLength: fLength, name: "", target: "", result: "")
-        createFortuneResultTable(row: 5, fLength: fLength, name: "", target: "", result: "")
-        createFortuneResultTable(row: 6, fLength: fLength, name: "", target: "", result: "")
-        createFortuneResultTable(row: 7, fLength: fLength, name: "霊", target: "対象", result: "結果")
-        createFortuneResultTable(row: 8, fLength: fLength, name: "", target: "", result: "")
-        createFortuneResultTable(row: 9, fLength: fLength, name: "", target: "", result: "")
-        createFortuneResultTable(row: 10, fLength: fLength, name: "", target: "", result: "")
+        createFortuneResultTable()
     }
     
     func createResult(row: Int, column: Int, name: String) {
@@ -489,20 +484,48 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         longTableFrame.addSubview(createLabel(txt: name, v: longTableFrame))
     }
     
-    func createFortuneResultTable(row: Int, fLength: Int, name: String, target: String, result: String) {
-        for column in 0..<31 {
-            let tableFrame = UIView.init(frame: CGRect.init(x: 0, y: 0, width: fLength, height: fLength))
+    func createFortuneResultTable() {
+        for row in 3..<11 {
+            for column in 0..<31 {
+                if (row == 3) {
+                    createFortuneResult(row: row, column: column, fLength: 29, name: "占", target: "対象", result: "結果", isInit: true)
+                } else if (row == 7) {
+                    createFortuneResult(row: row, column: column, fLength: 29, name: "霊", target: "対象", result: "結果", isInit: true)
+                } else {
+                    createFortuneResult(row: row, column: column, fLength: 29, name: "", target: "", result: "", isInit: true)
+                }
+            }
+        }
+    }
+    
+    func createFortuneResult(row: Int, column: Int, fLength: Int, name: String, target: String, result: String, isInit: Bool) {
+        let tableFrame = UIView.init(frame: CGRect.init(x: 0, y: 0, width: fLength, height: fLength))
+        if (isInit) {
             self.resultTable.addSubview(createBorder(v: tableFrame))
-            
-            // 制約を制定
-            constraintsInit(v: tableFrame)
-            tableFrame.leadingAnchor.constraint(equalTo: self.resultTable.leadingAnchor, constant: CGFloat(column * fLength)).isActive = true
-            tableFrame.topAnchor.constraint(equalTo: self.resultTable.topAnchor, constant: CGFloat(row * fLength)).isActive = true
-//            self.resultContentView.heightAnchor.constraint(equalToConstant: CGFloat(row * fLength + fLength))
-            self.resultContentView.frame.size.height += CGFloat(row * fLength + fLength)
-            
-            // ラベルの追加
+        } else {
+            self.resultTable.addSubview(tableFrame)
+        }
+        
+        // 制約を制定
+        constraintsInit(v: tableFrame)
+        tableFrame.leadingAnchor.constraint(equalTo: self.resultTable.leadingAnchor, constant: CGFloat(column * fLength)).isActive = true
+        tableFrame.topAnchor.constraint(equalTo: self.resultTable.topAnchor, constant: CGFloat(row * fLength)).isActive = true
+        self.resultContentView.frame.size.height += CGFloat(row * fLength + fLength)
+        
+        // ラベルの追加
+        if (isInit) {
             tableFrame.addSubview(createLabel(txt: (column == 0) ? name : (column % 2 != 0) ? target : result, v: tableFrame))
+        } else {
+            tableFrame.addSubview(createLabel(txt: target, v: tableFrame))
+            
+            // 結果分の作成
+            let resultTableFrame = UIView.init(frame: CGRect.init(x: 0, y: 0, width: fLength, height: fLength))
+            self.resultTable.addSubview(resultTableFrame)
+            constraintsInit(v: resultTableFrame)
+            resultTableFrame.leadingAnchor.constraint(equalTo: self.resultTable.leadingAnchor, constant: CGFloat(column * fLength + fLength)).isActive = true
+            resultTableFrame.topAnchor.constraint(equalTo: self.resultTable.topAnchor, constant: CGFloat(row * fLength)).isActive = true
+            self.resultContentView.frame.size.height += CGFloat(row * fLength + fLength)
+            resultTableFrame.addSubview(createLabel(txt: result, v: tableFrame))
         }
     }
     
@@ -609,6 +632,9 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         
         switch self.currentMode {
             case .fortune:
+                if (fortunePersonArray.count == 0) {
+                    return
+                }
                 descModeArray = self.fortuneArray
                 break
             case .hunter:
@@ -624,6 +650,9 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                 descModeArray = self.werewolfArray
                 break
             case .spirit:
+                if (spiritPersonArray.count == 0) {
+                    return
+                }
                 descModeArray = self.spiritArray
                 break
             case .none: break
@@ -673,11 +702,42 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                 }
             }
             
+            // 占い・霊能COの時、既存なら何もしない(将来的には同じ人は撤回を実装)
+            switch self.currentMode {
+            case .fortune:
+                if (self.descriptionLabel.text == self.fortuneArray[0] && fortunePersonArray.count < 3) {
+                    if (!self.fortunePersonArray.contains(target.text!)) {
+                        self.fortunePersonArray.append(target.text!)
+                        self.memberLabelList[self.memberLabelList.index(of: target)!].isUserInteractionEnabled = true
+                        createFortuneResult(row: fortunePersonArray.count + 3, column: 0, fLength: 29, name: target.text!, target: "", result: "", isInit: true)
+                    }
+                } else {
+                    return
+                }
+                break
+            case .hunter:
+                break
+            case .sharer:
+                break
+            case .madman:
+                break
+            case .werewolf:
+                break
+            case .spirit:
+                if (self.descriptionLabel.text == self.spiritArray[0] && spiritPersonArray.count < 3) {
+                    if (!self.spiritPersonArray.contains(target.text!)) {
+                        self.spiritPersonArray.append(target.text!)
+                        createFortuneResult(row: spiritPersonArray.count + 7, column: 0, fLength: 29, name: target.text!, target: "", result: "", isInit: true)
+                    }
+                } else {
+                    return
+                }
+                break
+            case .none:
+                break
+            }
+            
             targetStatusView.backgroundColor = UIColor.white
-            
-            
-            
-
             // 画像のコピー
             // ビットマップ画像のcontextを作成.
             UIGraphicsBeginImageContextWithOptions(CGSize(width: self.currentView.bounds.size.width, height: self.currentView.bounds.size.height), false, 0.0)
@@ -720,18 +780,109 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             // 縦横比率を保ちつつ画像をUIImageViewの大きさに合わせる.
             targetStatusView.contentMode = UIViewContentMode.scaleAspectFit
             
-            // 占い・霊能COの時、既存なら何もしない(将来的には消しますか？を実装)
-            // 既存なしなら追加を行う。
-            
-            
-            
-            
-            
             
             
         }
         
     }
+    
+    
+    
+    func dragInteraction(_ interaction: UIDragInteraction, itemsForBeginning session: UIDragSession) -> [UIDragItem] {
+        
+        if (self.currentMode == .fortune &&
+            self.descriptionLabel.text == "黒判定" || self.descriptionLabel.text == "白判定") {
+        
+            for idx in 0..<self.innerTableList.count {
+                // ドラッグされた位置を取得します
+                let points = session.location(in: self.innerTableList[idx])
+                // ドラッグされた位置にラベルがあれば、そのラベルの文字列をドラッグします。
+                // Note: UILabelをhitTestで見つけるためには、ラベルのuserInteractionEnabledを
+                // trueにしておく必要があります。
+                if let hitView = self.innerTableList[idx].hitTest(points, with: nil) {
+                    if let label = hitView as? UILabel {
+                        let text = (label.text ?? "") as NSString
+                        let dragItem = UIDragItem(itemProvider: NSItemProvider(object: text))
+                        dragItem.localObject = label  // ドラッグ対象を紐付けておく
+                        self.dragIdx = idx
+                        return [dragItem]
+                    }
+                }
+            }
+        }
+
+        // ドラッグ位置にラベルがなければドラッグ可能ではありません。
+        return []
+    }
+
+    func dropInteraction(_ interaction: UIDropInteraction,
+                         sessionDidUpdate session: UIDropSession) -> UIDropProposal {
+
+        // 現在の位置を取得
+        let currentPoint = session.location(in: self.view)
+
+        // ドロップ先のinnerTableを取得
+        for idx in 0..<self.innerTableList.count {
+            if (self.innerTableList[idx].frame.minX <= currentPoint.x && currentPoint.x <= self.innerTableList[idx].frame.maxX &&
+                self.innerTableList[idx].frame.minY <= currentPoint.y && currentPoint.y <= self.innerTableList[idx].frame.maxY) {
+                self.dropIdx = idx
+                // 同一人物ならforbidden
+                if (self.dragIdx == self.dropIdx) { return UIDropProposal(operation: .forbidden) }
+                break
+            }
+        }
+
+        // ドラッグ中のアイテムが文字列を含んでいる場合はドロップできます。
+        return (session.canLoadObjects(ofClass: NSString.self)) ? UIDropProposal(operation: .copy) :  UIDropProposal(operation: .cancel)
+    }
+
+    /*
+     * ドロップできないものをさっさと弾く
+     */
+    func dropInteraction(_ interaction: UIDropInteraction,
+                         canHandle session: UIDropSession) -> Bool {
+        // 文字列を取り出せるものしかドロップできない
+        return session.canLoadObjects(ofClass: NSString.self)
+    }
+
+    func dropInteraction(_ interaction: UIDropInteraction,
+                         performDrop session: UIDropSession) {
+        for item in session.items {
+            // 文字列をロードできないアイテムはスキップします
+            if item.itemProvider.canLoadObject(ofClass: NSString.self) {
+                item.itemProvider.loadObject(ofClass: NSString.self) { (object, error) in
+                    // アイテムのロードは非同期に行われます
+                    // ロードが終わるとここにやってきます
+                    if let string = object as? NSString {
+                        // UIへの反映はメインスレッドで行います
+                        DispatchQueue.main.async {
+                            // 占い結果の反映
+                            if (self.currentMode == .fortune) {
+                                
+                                let row = self.fortunePersonArray.index(of: string as String)! + 4
+                                let column = (Int(self.calendarStepper.value) * 2) - 1
+                                
+                                self.createFortuneResult(row: row,
+                                                         column: column,
+                                                         fLength: 29,
+                                                         name: "",
+                                                         target: self.memberLabelList[self.dropIdx].text!,
+                                                         result: (self.descriptionLabel.text == "黒判定") ? "黒" : "白",
+                                                         isInit: false
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    
+    
+    
+    
+    
     
     func iconChoice(idx: Int) {
         switch self.currentMode {
