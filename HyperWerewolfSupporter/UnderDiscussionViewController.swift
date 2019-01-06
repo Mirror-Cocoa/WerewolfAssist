@@ -407,9 +407,11 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         if (self.currentDead == .hang) {
             createResult(row: 1, column: Int(self.calendarStepper.value) - 2, name: self.pickerView.items[num])
             self.hangArray.append(self.pickerView.items[num])
+            deadImage(name: self.pickerView.items[num])
             self.currentDead = .killed
             self.createPicker()
         } else if (self.currentDead == .killed) {
+            deadImage(name: self.pickerView.items[num])
             createResult(row: 2, column: Int(self.calendarStepper.value) - 2, name: self.pickerView.items[num])
         }
         
@@ -421,6 +423,24 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         print("hided pickerview")
 //        self.currentDead = .hang
 //        self.accessibilityViewIsModal = false
+    }
+    
+    func deadImage (name: String) {
+        // UIImageView 初期化
+        let imageView = (self.currentDead == .hang) ? UIImageView(image:UIImage(named:"ghost")!) : UIImageView(image:UIImage(named:"knife")!)
+
+        // 死亡者のテーブルの大きさを取得
+        for idx in 0..<self.memberLabelList.count {
+            if (self.memberLabelList[idx].text == name) {
+                // その人のテーブルビューを取得する
+                // 画像の中心を内部テーブルの中心に設定
+                imageView.frame = self.innerTableList[idx].frame
+                break
+            }
+        }
+        
+        imageView.alpha = 0.7
+        self.view.addSubview(imageView)
     }
     
     
