@@ -68,9 +68,10 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     var fortunePersonArray: [String] = []
     var spiritPersonArray: [String] = []
     var hangArray: [String] = []
+    var tempHang : String = "";
     
     var isFirst = true
-    
+    var isPickerDone = false
     
     @IBOutlet weak var calendar: UIImageView!
     @IBOutlet weak var calendarStepper: UIStepper!
@@ -345,40 +346,41 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     }
     
     /*
+     * ピッカーがキャンセル、若しくは何も選択されていなかった場合
+     */
+    func calendarReset () {
+        self.isFirstTime[Int(self.calendarStepper.value) - 1] = false
+        self.calendarStepper.value -= 1
+        self.calendar.image = UIImage(named: "days_" + String(Int(self.calendarStepper.value)))
+        self.tempHang = "";
+    }
+    
+    /*
      * ピッカーの作成
      * 処刑の場合は1つ、噛みの場合は2つ作成する
      */
     func createPicker() {
+        self.pickerView = AlertPickerView()
+        self.view.addSubview(pickerView)
         
-//        if (currentDead == .hang) {
+        self.pickerView.items = self.memberArray
+                // モーダルをいつか作ろうね
+        //            self.accessibilityViewIsModal = false
         
-            self.pickerView = AlertPickerView()
-            self.view.addSubview(pickerView)
-            // モーダルをいつか作ろうね
-//            self.accessibilityViewIsModal = false
-            
+        // 吊り/噛みによって文言を変更
+        if (currentDead == .hang) {
+            self.pickerView.items.insert("【吊られた人を選択】", at: 0)
+        } else if (currentDead == .killed) {
+            self.pickerView.items.insert("【噛まれた人を選択】", at: 0)
+            self.pickerView.items.insert("GJ", at: 1)
+            self.pickerView.items.remove(value: self.tempHang)
+        }
         
-            self.pickerView.items = self.memberArray
-            
-            self.pickerView.delegate = self
-            self.pickerView.dataSource = self as? AlertPickerViewDataSource
-            
-            self.pickerView.showPicker()
-//        } else if (currentDead == .killed) {
-//
-//            self.pickerView = AlertPickerView()
-//            self.view.addSubview(pickerView)
-//
-//            var memberArray: [String] = [];
-//            for val in self.memberLabelList { memberArray.append(val.text!) }
-//            self.pickerView.items = memberArray
-//
-//            self.pickerView.delegate = self
-//            self.pickerView.dataSource = self as? AlertPickerViewDataSource
-//
-//            self.pickerView.showPicker()
-//        }
+        self.pickerView.delegate = self
+        self.pickerView.dataSource = self as? AlertPickerViewDataSource
         
+        self.pickerView.showPicker()
+    
     }
     
     
@@ -399,35 +401,50 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return self.pickerView.items[row]
     }
+    // pickerViewがタップされた時の処理
     func pickerView(pickerView: UIPickerView, didSelect numbers: [Int]) {
-        print("selected \(numbers)")
+        self.isPickerDone = true
+        // 未選択の場合return
         let num = numbers[0]
-        self.memberArray.remove(value: self.memberArray[num])
+        if (num == 0) {
+            calendarReset()
+            return
+        }
         
         if (self.currentDead == .hang) {
-            createResult(row: 1, column: Int(self.calendarStepper.value) - 2, name: self.pickerView.items[num])
-            self.hangArray.append(self.pickerView.items[num])
-            deadImage(name: self.pickerView.items[num])
+            // 吊られた場合の処理
+            self.tempHang = self.pickerView.items[num];
             self.currentDead = .killed
             self.createPicker()
         } else if (self.currentDead == .killed) {
-            deadImage(name: self.pickerView.items[num])
-            createResult(row: 2, column: Int(self.calendarStepper.value) - 2, name: self.pickerView.items[num])
+            // 噛まれた場合の処理
+            deadImage(name: self.tempHang, isHang: true)
+            createResult(row: 1, column: Int(self.calendarStepper.value) - 2, name: self.tempHang)
+            self.hangArray.append(self.tempHang)
+            self.memberArray.remove(value: self.tempHang)
+            
+            
+            if (num != 1) {
+                createResult(row: 2, column: Int(self.calendarStepper.value) - 2, name: self.pickerView.items[num])
+                self.memberArray.remove(value: self.pickerView.items[num])
+                deadImage(name: self.pickerView.items[num], isHang: false)
+            } else {
+                // GJの場合は消さない
+                createResult(row: 2, column: Int(self.calendarStepper.value) - 2, name: "-")
+            }
         }
-        
     }
-    
-    
     
     func pickerViewDidHide(pickerView: UIPickerView) {
-        print("hided pickerview")
-//        self.currentDead = .hang
-//        self.accessibilityViewIsModal = false
+        if (!self.isPickerDone) {
+            calendarReset()
+        }
+        self.isPickerDone = false
     }
     
-    func deadImage (name: String) {
+    func deadImage (name: String, isHang: Bool) {
         // UIImageView 初期化
-        let imageView = (self.currentDead == .hang) ? UIImageView(image:UIImage(named:"ghost")!) : UIImageView(image:UIImage(named:"knife")!)
+        let imageView = (isHang) ? UIImageView(image:UIImage(named:"ghost")!) : UIImageView(image:UIImage(named:"knife")!)
 
         // 死亡者のテーブルの大きさを取得
         for idx in 0..<self.memberLabelList.count {
