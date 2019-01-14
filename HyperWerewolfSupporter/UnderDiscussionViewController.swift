@@ -53,13 +53,18 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         case hang, killed, none
     }
     
+    enum Select {
+        case co, white, black, melt, lw, none
+    }
+    
     var currentMode: Mode = .none
     var currentDead: Dead = .none
+    var currentSelect: Select = .none
     
     var hasMemberIcon: [Int] = []
     
-    let fortuneArray = ["COのみ", "白判定", "黒判定", "溶かした"]
-    let spiritArray = ["COのみ", "白判定", "黒判定"]
+    let fortuneArray = ["CO", "白", "黒", "溶"]
+    let spiritArray = ["CO", "白", "黒"]
     let hunterArray = ["CO"]
     let sharerArray = ["CO"]
     let werewolfArray = ["疑惑", "CO", "LWCO"]
@@ -89,6 +94,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     
     @IBOutlet weak var currentView: UIImageView!
     @IBOutlet weak var descriptionLabel: UILabel!
+    var descSubLabelArray: [UILabel] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -471,7 +477,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             self.resultTable.addSubview(createBorder(v: titleTableFrame))
             // 制約を制定
             constraintsInit(v: titleTableFrame)
-            titleTableFrame.leadingAnchor.constraint(equalTo: self.resultTable.leadingAnchor, constant: 0).isActive = true
+            titleTableFrame.leadingAnchor.constraint(equalTo: self.resultTable.leadingAnchor).isActive = true
             titleTableFrame.topAnchor.constraint(equalTo: self.resultTable.topAnchor, constant: CGFloat(row * fLength)).isActive = true
             
             var labelText = ""
@@ -624,10 +630,19 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             // 縦横比率を保ちつつ画像をUIImageViewの大きさに合わせる.
             self.currentView.contentMode = UIViewContentMode.scaleAspectFit
             
+            // 元々のsubviewは消す
+            self.view.subviews.forEach {
+                if $0.tag == 10{
+                    $0.removeFromSuperview()
+                }
+            }
+        
             // ラベルの設定
             if currentV.frame.minY == self.iconView.frame.minY {
                 self.currentMode = .fortune
-                self.descriptionLabel.text = self.fortuneArray[0]
+                self.currentSelect = .co
+                descriptionDisplay(labels: self.fortuneArray)
+                
             }
             
             if currentV.frame.maxY == self.iconView.frame.maxY {
@@ -636,74 +651,116 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                 switch calcWidth {
                 case 0:
                     self.currentMode = .spirit
-                    self.descriptionLabel.text = self.spiritArray[0]
+                    self.currentSelect = .co
+                    descriptionDisplay(labels: self.spiritArray)
                     break
                 case 1:
                     self.currentMode = .hunter
-                    self.descriptionLabel.text = self.hunterArray[0]
+                    self.currentSelect = .co
+                    descriptionDisplay(labels: self.hunterArray)
                     break
                 case 2:
                     self.currentMode = .sharer
-                    self.descriptionLabel.text = self.sharerArray[0]
+                    self.currentSelect = .co
+                    descriptionDisplay(labels: self.sharerArray)
                     break
                 case 3:
                     self.currentMode = .madman
-                    self.descriptionLabel.text = self.madmanArray[0]
+                    self.currentSelect = .co
+                    descriptionDisplay(labels: self.madmanArray)
                     break
                 case 4:
                     self.currentMode = .werewolf
-                    self.descriptionLabel.text = self.werewolfArray[0]
+                    self.currentSelect = .co
+                    descriptionDisplay(labels: self.werewolfArray)
                     break
                 default:
                     self.currentMode = .none
                     break
                 }
             }
-            self.currentView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(descTapped(sender:))))
             self.descriptionLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(descTapped(sender:))))
         }
     }
+    
+    func descriptionDisplay (labels: [String]) {
+        self.descriptionLabel.text = labels[0]
+        self.descriptionLabel.backgroundColor = UIColor.cyan
+        self.descriptionLabel.textAlignment = NSTextAlignment.center
+        self.descriptionLabel.sizeToFit()
+        var prevLabel = self.descriptionLabel
+        
+        for idx in 0..<labels.count - 1 {
+            self.descSubLabelArray.append(UILabel.init(frame: .zero))
+            
+            if (self.currentMode == .fortune && self.fortunePersonArray.count == 0 ||
+                self.currentMode == .spirit && self.spiritPersonArray.count == 0) {
+                self.descSubLabelArray[idx].backgroundColor = UIColor.gray
+            } else {
+                self.descSubLabelArray[idx].backgroundColor = UIColor.white
+            }
+            
+            self.descSubLabelArray[idx].text = labels[idx + 1]
+            self.descSubLabelArray[idx].tag = 10
+            self.descSubLabelArray[idx].sizeToFit()
+            self.descSubLabelArray[idx].textAlignment = NSTextAlignment.center
+            self.view.addSubview(self.descSubLabelArray[idx])
+
+            // ラベルの制約を制定
+            self.descSubLabelArray[idx].translatesAutoresizingMaskIntoConstraints = false
+            self.descSubLabelArray[idx].leadingAnchor.constraint(equalTo: (prevLabel?.trailingAnchor)!, constant: CGFloat(30)).isActive = true
+            self.descSubLabelArray[idx].topAnchor.constraint(equalTo: (prevLabel?.topAnchor)!).isActive = true
+            
+            self.descSubLabelArray[idx].widthAnchor.constraint(equalTo: (prevLabel?.widthAnchor)!).isActive = true
+            self.descSubLabelArray[idx].heightAnchor.constraint(equalTo: (prevLabel?.heightAnchor)!).isActive = true
+            
+            if (self.currentMode == .fortune && self.fortunePersonArray.count != 0 ||
+                self.currentMode == .spirit && self.spiritPersonArray.count != 0) {
+                self.descSubLabelArray[idx].isUserInteractionEnabled = true
+            }
+            
+            self.descSubLabelArray[idx].addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(descTapped(sender:))))
+            prevLabel = self.descSubLabelArray[idx]
+        }
+    }
+    
+
     
     /*
      * 説明ラベルが押されたら
      */
     @objc func descTapped(sender: UITapGestureRecognizer) {
         print(self.currentMode)
-        var descModeArray: [String] = []
-        
-        switch self.currentMode {
-            case .fortune:
-                if (fortunePersonArray.count == 0) {
-                    return
+        if let label = sender.view as? UILabel {
+            
+            // 背景色を修正
+            self.descriptionLabel.backgroundColor = (self.descriptionLabel.text != label.text) ? UIColor.white : UIColor.cyan
+            for idx in 0..<self.descSubLabelArray.count {
+                if (self.currentMode == .fortune && self.fortunePersonArray.count != 0 ||
+                    self.currentMode == .spirit && self.spiritPersonArray.count != 0) {
+                    self.descSubLabelArray[idx].backgroundColor = (self.descSubLabelArray[idx].text != label.text) ? UIColor.white : UIColor.cyan
                 }
-                descModeArray = self.fortuneArray
-                break
-            case .hunter:
-                descModeArray = self.hunterArray
-                break
-            case .sharer:
-                descModeArray = self.sharerArray
-                break
-            case .madman:
-                descModeArray = self.madmanArray
-                break
-            case .werewolf:
-                descModeArray = self.werewolfArray
-                break
-            case .spirit:
-                if (spiritPersonArray.count == 0) {
-                    return
-                }
-                descModeArray = self.spiritArray
-                break
-            case .none: break
-        }
-        
-        for idx in 0..<descModeArray.count {
-            if (self.descriptionLabel.text == descModeArray[idx]) {
-                self.descriptionLabel.text = descModeArray[(idx + 1 != descModeArray.count) ? idx + 1 : 0]
-                break
             }
+            
+            switch label.text {
+                case "CO" :
+                    self.currentSelect = .co
+                    break
+                case "白" :
+                    self.currentSelect = .white
+                    break
+                case "黒" :
+                    self.currentSelect = .black
+                    break
+                case "溶" :
+                    self.currentSelect = .melt
+                    break
+                case "疑惑" : break
+                case "LWCO" : break
+                case .none: break
+                default: break
+            }
+            
         }
     }
     
@@ -746,10 +803,17 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             // 占い・霊能COの時、既存なら何もしない(将来的には同じ人は撤回を実装)
             switch self.currentMode {
             case .fortune:
-                if (self.descriptionLabel.text == self.fortuneArray[0] && fortunePersonArray.count < 3) {
+                if (self.currentSelect == .co && fortunePersonArray.count < 3) {
                     if (!self.fortunePersonArray.contains(target.text!)) {
                         self.fortunePersonArray.append(target.text!)
                         self.memberLabelList[self.memberLabelList.index(of: target)!].isUserInteractionEnabled = true
+                        for idx in 0..<self.descSubLabelArray.count {
+                            if (self.fortunePersonArray.count != 0) {
+                                self.descSubLabelArray[idx].backgroundColor = UIColor.white
+                                self.descSubLabelArray[idx].isUserInteractionEnabled = true
+                            }
+                            
+                        }
                         createFortuneResult(row: fortunePersonArray.count + 3, column: 0, fLength: 29, name: target.text!, target: "", result: "", isInit: true)
                     } else {
                         return
@@ -767,23 +831,39 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             case .werewolf:
                 break
             case .spirit:
-                if (self.descriptionLabel.text == self.spiritArray[0] && spiritPersonArray.count < 3) {
+                if (self.currentSelect == .co && spiritPersonArray.count < 3) {
                     if (!self.spiritPersonArray.contains(target.text!)) {
                         self.spiritPersonArray.append(target.text!)
+                        for idx in 1..<self.descSubLabelArray.count {
+                            if (self.spiritPersonArray.count != 0) {
+                                self.descSubLabelArray[idx].backgroundColor = UIColor.white
+                                self.descSubLabelArray[idx].isUserInteractionEnabled = true
+                            }
+                        }
                         createFortuneResult(row: spiritPersonArray.count + 7, column: 0, fLength: 29, name: target.text!, target: "", result: "", isInit: true)
                     } else {
                         return
                     }
-                } else if(self.descriptionLabel.text == self.spiritArray[1] || self.descriptionLabel.text == self.spiritArray[2]) {
+                } else if(self.currentSelect == .black || self.currentSelect == .white) {
                     // 霊能結果の反映
                     if (Int(self.calendarStepper.value) == 0 || self.hangArray.count == 0 || !self.spiritPersonArray.contains(target.text!)) { return }
-
+                    var spiritResultStr = ""
+                    switch self.currentSelect {
+                    case .black :
+                        spiritResultStr = "黒";
+                        break
+                    case .white :
+                        spiritResultStr = "白";
+                        break
+                    default : break
+                    }
+                    
                     self.createFortuneResult(row: self.spiritPersonArray.index(of: target.text!)! + 8,
                                              column: (Int(self.calendarStepper.value) * 2) - 1,
                                              fLength: 29,
                                              name: "",
                                              target: self.hangArray[Int(self.calendarStepper.value) - 2],
-                                             result: (self.descriptionLabel.text == self.spiritArray[1]) ? "白" : "黒",
+                                             result: spiritResultStr,
                                              isInit: false
                     )
                     return
@@ -847,7 +927,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     func dragInteraction(_ interaction: UIDragInteraction, itemsForBeginning session: UIDragSession) -> [UIDragItem] {
         
         if (self.currentMode == .fortune &&
-            self.descriptionLabel.text == "黒判定" || self.descriptionLabel.text == "白判定") {
+            self.currentSelect == .black || self.currentSelect == .white) {
         
             for idx in 0..<self.innerTableList.count {
                 // ドラッグされた位置を取得します
@@ -915,12 +995,23 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                             // 占い結果の反映
                             if (self.currentMode == .fortune) {
                                 
+                                var fortuneResultStr = ""
+                                switch self.currentSelect {
+                                case .black :
+                                    fortuneResultStr = "黒";
+                                    break
+                                case .white :
+                                    fortuneResultStr = "白";
+                                    break
+                                default : break
+                                }
+                                
                                 self.createFortuneResult(row: self.fortunePersonArray.index(of: string as String)! + 4,
                                                          column: (Int(self.calendarStepper.value) * 2) - 1,
                                                          fLength: 29,
                                                          name: "",
                                                          target: self.memberLabelList[self.dropIdx].text!,
-                                                         result: (self.descriptionLabel.text == "黒判定") ? "黒" : "白",
+                                                         result: fortuneResultStr,
                                                          isInit: false
                                 )
                             }
