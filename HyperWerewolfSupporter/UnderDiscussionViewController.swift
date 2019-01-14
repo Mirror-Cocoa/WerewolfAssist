@@ -848,12 +848,23 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                     // 霊能結果の反映
                     if (Int(self.calendarStepper.value) == 0 || self.hangArray.count == 0 || !self.spiritPersonArray.contains(target.text!)) { return }
                     var spiritResultStr = ""
+                    // ステータスビューの反映用(前日吊られた人のを反映する)
+                    var spiritStatusView = UIView()
+                    for idx in 0..<self.memberLabelList.count {
+                        if (self.memberLabelList[idx].text == self.hangArray[Int(self.calendarStepper.value) - 2]) {
+                            // その人のステータスビューを取得する
+                            spiritStatusView = self.memberStatesViewList[idx]
+                            break
+                        }
+                    }
                     switch self.currentSelect {
                     case .black :
                         spiritResultStr = "黒";
+                        spiritStatusView.backgroundColor = UIColor.black
                         break
                     case .white :
                         spiritResultStr = "白";
+                        spiritStatusView.backgroundColor = UIColor.white
                         break
                     default : break
                     }
@@ -996,12 +1007,24 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                             if (self.currentMode == .fortune) {
                                 
                                 var fortuneResultStr = ""
+                                // ステータスビューの反映用
+                                var targetStatusView = UIView()
+                                for idx in 0..<self.memberLabelList.count {
+                                    if (self.memberLabelList[idx].text == self.memberLabelList[self.dropIdx].text!) {
+                                        // その人のステータスビューを取得する
+                                        targetStatusView = self.memberStatesViewList[idx]
+                                        break
+                                    }
+                                }
+                                
                                 switch self.currentSelect {
                                 case .black :
                                     fortuneResultStr = "黒";
+                                    targetStatusView.backgroundColor = UIColor.black
                                     break
                                 case .white :
                                     fortuneResultStr = "白";
+                                    targetStatusView.backgroundColor = UIColor.white
                                     break
                                 default : break
                                 }
