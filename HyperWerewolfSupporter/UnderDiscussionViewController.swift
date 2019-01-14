@@ -834,7 +834,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                 if (self.currentSelect == .co && spiritPersonArray.count < 3) {
                     if (!self.spiritPersonArray.contains(target.text!)) {
                         self.spiritPersonArray.append(target.text!)
-                        for idx in 1..<self.descSubLabelArray.count {
+                        for idx in 0..<self.descSubLabelArray.count {
                             if (self.spiritPersonArray.count != 0) {
                                 self.descSubLabelArray[idx].backgroundColor = UIColor.white
                                 self.descSubLabelArray[idx].isUserInteractionEnabled = true
