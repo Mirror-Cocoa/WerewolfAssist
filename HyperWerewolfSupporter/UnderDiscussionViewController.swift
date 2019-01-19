@@ -61,6 +61,14 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     var currentDead: Dead = .none
     var currentSelect: Select = .none
     
+    let resultLen = 29
+    let resultLenX2 = 58
+    
+    let fortuneRow = 1
+    let spiritRow = 5
+    let hangRow = 9
+    let killedRow = 10
+    
     var hasMemberIcon: [Int] = []
     
     let fortuneArray = ["CO", "白", "黒", "溶"]
@@ -434,13 +442,13 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         } else if (self.currentDead == .killed) {
             // 噛まれた場合の処理
             deadImage(name: self.tempHang, isHang: true)
-            createResult(row: 1, column: Int(self.calendarStepper.value) - 2, name: self.tempHang)
+            createResult(row: self.hangRow, column: Int(self.calendarStepper.value) - 2, name: self.tempHang)
             self.hangArray.append(self.tempHang)
             self.memberArray.remove(value: self.tempHang)
             
             
             if (num != 1) {
-                createResult(row: 2, column: Int(self.calendarStepper.value) - 2, name: self.pickerView.items[num])
+                createFortuneResult(row: self.killedRow, column: (Int(self.calendarStepper.value) * 2) - 3, name: "", target: self.pickerView.items[num], result: "-", isInit: false)
                 self.memberArray.remove(value: self.pickerView.items[num])
                 deadImage(name: self.pickerView.items[num], isHang: false)
             } else {
@@ -478,84 +486,64 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     
     
     func createResultTable() {
-        let fLength = 29
-        let fLength2 = fLength * 2
+        let labelTextList = ["", "占", "", "", "", "霊", "", "", "", "吊", "噛"]
+        // short = true, long = false
+        let labelTypeList = [false, true, true, true, true, true, true, true, true, false, true]
         
-        for row in 0..<3 {
-            let titleTableFrame = UIView.init(frame: CGRect.init(x: 0, y: 0, width: fLength, height: fLength))
-            self.resultTable.addSubview(createBorder(v: titleTableFrame))
-            // 制約を制定
-            constraintsInit(v: titleTableFrame)
-            titleTableFrame.leadingAnchor.constraint(equalTo: self.resultTable.leadingAnchor).isActive = true
-            titleTableFrame.topAnchor.constraint(equalTo: self.resultTable.topAnchor, constant: CGFloat(row * fLength)).isActive = true
-            
-            var labelText = ""
-            switch row {
-            case 1:
-                labelText = "吊"
-                break;
-            case 2:
-                labelText = "噛"
-                break;
-            default:
-                break;
-            }
-            // 結果テーブルにラベルの追加
-            titleTableFrame.addSubview(createLabel(txt: labelText, v: titleTableFrame))
-            
-            for column in 0..<15 {
-                let longTableFrame = UIView.init(frame: CGRect.init(x: 0, y: 0, width: fLength2, height: fLength))
-                self.resultTable.addSubview(createBorder(v: longTableFrame))
-                
-                // 制約を制定
-                constraintsInit(v: longTableFrame)
-                longTableFrame.leadingAnchor.constraint(equalTo: self.resultTable.leadingAnchor, constant: CGFloat(column * fLength2 + fLength)).isActive = true
-                longTableFrame.topAnchor.constraint(equalTo: self.resultTable.topAnchor, constant: CGFloat(row * fLength)).isActive = true
-                
-                // ヘッダーラベルの制定
-                if (row == 0) {
-                    longTableFrame.addSubview(createLabel(txt: String(column + 1) + "日目", v: longTableFrame))
-                }
+        for row in 0..<labelTextList.count {
+            if (!labelTypeList[row]) {
+                createInitResult(row: row, title: labelTextList[row])
+            } else {
+                createFortuneResultTable(row: row, title: labelTextList[row])
             }
         }
+    }
+    
+    func createInitResult(row: Int, title: String) {
+        // タイトル部分
+        let titleTableFrame = UIView.init(frame: CGRect.init(x: 0, y: 0, width: self.resultLen, height: self.resultLen))
+        self.resultTable.addSubview(createBorder(v: titleTableFrame))
+        // 制約を制定
+        constraintsInit(v: titleTableFrame)
+        titleTableFrame.leadingAnchor.constraint(equalTo: self.resultTable.leadingAnchor).isActive = true
+        titleTableFrame.topAnchor.constraint(equalTo: self.resultTable.topAnchor, constant: CGFloat(row * self.resultLen)).isActive = true
         
-        createFortuneResultTable()
+        // 結果テーブルにラベルの追加
+        titleTableFrame.addSubview(createLabel(txt: title, v: titleTableFrame))
+        
+        for column in 0..<15 {
+            // ヘッダーラベルの制定
+            createResult(row: row, column: column, name: (row == 0) ? String(column + 1) + "日目" : "")
+        }
     }
     
     func createResult(row: Int, column: Int, name: String) {
-        let fLength = 29
-        let fLength2 = fLength * 2
-        
-        let longTableFrame = UIView.init(frame: CGRect.init(x: 0, y: 0, width: fLength2, height: fLength))
+        let longTableFrame = UIView.init(frame: CGRect.init(x: 0, y: 0, width: self.resultLenX2, height: self.resultLen))
         self.resultTable.addSubview(createBorder(v: longTableFrame))
         
         // 制約を制定
         constraintsInit(v: longTableFrame)
-        longTableFrame.leadingAnchor.constraint(equalTo: self.resultTable.leadingAnchor, constant: CGFloat(column * fLength2 + fLength)).isActive = true
-        longTableFrame.topAnchor.constraint(equalTo: self.resultTable.topAnchor, constant: CGFloat(row * fLength)).isActive = true
+        longTableFrame.leadingAnchor.constraint(equalTo: self.resultTable.leadingAnchor, constant: CGFloat(column * self.resultLenX2 + self.resultLen)).isActive = true
+        longTableFrame.topAnchor.constraint(equalTo: self.resultTable.topAnchor, constant: CGFloat(row * self.resultLen)).isActive = true
         
         // ヘッダーラベルの制定
         longTableFrame.addSubview(createLabel(txt: name, v: longTableFrame))
     }
     
-    func createFortuneResultTable() {
-        for row in 3..<11 {
-            for column in 0..<31 {
-                if (row == 3) {
-                    createFortuneResult(row: row, column: column, fLength: 29, name: "占", target: "対象", result: "結果", isInit: true)
-                } else if (row == 7) {
-                    createFortuneResult(row: row, column: column, fLength: 29, name: "霊", target: "対象", result: "結果", isInit: true)
-                } else if (row >= 8 && (column == 1 || column == 2)) {
-                    createFortuneResult(row: row, column: column, fLength: 29, name: "", target: "-", result: "-", isInit: true)
-                } else {
-                    createFortuneResult(row: row, column: column, fLength: 29, name: "", target: "", result: "", isInit: true)
-                }
-            }
+    func createFortuneResultTable(row: Int, title: String) {
+        for column in 0..<31 {
+            createFortuneResult(
+                row: row, column: column,
+                name: (column == 0) ? title : "",
+                target: (title == "占" || title == "霊") ? "対象" : "",
+                result: (title == "占" || title == "霊") ? "結果" : "",
+                isInit: true
+            )
         }
     }
     
-    func createFortuneResult(row: Int, column: Int, fLength: Int, name: String, target: String, result: String, isInit: Bool) {
-        let tableFrame = UIView.init(frame: CGRect.init(x: 0, y: 0, width: fLength, height: fLength))
+    func createFortuneResult(row: Int, column: Int, name: String, target: String, result: String, isInit: Bool) {
+        let tableFrame = UIView.init(frame: CGRect.init(x: 0, y: 0, width: self.resultLen, height: self.resultLen))
         if (isInit) {
             self.resultTable.addSubview(createBorder(v: tableFrame))
         } else {
@@ -564,9 +552,9 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         
         // 制約を制定
         constraintsInit(v: tableFrame)
-        tableFrame.leadingAnchor.constraint(equalTo: self.resultTable.leadingAnchor, constant: CGFloat(column * fLength)).isActive = true
-        tableFrame.topAnchor.constraint(equalTo: self.resultTable.topAnchor, constant: CGFloat(row * fLength)).isActive = true
-        self.resultContentView.frame.size.height += CGFloat(row * fLength + fLength)
+        tableFrame.leadingAnchor.constraint(equalTo: self.resultTable.leadingAnchor, constant: CGFloat(column * self.resultLen)).isActive = true
+        tableFrame.topAnchor.constraint(equalTo: self.resultTable.topAnchor, constant: CGFloat(row * self.resultLen)).isActive = true
+        self.resultContentView.frame.size.height += CGFloat(row * self.resultLen + self.resultLen)
         
         // ラベルの追加
         if (isInit) {
@@ -575,12 +563,12 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             tableFrame.addSubview(createLabel(txt: target, v: tableFrame))
             
             // 結果分の作成
-            let resultTableFrame = UIView.init(frame: CGRect.init(x: 0, y: 0, width: fLength, height: fLength))
+            let resultTableFrame = UIView.init(frame: CGRect.init(x: 0, y: 0, width: self.resultLen, height: self.resultLen))
             self.resultTable.addSubview(resultTableFrame)
             constraintsInit(v: resultTableFrame)
-            resultTableFrame.leadingAnchor.constraint(equalTo: self.resultTable.leadingAnchor, constant: CGFloat(column * fLength + fLength)).isActive = true
-            resultTableFrame.topAnchor.constraint(equalTo: self.resultTable.topAnchor, constant: CGFloat(row * fLength)).isActive = true
-            self.resultContentView.frame.size.height += CGFloat(row * fLength + fLength)
+            resultTableFrame.leadingAnchor.constraint(equalTo: self.resultTable.leadingAnchor, constant: CGFloat(column * self.resultLen + self.resultLen)).isActive = true
+            resultTableFrame.topAnchor.constraint(equalTo: self.resultTable.topAnchor, constant: CGFloat(row * self.resultLen)).isActive = true
+            self.resultContentView.frame.size.height += CGFloat(row * self.resultLen + self.resultLen)
             resultTableFrame.addSubview(createLabel(txt: result, v: tableFrame))
         }
     }
@@ -823,7 +811,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                             }
                             
                         }
-                        createFortuneResult(row: fortunePersonArray.count + 3, column: 0, fLength: 29, name: target.text!, target: "", result: "", isInit: true)
+                        createFortuneResult(row: fortunePersonArray.count + fortuneRow, column: 0, name: target.text!, target: "", result: "", isInit: true)
                     } else {
                         return
                     }
@@ -849,7 +837,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                                 self.descSubLabelArray[idx].isUserInteractionEnabled = true
                             }
                         }
-                        createFortuneResult(row: spiritPersonArray.count + 7, column: 0, fLength: 29, name: target.text!, target: "", result: "", isInit: true)
+                        createFortuneResult(row: spiritPersonArray.count + self.spiritRow, column: 0, name: target.text!, target: "", result: "", isInit: true)
                     } else {
                         return
                     }
@@ -878,9 +866,8 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                     default : break
                     }
                     
-                    self.createFortuneResult(row: self.spiritPersonArray.index(of: target.text!)! + 8,
+                    self.createFortuneResult(row: self.spiritPersonArray.index(of: target.text!)! + self.spiritRow + 1,
                                              column: (Int(self.calendarStepper.value) * 2) - 1,
-                                             fLength: 29,
                                              name: "",
                                              target: self.hangArray[Int(self.calendarStepper.value) - 2],
                                              result: spiritResultStr,
@@ -1015,21 +1002,21 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                             // 占い結果の反映
                             if (self.currentMode == .fortune) {
                                 
-                                var fortuneResultStr = ""
+                                let fromPerson = string as String
+                                let toPerson = self.memberLabelList[self.dropIdx].text!
+                                
                                 // ステータスビューの反映用
                                 var targetStatusView = UIView()
                                 for idx in 0..<self.memberLabelList.count {
-                                    if (self.memberLabelList[idx].text == self.memberLabelList[self.dropIdx].text!) {
+                                    if (self.memberLabelList[idx].text == toPerson) {
                                         // その人のステータスビューを取得する
                                         targetStatusView = self.memberStatesViewList[idx]
                                         break
                                     }
                                 }
                                 
-                                let fromPerson = string as String
-                                let toPerson = self.memberLabelList[self.dropIdx].text!
                                 var startStr = String(fromPerson[fromPerson.startIndex])
-                                
+                                var fortuneResultStr = ""
                                 switch self.currentSelect {
                                 case .black :
                                     fortuneResultStr = "黒";
@@ -1073,11 +1060,10 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                                 
                                 targetStatusView.addSubview(resultLabel)
                                 
-                                self.createFortuneResult(row: self.fortunePersonArray.index(of: string as String)! + 4,
+                                self.createFortuneResult(row: self.fortunePersonArray.index(of: fromPerson)! + self.fortuneRow + 1,
                                                          column: (Int(self.calendarStepper.value) * 2) - 1,
-                                                         fLength: 29,
                                                          name: "",
-                                                         target: self.memberLabelList[self.dropIdx].text!,
+                                                         target: toPerson,
                                                          result: fortuneResultStr,
                                                          isInit: false
                                 )
