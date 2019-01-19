@@ -83,8 +83,9 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     var spiritPersonArray: [String] = []
     
     // 占われた人、霊能力使われた人 配列は日付[占い元:[占い先:結果]]
-    var fortunePersonList: Array<[String:[String:String]]> = []
-    var spiritPersonList: Array<[String:[String:String]]> = []
+    var fortunePersonList: [String:Array<[String:String]>] = [:]
+//    var fortunePersonList: Array<[String:[String:String]]> = []
+    var spiritPersonList: [String:Array<[String:String]>] = [:]
     
     var hangArray: [String] = []
     var tempHang : String = "";
@@ -123,9 +124,6 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         // 15日目までのフラグを生成
         self.isFirstTime = [Bool](repeating: false, count: 15)
         self.isFirstTime[0] = true
-        
-        self.fortunePersonList = Array<[String:[String:String]]>(repeating: ["":["":""]], count: 15)
-        self.spiritPersonList = Array<[String:[String:String]]>(repeating: ["":["":""]], count: 15)
         
         self.fortuneView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(iconTapped(sender:))))
         self.hunterView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(iconTapped(sender:))))
@@ -560,7 +558,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         if (isInit) {
             tableFrame.addSubview(createLabel(txt: (column == 0) ? name : (column % 2 != 0) ? target : result, v: tableFrame))
         } else {
-            tableFrame.addSubview(createLabel(txt: target, v: tableFrame))
+            tableFrame.addSubview(createLabelWithTag(txt: target, v: tableFrame, row: row, column: column))
             
             // 結果分の作成
             let resultTableFrame = UIView.init(frame: CGRect.init(x: 0, y: 0, width: self.resultLen, height: self.resultLen))
@@ -569,7 +567,8 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             resultTableFrame.leadingAnchor.constraint(equalTo: self.resultTable.leadingAnchor, constant: CGFloat(column * self.resultLen + self.resultLen)).isActive = true
             resultTableFrame.topAnchor.constraint(equalTo: self.resultTable.topAnchor, constant: CGFloat(row * self.resultLen)).isActive = true
             self.resultContentView.frame.size.height += CGFloat(row * self.resultLen + self.resultLen)
-            resultTableFrame.addSubview(createLabel(txt: result, v: tableFrame))
+            
+            resultTableFrame.addSubview(createLabelWithTag(txt: result, v: tableFrame, row: -row, column: -column))
         }
     }
     
@@ -599,13 +598,24 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         v.heightAnchor.constraint(equalTo: self.resultTable.heightAnchor, constant: v.frame.size.height).isActive = true
     }
     
-    func createLabel(txt: String, v:UIView) -> UILabel {
+    func createLabel(txt: String, v: UIView) -> UILabel {
         let resultLabel = UILabel(frame:CGRect(x:0,y:0,width:v.frame.size.width,height:v.frame.size.height))
         resultLabel.text = txt
         resultLabel.textColor = UIColor.black
         resultLabel.textAlignment = NSTextAlignment.center
         resultLabel.adjustsFontSizeToFitWidth = true
         resultLabel.isUserInteractionEnabled = false
+        return resultLabel
+    }
+    
+    func createLabelWithTag(txt: String, v: UIView, row: Int, column: Int) -> UILabel {
+        let resultLabel = UILabel(frame:CGRect(x:0,y:0,width:v.frame.size.width,height:v.frame.size.height))
+        resultLabel.text = txt
+        resultLabel.textColor = UIColor.black
+        resultLabel.textAlignment = NSTextAlignment.center
+        resultLabel.adjustsFontSizeToFitWidth = true
+        resultLabel.isUserInteractionEnabled = false
+        resultLabel.tag = row * 31 + column
         return resultLabel
     }
     
@@ -629,7 +639,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             
             // 元々のsubviewは消す
             self.view.subviews.forEach {
-                if $0.tag == 10{
+                if $0.tag == 1000{
                     $0.removeFromSuperview()
                 }
             }
@@ -698,7 +708,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             }
             
             self.descSubLabelArray[idx].text = labels[idx + 1]
-            self.descSubLabelArray[idx].tag = 10
+            self.descSubLabelArray[idx].tag = 1000
             self.descSubLabelArray[idx].sizeToFit()
             self.descSubLabelArray[idx].textAlignment = NSTextAlignment.center
             self.view.addSubview(self.descSubLabelArray[idx])
@@ -1005,6 +1015,9 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                                 let fromPerson = string as String
                                 let toPerson = self.memberLabelList[self.dropIdx].text!
                                 
+                                let row = self.fortunePersonArray.index(of: fromPerson)! + self.fortuneRow + 1
+                                let column = (Int(self.calendarStepper.value) * 2) - 1
+                                
                                 // ステータスビューの反映用
                                 var targetStatusView = UIView()
                                 for idx in 0..<self.memberLabelList.count {
@@ -1035,38 +1048,87 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                                 
                                 let resultLabel = self.createLabel(txt: startStr, v: targetStatusView)
                                 let dispSize = CGSize(width: targetStatusView.frame.size.width, height: targetStatusView.frame.size.height)
-                                let addDict = [fromPerson: [toPerson : fortuneResultStr]]
+                                let addDict = [toPerson : fortuneResultStr]
                                 
-                                // 占われた人、 [日付] => [占い元:[占い先:結果]]
-                                if (self.fortunePersonList.canAccess(index: Int(self.calendarStepper.value))) {
-                                    // いる場合、更新。同一条件なら何もしない
-                                    let prevDict = self.fortunePersonList[Int(self.calendarStepper.value)]
-                                    if (prevDict == addDict) { return }
-                                    self.fortunePersonList[Int(self.calendarStepper.value)] = addDict
+                                // 占われた人、 [占い元:[日付] => [占い先:結果]]
+                                if let prevFromInfo = self.fortunePersonList[fromPerson] {
+                                    // 占い元がいる場合、配列の情報を更新。同一条件なら何もしない
+                                    if (prevFromInfo.contains(addDict)) { return }
                                     
-                                    // 修正前のバックグラウンドを修正(prevDictのtoが、占い先、霊媒先、占いCO、霊媒COでないことを確認してからgrayにする)
+                                    // 修正前のバックグラウンドを修正(prevDictのtoが、誰かの占い先、霊媒先、占いCO、霊媒COでないことを確認してからgrayにする)
+                                    var isNeedUndo = true
+                                    var correnctTarget = ""
+                                    for (key, _) in prevFromInfo[Int(self.calendarStepper.value) - 1] {
+                                        correnctTarget = key
+                                        
+                                        self.fortunePersonList[fromPerson]![Int(self.calendarStepper.value) - 1] = addDict
+                                        
+                                        if (self.fortunePersonArray.contains(key) ||
+                                            self.spiritPersonArray.contains(key) ||
+                                            self.existCheck(name: key, targetList: self.fortunePersonList) ||
+                                            self.existCheck(name: key, targetList: self.spiritPersonList)) {
+                                            isNeedUndo = false
+                                            break
+                                        }
+                                    }
                                     
-                                    
+                                    // ステータスビューの修正
+                                    if (isNeedUndo) {
+                                        var correctStatusView = UIView()
+                                        for idx in 0..<self.memberLabelList.count {
+                                            if (self.memberLabelList[idx].text == correnctTarget) {
+                                                // その人のステータスビューを取得する
+                                                correctStatusView = self.memberStatesViewList[idx]
+                                                break
+                                            }
+                                        }
+                                        
+                                        // 元々のsubviewは消す
+                                        correctStatusView.subviews.forEach {
+                                            if $0.tag == row * 31 + column{
+                                                $0.removeFromSuperview()
+                                            }
+                                        }
+                                        self.resultTable.subviews.forEach {
+                                            if $0.tag == row * 31 + column || $0.tag == -row * 31 - column{
+                                                $0.removeFromSuperview()
+                                            }
+                                        }
+                                        correctStatusView.backgroundColor = UIColor.gray
+                                    }
+
+                                    self.fortunePersonList[fromPerson]![Int(self.calendarStepper.value) - 1] = addDict
                                     
                                 } else {
-                                    // いない場合、新規追加
-                                    self.fortunePersonList.insert([fromPerson: [toPerson : fortuneResultStr]], at: Int(self.calendarStepper.value))
+                                    // 占い元がいない場合、新規追加
+                                    self.fortunePersonList[fromPerson] = Array<[String:String]>(repeating: ["":""], count: 15)
+                                    self.fortunePersonList[fromPerson]![Int(self.calendarStepper.value) - 1] = addDict
                                 }
                                 
+//                                print(self.fortunePersonList)
+                                
+                                // 元々のsubviewは消す
+                                targetStatusView.subviews.forEach {
+                                    if $0.tag == row * 31 + column{
+                                        $0.removeFromSuperview()
+                                    }
+                                }
                                 targetStatusView.backgroundColor = UIColor.white
                                 
                                 resultLabel.frame = CGRect(x:0, y:dispSize.height / 2, width:dispSize.width / 2, height:dispSize.height / 2)
-                                resultLabel.tag = 20
+                                resultLabel.tag = row * 31 + column
                                 
                                 targetStatusView.addSubview(resultLabel)
                                 
-                                self.createFortuneResult(row: self.fortunePersonArray.index(of: fromPerson)! + self.fortuneRow + 1,
-                                                         column: (Int(self.calendarStepper.value) * 2) - 1,
-                                                         name: "",
-                                                         target: toPerson,
-                                                         result: fortuneResultStr,
-                                                         isInit: false
+                                self.createFortuneResult(
+                                    row: row,
+                                    column: column,
+                                    name: "",
+                                    target: toPerson,
+                                    result: fortuneResultStr,
+                                    isInit: false
                                 )
+                                
                             }
                         }
                     }
@@ -1075,7 +1137,18 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         }
     }
 
-    
+    func existCheck(name: String, targetList: [String:Array<[String:String]>]) -> Bool {
+        for (_, val) in targetList {
+            for idx in 0..<val.count {
+                for (key, _) in val[idx] {
+                    if (name == key) {
+                        return true
+                    }
+                }
+            }
+        }
+        return false
+    }
     
     
     
