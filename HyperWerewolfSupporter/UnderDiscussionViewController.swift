@@ -70,8 +70,14 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     let werewolfArray = ["疑惑", "CO", "LWCO"]
     let madmanArray = ["疑惑"]
     
+    // 占いCOした人、霊能COした人
     var fortunePersonArray: [String] = []
     var spiritPersonArray: [String] = []
+    
+    // 占われた人、霊能力使われた人 配列は日付[占い元:[占い先:結果]]
+    var fortunePersonList: Array<[String:[String:String]]> = []
+    var spiritPersonList: Array<[String:[String:String]]> = []
+    
     var hangArray: [String] = []
     var tempHang : String = "";
     
@@ -109,6 +115,9 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         // 15日目までのフラグを生成
         self.isFirstTime = [Bool](repeating: false, count: 15)
         self.isFirstTime[0] = true
+        
+        self.fortunePersonList = Array<[String:[String:String]]>(repeating: ["":["":""]], count: 15)
+        self.spiritPersonList = Array<[String:[String:String]]>(repeating: ["":["":""]], count: 15)
         
         self.fortuneView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(iconTapped(sender:))))
         self.hunterView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(iconTapped(sender:))))
@@ -1017,17 +1026,52 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                                     }
                                 }
                                 
+                                let fromPerson = string as String
+                                let toPerson = self.memberLabelList[self.dropIdx].text!
+                                var startStr = String(fromPerson[fromPerson.startIndex])
+                                
                                 switch self.currentSelect {
                                 case .black :
                                     fortuneResultStr = "黒";
-                                    targetStatusView.backgroundColor = UIColor.black
+                                    startStr += "●"
                                     break
                                 case .white :
                                     fortuneResultStr = "白";
-                                    targetStatusView.backgroundColor = UIColor.white
+                                    startStr += "○"
+                                    break
+                                case .melt :
+                                    fortuneResultStr = "溶";
+                                    startStr += "溶"
                                     break
                                 default : break
                                 }
+                                
+                                let resultLabel = self.createLabel(txt: startStr, v: targetStatusView)
+                                let dispSize = CGSize(width: targetStatusView.frame.size.width, height: targetStatusView.frame.size.height)
+                                let addDict = [fromPerson: [toPerson : fortuneResultStr]]
+                                
+                                // 占われた人、 [日付] => [占い元:[占い先:結果]]
+                                if (self.fortunePersonList.canAccess(index: Int(self.calendarStepper.value))) {
+                                    // いる場合、更新。同一条件なら何もしない
+                                    let prevDict = self.fortunePersonList[Int(self.calendarStepper.value)]
+                                    if (prevDict == addDict) { return }
+                                    self.fortunePersonList[Int(self.calendarStepper.value)] = addDict
+                                    
+                                    // 修正前のバックグラウンドを修正(prevDictのtoが、占い先、霊媒先、占いCO、霊媒COでないことを確認してからgrayにする)
+                                    
+                                    
+                                    
+                                } else {
+                                    // いない場合、新規追加
+                                    self.fortunePersonList.insert([fromPerson: [toPerson : fortuneResultStr]], at: Int(self.calendarStepper.value))
+                                }
+                                
+                                targetStatusView.backgroundColor = UIColor.white
+                                
+                                resultLabel.frame = CGRect(x:0, y:dispSize.height / 2, width:dispSize.width / 2, height:dispSize.height / 2)
+                                resultLabel.tag = 20
+                                
+                                targetStatusView.addSubview(resultLabel)
                                 
                                 self.createFortuneResult(row: self.fortunePersonArray.index(of: string as String)! + 4,
                                                          column: (Int(self.calendarStepper.value) * 2) - 1,
@@ -1121,5 +1165,11 @@ extension Array where Element: Equatable {
         if let i = self.index(of: value) {
             self.remove(at: i)
         }
+    }
+}
+
+extension Array {
+    func canAccess(index: Int) -> Bool {
+        return self.count-1 >= index
     }
 }
