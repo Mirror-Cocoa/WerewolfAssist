@@ -75,8 +75,8 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     let spiritArray = ["CO", "白", "黒"]
     let hunterArray = ["CO"]
     let sharerArray = ["CO"]
-    let werewolfArray = ["疑惑", "CO", "LWCO"]
-    let madmanArray = ["疑惑"]
+    let werewolfArray = ["CO"]
+    let madmanArray = ["CO"]
     
     // 占いCOした人、霊能COした人、共有COした人、狩人COした人
     var fortunePersonArray: [String] = []
@@ -833,7 +833,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             switch self.currentMode {
             case .fortune:
                 
-                targetStatusView.backgroundColor = UIColor.white
+                
                 if (self.currentSelect == .co && fortunePersonArray.count < 3) {
                     if (!self.fortunePersonArray.contains(target.text!)) {
                         self.fortunePersonArray.append(target.text!)
@@ -846,6 +846,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                             
                         }
                         createFortuneResult(row: fortunePersonArray.count + fortuneRow, column: 0, name: target.text!, target: "", result: "", isInit: true)
+                        targetStatusView.backgroundColor = UIColor.white
                     } else {
                         return
                     }
@@ -866,7 +867,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             case .werewolf:
                 break
             case .spirit:
-                targetStatusView.backgroundColor = UIColor.white
+                
                 if (self.currentSelect == .co && spiritPersonArray.count < 3) {
                     if (!self.spiritPersonArray.contains(target.text!)) {
                         self.spiritPersonArray.append(target.text!)
@@ -877,6 +878,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                             }
                         }
                         createFortuneResult(row: spiritPersonArray.count + self.spiritRow, column: 0, name: target.text!, target: "", result: "", isInit: true)
+                        targetStatusView.backgroundColor = UIColor.white
                     } else {
                         return
                     }
