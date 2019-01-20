@@ -790,10 +790,24 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                 }
             }
             
+            var changeIcon1 = true
+            
             for idx in 0..<self.personList.count {
                 if (self.personList[idx]["name"]! == target.text) {
-                    // その人のアイコンを登録/削除する
-                    iconChoice(idx: idx)
+                    if self.personList[idx]["icon1"] == nil {
+                        // アイコン1がない場合、アイコン1に追加
+                        self.personList[idx]["icon1"] = addIcon()
+                    } else {
+                        // アイコン2がない場合
+                        if self.personList[idx]["icon2"] == nil {
+                            // 同じ物だったら返す
+                            if (isIcon(str: self.personList[idx]["icon1"]!)) { return }
+                            
+                            // アイコン2がない場合、アイコン1に追加
+                            self.personList[idx]["icon2"] = addIcon()
+                            changeIcon1 = false
+                        } else { return }
+                    }
                     break
                 }
             }
@@ -807,6 +821,13 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                     break
                 }
             }
+            
+            // 元々のsubviewは消す
+//            targetStatusView.subviews.forEach {
+//                if type(of: ($0 as NSObject)).isEqual(UIView.self) {
+//                    $0.removeFromSuperview()
+//                }
+//            }
             
             // 占い・霊能COの時、既存なら何もしない(将来的には同じ人は撤回を実装)
             switch self.currentMode {
@@ -925,15 +946,8 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
 //                }
 //            }
             
+            imageView.frame = CGRect(x:(changeIcon1) ? 0 : dispSize.width / 2, y: 0, width:dispSize.width / 2, height:dispSize.height / 2)
             
-            imageView.frame = CGRect(x:0, y: 0, width:dispSize.width / 2, height:dispSize.height / 2)
-            
-            
-            
-            // TODO: 重なる時、どうにかして下層部の色の影響を受けずにできないだろうか？
-//            imageView.alpha = 1.0
-//            imageView.layer.shouldRasterize = true;
-//            imageView.layer.opacity = 1.0
             
             targetStatusView.addSubview(imageView)
             // contextを閉じる.
@@ -1160,6 +1174,29 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         return false
     }
     
+    func addIcon(idx: Int) {
+        switch self.currentMode {
+        case .fortune:
+            iconAddDel(idx: idx, icon: "F")
+            break
+        case .hunter:
+            iconAddDel(idx: idx, icon: "H")
+            break
+        case .sharer:
+            iconAddDel(idx: idx, icon: "SH")
+            break
+        case .madman:
+            iconAddDel(idx: idx, icon: "M")
+            break
+        case .werewolf:
+            iconAddDel(idx: idx, icon: "W")
+            break
+        case .spirit:
+            iconAddDel(idx: idx, icon: "SP")
+            break
+        case .none: break
+        }
+    }
     
     
     
@@ -1227,7 +1264,27 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         return false
     }
  
+    
+    func addIcon() -> String {
+        switch self.currentMode {
+        case .fortune: return "F"
+        case .hunter: return "H"
+        case .sharer: return "SH"
+        case .madman: return "M"
+        case .werewolf: return "W"
+        case .spirit: return "SP"
+        case .none: return ""
+        }
+    }
+    
+
 }
+
+
+
+
+
+
 
 extension Array where Element: Equatable {
     mutating func remove(value: Element) {
