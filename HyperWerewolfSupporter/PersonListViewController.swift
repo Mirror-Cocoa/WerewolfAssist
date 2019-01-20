@@ -29,6 +29,7 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
         
         if let loadData = userDefaults.object(forKey: "person") {
             personList = loadData as! Array<[String:String]>
+            personList.sort(by: {$0["name"]! < $1["name"]!})
         }
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(cellLongPressed(gesture:)))

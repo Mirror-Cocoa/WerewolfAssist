@@ -33,6 +33,7 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
         // ユーザ情報を取得
         if let loadData = userDefaults.object(forKey: "person") {
             personList = loadData as! Array<[String:String]>
+            personList.sort(by: {$0["name"]! < $1["name"]!})
         }
         
         self.checkMarks = [Bool](repeating: false, count: personList.count)
