@@ -1055,48 +1055,52 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                                     // 占い元がいる場合、配列の情報を更新。同一条件なら何もしない
                                     if (prevFromInfo.contains(addDict)) { return }
                                     
-                                    // 修正前のバックグラウンドを修正(prevDictのtoが、誰かの占い先、霊媒先、占いCO、霊媒COでないことを確認してからgrayにする)
-                                    var isNeedUndo = true
+                                    // 修正前のバックグラウンドを修正(prevDictのtoが、誰かの占い先、霊媒先、占いCO、霊媒CO、共有COでないことを確認してからgrayにする)
+                                    var isWhiteCO = false
+                                    var isEvenOnce = false
                                     var correnctTarget = ""
                                     for (key, _) in prevFromInfo[Int(self.calendarStepper.value) - 1] {
                                         correnctTarget = key
                                         
                                         self.fortunePersonList[fromPerson]![Int(self.calendarStepper.value) - 1] = addDict
                                         
-                                        if (self.fortunePersonArray.contains(key) ||
-                                            self.spiritPersonArray.contains(key) ||
-                                            self.existCheck(name: key, targetList: self.fortunePersonList) ||
-                                            self.existCheck(name: key, targetList: self.spiritPersonList)) {
-                                            isNeedUndo = false
-                                            break
+                                        isWhiteCO = self.fortunePersonArray.contains(key) || self.spiritPersonArray.contains(key)
+                                        isEvenOnce = self.existCheck(name: key, targetList: self.fortunePersonList) || self.existCheck(name: key, targetList: self.spiritPersonList)
+
+                                    }
+                                    
+                                    // テーブルを一旦削除 (もっといい方法がありそう。。)
+                                    for childView in self.resultTable.subviews {
+                                        if type(of: (childView as NSObject)).isEqual(UIView.self) {
+                                            for grandChildView in childView.subviews {
+                                                if type(of: (grandChildView as NSObject)).isEqual(UILabel.self) {
+                                                    if grandChildView.tag == row * 31 + column || grandChildView.tag == -row * 31 - column{
+                                                        grandChildView.removeFromSuperview()
+                                                        break
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                     
+                                    
+                                    var correctStatusView = UIView()
+                                    for idx in 0..<self.memberLabelList.count {
+                                        if (self.memberLabelList[idx].text == correnctTarget) {
+                                            // その人のステータスビューを取得する
+                                            correctStatusView = self.memberStatesViewList[idx]
+                                            break
+                                        }
+                                    }
+                                    correctStatusView.subviews.forEach {
+                                        if $0.tag == row * 31 + column{
+                                            $0.removeFromSuperview()
+                                        }
+                                    }
                                     // ステータスビューの修正
-                                    if (isNeedUndo) {
-                                        var correctStatusView = UIView()
-                                        for idx in 0..<self.memberLabelList.count {
-                                            if (self.memberLabelList[idx].text == correnctTarget) {
-                                                // その人のステータスビューを取得する
-                                                correctStatusView = self.memberStatesViewList[idx]
-                                                break
-                                            }
-                                        }
-                                        
-                                        // 元々のsubviewは消す
-                                        correctStatusView.subviews.forEach {
-                                            if $0.tag == row * 31 + column{
-                                                $0.removeFromSuperview()
-                                            }
-                                        }
-                                        self.resultTable.subviews.forEach {
-                                            if $0.tag == row * 31 + column || $0.tag == -row * 31 - column{
-                                                $0.removeFromSuperview()
-                                            }
-                                        }
+                                    if (!isWhiteCO || !isEvenOnce){
                                         correctStatusView.backgroundColor = UIColor.gray
                                     }
-
                                     self.fortunePersonList[fromPerson]![Int(self.calendarStepper.value) - 1] = addDict
                                     
                                 } else {
@@ -1104,8 +1108,6 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                                     self.fortunePersonList[fromPerson] = Array<[String:String]>(repeating: ["":""], count: 15)
                                     self.fortunePersonList[fromPerson]![Int(self.calendarStepper.value) - 1] = addDict
                                 }
-                                
-//                                print(self.fortunePersonList)
                                 
                                 // 元々のsubviewは消す
                                 targetStatusView.subviews.forEach {
