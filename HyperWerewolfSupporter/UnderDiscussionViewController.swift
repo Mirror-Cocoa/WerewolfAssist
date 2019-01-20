@@ -944,7 +944,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     func dragInteraction(_ interaction: UIDragInteraction, itemsForBeginning session: UIDragSession) -> [UIDragItem] {
         
         if (self.currentMode == .fortune &&
-            self.currentSelect == .black || self.currentSelect == .white) {
+            self.currentSelect == .black || self.currentSelect == .white || self.currentSelect == .melt) {
         
             for idx in 0..<self.innerTableList.count {
                 // ドラッグされた位置を取得します

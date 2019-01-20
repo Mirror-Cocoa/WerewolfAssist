@@ -526,7 +526,6 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             under.personList = self.personList
             under.outerTable = self.outerTable
             under.memberLabelList = self.memberLabelList
-            under.innerTableList = self.innerTableList
             under.innerTableRectList =  self.innerTableRectList
         }
     }
