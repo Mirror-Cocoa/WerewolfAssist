@@ -1050,23 +1050,8 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                                     }
                                 }
                                 
-                                var startStr = String(fromPerson[fromPerson.startIndex])
-                                var fortuneResultStr = ""
-                                switch self.currentSelect {
-                                case .black :
-                                    fortuneResultStr = "黒";
-                                    startStr += "●"
-                                    break
-                                case .white :
-                                    fortuneResultStr = "白";
-                                    startStr += "○"
-                                    break
-                                case .melt :
-                                    fortuneResultStr = "溶";
-                                    startStr += "溶"
-                                    break
-                                default : break
-                                }
+                                let startStr = self.addResultLabel(fromName: fromPerson, toName: toPerson)
+                                let fortuneResultStr = self.getCurrentResultLabel(isLabel: false)
                                 
                                 let resultLabel = self.createLabel(txt: startStr, v: targetStatusView)
                                 let dispSize = CGSize(width: targetStatusView.frame.size.width, height: targetStatusView.frame.size.height)
@@ -1131,15 +1116,19 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                                     self.fortunePersonList[fromPerson]![Int(self.calendarStepper.value) - 1] = addDict
                                 }
                                 
+                                
                                 // 元々のsubviewは消す
+                                var orgLabel: UILabel? = nil
                                 targetStatusView.subviews.forEach {
                                     if type(of: ($0 as NSObject)).isEqual(UILabel.self) {
+                                        orgLabel = $0 as? UILabel
                                         $0.removeFromSuperview()
                                     }
                                 }
                                 targetStatusView.backgroundColor = UIColor.white
                                 
-                                resultLabel.frame = CGRect(x:0, y:dispSize.height / 2, width:dispSize.width / 2, height:dispSize.height / 2)
+                                
+                                resultLabel.frame = CGRect(x:0, y:dispSize.height / 2, width:dispSize.width, height:dispSize.height / 2)
                                 resultLabel.tag = row * 31 + column
                                 
                                 targetStatusView.addSubview(resultLabel)
@@ -1172,6 +1161,41 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             }
         }
         return false
+    }
+    
+    func addResultLabel(fromName: String, toName: String) -> String {
+        var resultLabel = ""
+        for (key, val) in self.fortunePersonList {
+            for idx in 0..<val.count {
+                for (key2, val2) in val[idx] {
+                    if (toName == key2) {
+                        if (fromName != key) {
+                            resultLabel += String(key[key.startIndex]) + self.resultLabel(result: val2) + "/"
+                        }
+                    }
+                }
+            }
+        }
+        resultLabel += String(fromName[fromName.startIndex]) + self.getCurrentResultLabel(isLabel: true)
+        return resultLabel
+    }
+    
+    func resultLabel (result: String) -> String {
+        switch result {
+        case "黒" : return "●"
+        case "白" : return "○"
+        case "溶" : return "溶"
+        default : return ""
+        }
+    }
+    
+    func getCurrentResultLabel(isLabel: Bool) -> String{
+        switch self.currentSelect {
+        case .black : return (isLabel) ? "●" : "黒"
+        case .white : return (isLabel) ? "○" : "白"
+        case .melt : return "溶"
+        default : return ""
+        }
     }
     
     func addIcon(idx: Int) {
