@@ -78,13 +78,14 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     let werewolfArray = ["疑惑", "CO", "LWCO"]
     let madmanArray = ["疑惑"]
     
-    // 占いCOした人、霊能COした人
+    // 占いCOした人、霊能COした人、共有COした人、狩人COした人
     var fortunePersonArray: [String] = []
     var spiritPersonArray: [String] = []
+    var sharerPersonArray: [String] = []
+    var hunterPersonArray: [String] = []
     
     // 占われた人、霊能力使われた人 配列は日付[占い元:[占い先:結果]]
     var fortunePersonList: [String:Array<[String:String]>] = [:]
-//    var fortunePersonList: Array<[String:[String:String]]> = []
     var spiritPersonList: [String:Array<[String:String]>] = [:]
     
     var hangArray: [String] = []
@@ -810,6 +811,8 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             // 占い・霊能COの時、既存なら何もしない(将来的には同じ人は撤回を実装)
             switch self.currentMode {
             case .fortune:
+                
+                targetStatusView.backgroundColor = UIColor.white
                 if (self.currentSelect == .co && fortunePersonArray.count < 3) {
                     if (!self.fortunePersonArray.contains(target.text!)) {
                         self.fortunePersonArray.append(target.text!)
@@ -830,14 +833,19 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                 }
                 break
             case .hunter:
+                targetStatusView.backgroundColor = UIColor.white
+                self.hunterPersonArray.append(target.text!)
                 break
             case .sharer:
+                targetStatusView.backgroundColor = UIColor.white
+                self.sharerPersonArray.append(target.text!)
                 break
             case .madman:
                 break
             case .werewolf:
                 break
             case .spirit:
+                targetStatusView.backgroundColor = UIColor.white
                 if (self.currentSelect == .co && spiritPersonArray.count < 3) {
                     if (!self.spiritPersonArray.contains(target.text!)) {
                         self.spiritPersonArray.append(target.text!)
@@ -890,7 +898,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                 break
             }
             
-            targetStatusView.backgroundColor = UIColor.white
+            
             // 画像のコピー
             // ビットマップ画像のcontextを作成.
             UIGraphicsBeginImageContextWithOptions(CGSize(width: self.currentView.bounds.size.width, height: self.currentView.bounds.size.height), false, 0.0)
@@ -1064,7 +1072,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                                         
                                         self.fortunePersonList[fromPerson]![Int(self.calendarStepper.value) - 1] = addDict
                                         
-                                        isWhiteCO = self.fortunePersonArray.contains(key) || self.spiritPersonArray.contains(key)
+                                        isWhiteCO = self.fortunePersonArray.contains(key) || self.spiritPersonArray.contains(key) || self.sharerPersonArray.contains(key) || self.hunterPersonArray.contains(key)
                                         isEvenOnce = self.existCheck(name: key, targetList: self.fortunePersonList) || self.existCheck(name: key, targetList: self.spiritPersonList)
 
                                     }
@@ -1098,7 +1106,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                                         }
                                     }
                                     // ステータスビューの修正
-                                    if (!isWhiteCO || !isEvenOnce){
+                                    if (!isWhiteCO && !isEvenOnce){
                                         correctStatusView.backgroundColor = UIColor.gray
                                     }
                                     self.fortunePersonList[fromPerson]![Int(self.calendarStepper.value) - 1] = addDict
@@ -1111,7 +1119,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                                 
                                 // 元々のsubviewは消す
                                 targetStatusView.subviews.forEach {
-                                    if $0.tag == row * 31 + column{
+                                    if type(of: ($0 as NSObject)).isEqual(UILabel.self) {
                                         $0.removeFromSuperview()
                                     }
                                 }
