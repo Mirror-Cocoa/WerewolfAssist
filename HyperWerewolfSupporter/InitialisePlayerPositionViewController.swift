@@ -27,6 +27,8 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
     var dragIdx = 0
     var dropIdx = 0
     
+    var hasYourSelf = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -36,15 +38,52 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             personList.sort(by: {$0["name"]! < $1["name"]!})
         }
         
-        self.checkMarks = [Bool](repeating: false, count: personList.count)
-        self.checkMarks[0] = true
-        self.checkTrueList.append(0)
-        
-        memberList.dataSource = self
-        memberList.delegate = self
-        
-        // アラートをセット
-        initSetAlert()
+        // ユーザがいなければ、トップ画面に戻す
+        if (personList.count == 0) {
+            // 注意文言アラート
+            let warningAlert: UIAlertController = UIAlertController(title: "人物が未登録です", message: "まずは人物リストから人物を1人以上登録してください", preferredStyle:  UIAlertControllerStyle.alert)
+            
+            // キャンセルボタン
+            let warningCancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.default, handler:{
+                action in
+                self.navigationController!.popViewController(animated: true)
+                
+            })
+            warningAlert.addAction(warningCancelAction)
+            self.present(warningAlert, animated: true, completion: nil)
+        } else {
+            for idx in 0..<personList.count {
+                if (self.personList[idx]["yourself"] != nil) {
+                    self.hasYourSelf = true
+                    break
+                }
+            }
+            if (!self.hasYourSelf) {
+                // 注意文言アラート
+                let warningAlert: UIAlertController = UIAlertController(title: "「あなた」が未登録です", message: "自分の名前を長押しし、本人登録を行ってください", preferredStyle:  UIAlertControllerStyle.alert)
+                
+                // キャンセルボタン
+                let warningCancelAction: UIAlertAction = UIAlertAction(title: "確認", style: UIAlertActionStyle.default, handler:{
+                    action in
+                    self.navigationController!.popViewController(animated: true)
+                    
+                })
+                warningAlert.addAction(warningCancelAction)
+                self.present(warningAlert, animated: true, completion: nil)
+                
+            } else {
+                
+                self.checkMarks = [Bool](repeating: false, count: personList.count)
+                self.checkMarks[0] = true
+                self.checkTrueList.append(0)
+                
+                memberList.dataSource = self
+                memberList.delegate = self
+                
+                // アラートをセット
+                initSetAlert()
+            }
+        }
     }
     
     
@@ -500,20 +539,23 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
      Cellに値を設定する
      */
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "memberCell", for: indexPath as IndexPath)
-        // Cellに値を設定.
-        var targetPerson = 0
         
-        for _ in 0..<personList.count {
-            if (self.personList[targetPerson]["yourself"] != nil) {
-                break
+        let cell = tableView.dequeueReusableCell(withIdentifier: "memberCell", for: indexPath as IndexPath)
+        if (self.hasYourSelf) {
+            // Cellに値を設定.
+            var targetPerson = 0
+            
+            for _ in 0..<personList.count {
+                if (self.personList[targetPerson]["yourself"] != nil) {
+                    break
+                }
+                targetPerson += 1
             }
-            targetPerson += 1
+            self.personList.insert(self.personList[targetPerson], at:0)
+            self.personList.remove(at: targetPerson + 1)
+            cell.textLabel!.text = (indexPath.row < personList.count) ? personList[indexPath.row]["name"] : "モブ"
+            cell.accessoryType = (self.checkMarks[indexPath.row]) ? .checkmark :.none
         }
-        self.personList.insert(self.personList[targetPerson], at:0)
-        self.personList.remove(at: targetPerson + 1)
-        cell.textLabel!.text = (indexPath.row < personList.count) ? personList[indexPath.row]["name"] : "モブ"
-        cell.accessoryType = (self.checkMarks[indexPath.row]) ? .checkmark :.none
         return cell
     }
     
