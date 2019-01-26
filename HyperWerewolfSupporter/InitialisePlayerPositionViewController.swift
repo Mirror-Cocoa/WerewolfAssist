@@ -54,7 +54,7 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
       */
     func initSetAlert () {
         // アラートの初期設定
-        let alert: UIAlertController = UIAlertController(title: "人数を入力してください", message: "", preferredStyle:  UIAlertControllerStyle.alert)
+        let alert: UIAlertController = UIAlertController(title: "人数を入力してください", message: "4〜16までの数値", preferredStyle:  UIAlertControllerStyle.alert)
 
         // キャンセルボタン
         let cancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.cancel, handler:{

@@ -19,30 +19,60 @@
                         <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6uM-dx-mlc">
-                                <rect key="frame" x="403" y="79" width="187" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6uM-dx-mlc">
+                                <rect key="frame" x="209" y="139.5" width="150" height="41"/>
+                                <color key="backgroundColor" red="0.85490196078431369" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="150" id="nnj-Lb-Qnw"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                <state key="normal" title="Player Mode"/>
+                                <state key="normal" title="Player Mode">
+                                    <color key="titleColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
                                 <connections>
                                     <segue destination="fpf-3p-R7f" kind="show" id="EFn-xL-XN5"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dx0-eJ-PdK">
-                                <rect key="frame" x="423" y="215" width="147" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dx0-eJ-PdK">
+                                <rect key="frame" x="209" y="214.5" width="150" height="41"/>
+                                <color key="backgroundColor" red="0.85490196078431369" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="150" id="Ld7-5S-Mld"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                <state key="normal" title="人物リスト"/>
+                                <state key="normal" title="人物リスト">
+                                    <color key="titleColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
                                 <connections>
                                     <segue destination="ZYb-fn-hlT" kind="show" id="02I-GO-8gB"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="danron_akamatsu" translatesAutoresizingMaskIntoConstraints="NO" id="AYB-Qp-iUD">
-                                <rect key="frame" x="85" y="52" width="260" height="222"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="人狼アシスタント" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RnK-3f-HN8">
+                                <rect key="frame" x="142.5" y="68" width="283" height="42"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="35"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.46202266219999999" green="0.83828371759999998" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="centerY" secondItem="RnK-3f-HN8" secondAttribute="bottom" constant="50" id="VdK-DE-Yv0"/>
+                            <constraint firstItem="6uM-dx-mlc" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="oM3-LR-Nvj"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="centerX" secondItem="dx0-eJ-PdK" secondAttribute="centerX" id="pwv-C6-O7Q"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="centerY" secondItem="6uM-dx-mlc" secondAttribute="centerY" id="qzN-XZ-Rch"/>
+                            <constraint firstItem="RnK-3f-HN8" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="uaI-6M-ScX"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="centerY" secondItem="dx0-eJ-PdK" secondAttribute="centerY" constant="-75" id="vFy-23-kGt"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" id="gOx-WW-Acm"/>
@@ -64,7 +94,7 @@
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vGZ-As-DLm">
                                         <rect key="frame" x="50" y="50" width="234" height="188"/>
-                                        <color key="backgroundColor" red="0.85414585990471803" green="0.84567043047527868" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="backgroundColor" red="0.85490196078431369" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
                                                 <integer key="value" value="1"/>
@@ -605,9 +635,9 @@
                         <viewLayoutGuide key="safeArea" id="hDN-od-Jno"/>
                     </view>
                     <navigationItem key="navigationItem" title="議論中" id="gS3-g0-56f">
-                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="次へ" id="y9s-cL-YW5">
+                        <barButtonItem key="rightBarButtonItem" title="終了" id="y9s-cL-YW5">
                             <connections>
-                                <action selector="onClickNextButton:" destination="g9q-gb-fy8" id="gZt-4p-RHY"/>
+                                <segue destination="BYZ-38-t0r" kind="show" identifier="defaultV" id="3h1-Nf-S0w"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -639,11 +669,14 @@
         </scene>
     </scenes>
     <resources>
-        <image name="danron_akamatsu" width="298" height="300"/>
         <image name="days_1" width="121" height="147"/>
         <image name="plus" width="140" height="140"/>
         <image name="sozai_cman_jp_20181027123932.gif" width="200" height="200"/>
         <image name="time_start" width="200" height="200"/>
         <image name="time_stop" width="200" height="200"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="EFn-xL-XN5"/>
+        <segue reference="3h1-Nf-S0w"/>
+    </inferredMetricsTieBreakers>
 </document>
