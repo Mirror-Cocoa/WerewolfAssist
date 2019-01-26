@@ -220,23 +220,22 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     func statusViewSet(tableV: UIView) {
         
         var rect:CGRect = CGRect.zero
+        var pnt:CGPoint = CGPoint.zero
         if (tableV.frame.maxY - (self.navigationController?.navigationBar.frame.size.height)! == outerTable.frame.maxY) {
-            rect = CGRect(
-                x:tableV.frame.minX, y: tableV.frame.maxY, width:tableV.frame.width, height:tableV.frame.height
-            )
+            pnt = CGPoint(x:tableV.frame.minX, y: tableV.frame.maxY)
         } else if (tableV.frame.minX == outerTable.frame.minX) {
-            rect = CGRect(
-                x:tableV.frame.minX - tableV.frame.size.width, y: tableV.frame.minY, width:tableV.frame.width, height:tableV.frame.height
-            )
+            if (tableV.frame.minY - (self.navigationController?.navigationBar.frame.size.height)! != outerTable.frame.minY) {
+                pnt = CGPoint(x:tableV.frame.minX - tableV.frame.size.width, y: tableV.frame.minY)
+            } else {
+                pnt = CGPoint(x:tableV.frame.minX, y: tableV.frame.minY - tableV.frame.size.height)
+            }
         } else if (tableV.frame.minY - (self.navigationController?.navigationBar.frame.size.height)! == outerTable.frame.minY) {
-            rect = CGRect(
-                x:tableV.frame.minX, y: tableV.frame.minY - tableV.frame.size.height, width:tableV.frame.width, height:tableV.frame.height
-            )
+            pnt = CGPoint(x:tableV.frame.minX, y: tableV.frame.minY - tableV.frame.size.height)
         } else if (tableV.frame.maxX == outerTable.frame.maxX) {
-            rect = CGRect(
-                x:tableV.frame.maxX, y: tableV.frame.minY, width:tableV.frame.width, height:tableV.frame.height
-            )
+            pnt = CGPoint(x:tableV.frame.maxX, y: tableV.frame.minY)
         }
+        
+        rect = CGRect(x:pnt.x, y: pnt.y, width:tableV.frame.width, height:tableV.frame.height)
         
         let statusView = UIView.init(frame: CGRect(
             x:rect.origin.x, y: rect.origin.y, width:tableV.frame.width, height:tableV.frame.height

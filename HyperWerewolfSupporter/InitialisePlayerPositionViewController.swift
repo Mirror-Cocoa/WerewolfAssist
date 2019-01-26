@@ -75,13 +75,13 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             if (textFields != nil) {
                 for textField:UITextField in textFields! {
                     if (self.isOnlyNumber(textField.text!)) {
-                        if (4 <= Int(textField.text!)! && Int(textField.text!)! <= 20) {
+                        if (4 <= Int(textField.text!)! && Int(textField.text!)! <= 16) {
                             // 初期人数
                             self.personNum = Int(textField.text!)!
                             success = true
                         } else {
                             // 注意文言アラート
-                            let warningAlert: UIAlertController = UIAlertController(title: "", message: "人数は4人〜20人の間で入力してください", preferredStyle:  UIAlertControllerStyle.alert)
+                            let warningAlert: UIAlertController = UIAlertController(title: "", message: "人数は4人〜16人の間で入力してください", preferredStyle:  UIAlertControllerStyle.alert)
                             // キャンセルボタン
                             let warningCancelAction: UIAlertAction = UIAlertAction(title: "はい", style: UIAlertActionStyle.default, handler:{
                                 action in
@@ -237,12 +237,28 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
     func innerTablePisitioning(positionCount: Int, outerRect: CGRect) -> [CGRect] {
         let innerTableSize = CGSize(width: outerRect.width / 7, height: outerRect.height / 6)
         var innerTableList: Array<CGRect> = Array(repeating: CGRect.zero, count: self.personNum)
-        
-        let wholeDistance = outerRect.width * 2 + outerRect.height * 2 - innerTableSize.width * 2 - innerTableSize.height * 2
-        let moveDistance = (wholeDistance / (CGFloat(positionCount)))
+        let naviH = (self.navigationController?.navigationBar.frame.size.height)!
         
         let rightX = outerRect.maxX - innerTableSize.width
-        let underY = outerRect.maxY - innerTableSize.height + (self.navigationController?.navigationBar.frame.size.height)!
+        
+        let overY = outerRect.minY + naviH
+        let underY = outerRect.maxY - innerTableSize.height + naviH
+        
+        let centerX = (outerRect.maxX + outerRect.minX - innerTableSize.width) / 2
+        let centerY = (outerRect.maxY + outerRect.minY) / 2 + (innerTableSize.height / 2) - (naviH / 2)
+        
+        let x3_1 = outerRect.width / 3 + innerTableSize.width / 2
+        let x3_2 = x3_1 * 2
+        
+        let y3_1 = underY - (outerRect.height / 3) + innerTableSize.height / 2
+        let y3_2 = y3_1 / 2 + innerTableSize.height / 2
+        
+        let margin6x = innerTableSize.width * 1.2
+        
+        let x6_1 = outerRect.minY + margin6x
+        let x6_2 = x6_1 + margin6x
+        let x6_3 = x6_2 + margin6x
+        let x6_4 = x6_3 + margin6x
         
         let initXPosition = outerRect.maxX - ((outerRect.width + innerTableSize.width) / 2)
         let initYPosition = underY
@@ -257,58 +273,221 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
                 )
                 continue
             }
-        
-            // Y軸が下にいたら
-            if (yPosition == underY) {
-                // xPositionが最低限を超えていたら
-                if (xPosition - moveDistance < outerRect.minX) {
-                    yPosition -= abs(moveDistance - xPosition)+(self.navigationController?.navigationBar.frame.size.height)!
-                    xPosition = outerRect.minX
-                } else {
-                    xPosition -= moveDistance
-                }
             
-            }
-            // X軸が左にいたら
-            else if (xPosition == outerRect.minX) {
-                // yPositionが最低限を超えていたら
-                if (yPosition - moveDistance - (self.navigationController?.navigationBar.frame.size.height)! < outerRect.minY) {
-                    xPosition += abs(moveDistance - yPosition)-(self.navigationController?.navigationBar.frame.size.height)!
-                    yPosition = outerRect.minY + (self.navigationController?.navigationBar.frame.size.height)!
-                } else {
-                    yPosition -= moveDistance
+            switch positionCount {
+            case 4:
+                switch pos {
+                case 1: xPosition = outerRect.minX; yPosition = centerY; break
+                case 2: xPosition = centerX;        yPosition = overY; break
+                case 3: xPosition = rightX;         yPosition = centerY; break
+                default:break
                 }
+                break
+                
+            case 5:
+                switch pos {
+                case 1: xPosition = outerRect.minX; yPosition = centerY; break
+                case 2: xPosition = x3_1;           yPosition = overY; break
+                case 3: xPosition = x3_2;           yPosition = overY; break
+                case 4: xPosition = rightX;         yPosition = centerY; break
+                default:break
+                }
+                break
+            case 6:
+                switch pos {
+                case 1: xPosition = outerRect.minX; yPosition = y3_1; break
+                case 2: xPosition = outerRect.minX; yPosition = y3_2; break
+                case 3: xPosition = centerX;        yPosition = overY; break
+                case 4: xPosition = rightX;         yPosition = y3_2; break
+                case 5: xPosition = rightX;         yPosition = y3_1; break
+                default:break
+                }
+                break
+            case 7:
+                switch pos {
+                case 1: xPosition = outerRect.minX; yPosition = y3_1; break
+                case 2: xPosition = outerRect.minX; yPosition = y3_2; break
+                case 3: xPosition = x3_1;           yPosition = overY; break
+                case 4: xPosition = x3_2;           yPosition = overY; break
+                case 5: xPosition = rightX;         yPosition = y3_2; break
+                case 6: xPosition = rightX;         yPosition = y3_1; break
+                default:break
+                }
+                break
+            case 8:
+                switch pos {
+                case 1: xPosition = outerRect.minX; yPosition = underY; break
+                case 2: xPosition = outerRect.minX; yPosition = centerY; break
+                case 3: xPosition = outerRect.minX; yPosition = overY; break
+                case 4: xPosition = centerX;        yPosition = overY; break
+                case 5: xPosition = rightX;         yPosition = overY; break
+                case 6: xPosition = rightX;         yPosition = centerY; break
+                case 7: xPosition = rightX;         yPosition = underY; break
+                default:break
+                }
+                break
+            case 9:
+                switch pos {
+                case 1: xPosition = x3_1;           yPosition = underY; break
+                case 2: xPosition = outerRect.minX; yPosition = y3_1; break
+                case 3: xPosition = outerRect.minX; yPosition = y3_2; break
+                case 4: xPosition = x3_1;           yPosition = overY; break
+                case 5: xPosition = x3_2;           yPosition = overY; break
+                case 6: xPosition = rightX;         yPosition = y3_2; break
+                case 7: xPosition = rightX;         yPosition = y3_1; break
+                case 8: xPosition = x3_2;           yPosition = underY; break
+                default:break
+                }
+                break
+            case 10:
+                switch pos {
+                case 1: xPosition = x3_1;           yPosition = underY; break
+                case 2: xPosition = outerRect.minX; yPosition = y3_1; break
+                case 3: xPosition = outerRect.minX; yPosition = y3_2; break
+                case 4: xPosition = x3_1;           yPosition = overY; break
+                case 5: xPosition = centerX;        yPosition = overY; break
+                case 6: xPosition = x3_2;           yPosition = overY; break
+                case 7: xPosition = rightX;         yPosition = y3_2; break
+                case 8: xPosition = rightX;         yPosition = y3_1; break
+                case 9: xPosition = x3_2;           yPosition = underY; break
+                default:break
+                }
+                break
+            case 11:
+                switch pos {
+                case 1: xPosition = x3_1;           yPosition = underY; break
+                case 2: xPosition = outerRect.minX; yPosition = underY; break
+                case 3: xPosition = outerRect.minX; yPosition = centerY; break
+                case 4: xPosition = outerRect.minX; yPosition = overY; break
+                case 5: xPosition = x3_1;           yPosition = overY; break
+                case 6: xPosition = x3_2;           yPosition = overY; break
+                case 7: xPosition = rightX;         yPosition = overY; break
+                case 8: xPosition = rightX;         yPosition = centerY; break
+                case 9: xPosition = rightX;         yPosition = underY; break
+                case 10: xPosition = x3_2;          yPosition = underY; break
+                default:break
+                }
+                break
+            case 12:
+                switch pos {
+                case 1: xPosition = x3_1;           yPosition = underY; break
+                case 2: xPosition = outerRect.minX; yPosition = underY; break
+                case 3: xPosition = outerRect.minX; yPosition = centerY; break
+                case 4: xPosition = outerRect.minX; yPosition = overY; break
+                case 5: xPosition = x3_1;           yPosition = overY; break
+                case 6: xPosition = centerX;        yPosition = overY; break
+                case 7: xPosition = x3_2;           yPosition = overY; break
+                case 8: xPosition = rightX;         yPosition = overY; break
+                case 9: xPosition = rightX;         yPosition = centerY; break
+                case 10: xPosition = rightX;        yPosition = underY; break
+                case 11: xPosition = x3_2;          yPosition = underY; break
+                default:break
+                }
+                break
+            case 13:
+                switch pos {
+                case 1: xPosition = x3_1;           yPosition = underY; break
+                case 2: xPosition = outerRect.minX; yPosition = underY; break
+                case 3: xPosition = outerRect.minX; yPosition = y3_1; break
+                case 4: xPosition = outerRect.minX; yPosition = y3_2; break
+                case 5: xPosition = outerRect.minX; yPosition = overY; break
+                case 6: xPosition = x3_1;           yPosition = overY; break
+                case 7: xPosition = x3_2;           yPosition = overY; break
+                case 8: xPosition = rightX;         yPosition = overY; break
+                case 9: xPosition = rightX;         yPosition = y3_2; break
+                case 10: xPosition = rightX;        yPosition = y3_1; break
+                case 11: xPosition = rightX;        yPosition = underY; break
+                case 12: xPosition = x3_2;          yPosition = underY; break
+                default:break
+                }
+                break
+            case 14:
+                switch pos {
+                case 1: xPosition = x3_1;           yPosition = underY; break
+                case 2: xPosition = outerRect.minX; yPosition = underY; break
+                case 3: xPosition = outerRect.minX; yPosition = y3_1; break
+                case 4: xPosition = outerRect.minX; yPosition = y3_2; break
+                case 5: xPosition = outerRect.minX; yPosition = overY; break
+                case 6: xPosition = x3_1;           yPosition = overY; break
+                case 7: xPosition = centerX;        yPosition = overY; break
+                case 8: xPosition = x3_2;           yPosition = overY; break
+                case 9: xPosition = rightX;         yPosition = overY; break
+                case 10: xPosition = rightX;        yPosition = y3_2; break
+                case 11: xPosition = rightX;        yPosition = y3_1; break
+                case 12: xPosition = rightX;        yPosition = underY; break
+                case 13: xPosition = x3_2;          yPosition = underY; break
+                default:break
+                }
+                break
+            case 15:
+                switch pos {
+                case 1: xPosition = x3_1;           yPosition = underY; break
+                case 2: xPosition = outerRect.minX; yPosition = underY; break
+                case 3: xPosition = outerRect.minX; yPosition = y3_1; break
+                case 4: xPosition = outerRect.minX; yPosition = y3_2; break
+                case 5: xPosition = outerRect.minX; yPosition = overY; break
+                case 6: xPosition = x6_1;           yPosition = overY; break
+                case 7: xPosition = x6_2;           yPosition = overY; break
+                case 8: xPosition = x6_3;           yPosition = overY; break
+                case 9: xPosition = x6_4;           yPosition = overY; break
+                case 10: xPosition = rightX;        yPosition = overY; break
+                case 11: xPosition = rightX;        yPosition = y3_2; break
+                case 12: xPosition = rightX;        yPosition = y3_1; break
+                case 13: xPosition = rightX;        yPosition = underY; break
+                case 14: xPosition = x3_2;          yPosition = underY; break
+                default:break
+                }
+                break
+            case 16:
+                switch pos {
+                case 1: xPosition = x3_1;           yPosition = underY; break
+                case 2: xPosition = outerRect.minX; yPosition = underY; break
+                case 3: xPosition = outerRect.minX; yPosition = y3_1; break
+                case 4: xPosition = outerRect.minX; yPosition = centerY; break
+                case 5: xPosition = outerRect.minX; yPosition = y3_2; break
+                case 6: xPosition = outerRect.minX; yPosition = overY; break
+                case 7: xPosition = x3_1;           yPosition = overY; break
+                case 8: xPosition = centerX;        yPosition = overY; break
+                case 9: xPosition = x3_2;           yPosition = overY; break
+                case 10: xPosition = rightX;        yPosition = overY; break
+                case 11: xPosition = rightX;        yPosition = y3_2; break
+                case 12: xPosition = rightX;        yPosition = centerY; break
+                case 13: xPosition = rightX;        yPosition = y3_1; break
+                case 14: xPosition = rightX;        yPosition = underY; break
+                case 15: xPosition = x3_2;          yPosition = underY; break
+                default:break
+                }
+                break
+            case 17:
+                break
+            case 18:
+                break
+            case 19:
+                break
+            case 20:
+                break
+                
+                
+            default:break
+                
+                
             }
             
-            // Y軸が上にいたら
-            else if (yPosition - (self.navigationController?.navigationBar.frame.size.height)! == outerRect.minY) {
-                // xPositionが最上限を超えていたら
-                if (xPosition + moveDistance > rightX) {
-                    yPosition += moveDistance - (rightX - xPosition)
-                    xPosition = rightX
-                } else {
-                    xPosition += moveDistance
-                }
-            }
             
-            // X軸が右にいたら
-            else if (xPosition == rightX) {
-                // yPositionが最上限を超えていたら
-                if (yPosition + moveDistance > underY) {
-                    xPosition -= moveDistance - (underY - yPosition)
-                    yPosition = underY
-                } else {
-                    yPosition += moveDistance
-                }
-            }
-        
+            
             innerTableList[pos] = CGRect.init(
                 x: xPosition, y: yPosition, width: innerTableSize.width, height: innerTableSize.height
             )
         }
         
+        
+        
         return innerTableList
     }
+    
+    
+    
+    
     
     /*
      Cellの総数を返す
