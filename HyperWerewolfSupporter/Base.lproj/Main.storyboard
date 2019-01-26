@@ -548,7 +548,7 @@
                                             <action selector="tapStop:" destination="g9q-gb-fy8" eventType="touchDown" id="5fy-04-BYr"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TcR-Po-znF" userLabel="fortune Button">
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TcR-Po-znF" userLabel="fortune Button">
                                         <rect key="frame" x="503" y="95" width="15" height="16"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="16" id="V07-FI-l0A"/>
@@ -556,7 +556,7 @@
                                         </constraints>
                                         <state key="normal" image="plus"/>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qI2-Bw-vHf" userLabel="Other Button">
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" enabled="NO" highlighted="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qI2-Bw-vHf" userLabel="Other Button">
                                         <rect key="frame" x="503" y="136" width="15" height="15"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="15" id="0hc-bg-U9p"/>
