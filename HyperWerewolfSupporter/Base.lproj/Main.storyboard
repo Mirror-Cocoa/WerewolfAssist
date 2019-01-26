@@ -23,7 +23,7 @@
                                 <rect key="frame" x="209" y="139.5" width="150" height="41"/>
                                 <color key="backgroundColor" red="0.85490196078431369" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="150" id="nnj-Lb-Qnw"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="150" id="nnj-Lb-Qnw"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <state key="normal" title="Player Mode">
@@ -42,7 +42,7 @@
                                 <rect key="frame" x="209" y="214.5" width="150" height="41"/>
                                 <color key="backgroundColor" red="0.85490196078431369" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="150" id="Ld7-5S-Mld"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="150" id="Ld7-5S-Mld"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <state key="normal" title="人物リスト">
@@ -57,10 +57,15 @@
                                     <segue destination="ZYb-fn-hlT" kind="show" id="02I-GO-8gB"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="人狼アシスタント" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RnK-3f-HN8">
-                                <rect key="frame" x="142.5" y="68" width="283" height="42"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="35"/>
-                                <nil key="textColor"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RnK-3f-HN8">
+                                <rect key="frame" x="152" y="70" width="265" height="40"/>
+                                <attributedString key="attributedText">
+                                    <fragment content="人狼アシスタント">
+                                        <attributes>
+                                            <font key="NSFont" size="40" name="851MkPOP"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -140,8 +145,9 @@
                                     <constraint firstItem="vGZ-As-DLm" firstAttribute="leading" secondItem="iH3-Mc-CmA" secondAttribute="leading" constant="50" id="OiU-9V-rdi"/>
                                     <constraint firstItem="vGZ-As-DLm" firstAttribute="trailing" secondItem="iH3-Mc-CmA" secondAttribute="centerX" id="RyQ-Ze-Q1k"/>
                                     <constraint firstAttribute="bottom" secondItem="Gjb-nF-HyS" secondAttribute="bottom" constant="50" id="Z19-Q6-OGo"/>
-                                    <constraint firstAttribute="trailing" secondItem="bpk-MY-QJU" secondAttribute="trailing" constant="50" id="Zja-1r-OlO"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="bpk-MY-QJU" secondAttribute="trailing" id="Zja-1r-OlO"/>
                                     <constraint firstItem="Gjb-nF-HyS" firstAttribute="leading" secondItem="vGZ-As-DLm" secondAttribute="trailing" id="bXY-s5-llT"/>
+                                    <constraint firstItem="bpk-MY-QJU" firstAttribute="leading" secondItem="iH3-Mc-CmA" secondAttribute="leading" constant="426" id="s0g-2f-QtV"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -676,7 +682,6 @@
         <image name="time_stop" width="200" height="200"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="EFn-xL-XN5"/>
         <segue reference="3h1-Nf-S0w"/>
     </inferredMetricsTieBreakers>
 </document>
