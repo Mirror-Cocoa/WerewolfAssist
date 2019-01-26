@@ -456,10 +456,15 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         }
     }
     
+    func pickerViewDidSHow(pickerView: UIPickerView) {
+        self.calendarStepper.isEnabled = false
+    }
+    
     func pickerViewDidHide(pickerView: UIPickerView) {
         if (!self.isPickerDone) {
             calendarReset()
         }
+        self.calendarStepper.isEnabled = true
         self.isPickerDone = false
     }
     
