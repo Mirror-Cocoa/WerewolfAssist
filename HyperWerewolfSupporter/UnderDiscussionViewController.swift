@@ -385,8 +385,6 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         self.view.addSubview(pickerView)
         
         self.pickerView.items = self.memberArray
-                // モーダルをいつか作ろうね
-        //            self.accessibilityViewIsModal = false
         
         // 吊り/噛みによって文言を変更
         if (currentDead == .hang) {
@@ -411,10 +409,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
      * ピッカーのデリゲートメソッド
      */
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
-    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
-        return 1
+        return (self.currentDead == .killed) ? 2 : 1
     }
     func pickerView(_ namePickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return self.pickerView.items.count
@@ -423,36 +418,59 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         return self.pickerView.items[row]
     }
     // pickerViewがタップされた時の処理
-    func pickerView(pickerView: UIPickerView, didSelect numbers: [Int]) {
+    func pickerView(pickerView: UIPickerView, didSelect num: [Int]) {
         self.isPickerDone = true
+        let num0 = num[0]
+        
         // 未選択の場合return
-        let num = numbers[0]
-        if (num == 0) {
+        if (num0 == 0) {
             calendarReset()
             return
         }
-        
+
         if (self.currentDead == .hang) {
             // 吊られた場合の処理
-            self.tempHang = self.pickerView.items[num];
+            self.tempHang = self.pickerView.items[num0];
             self.currentDead = .killed
             self.createPicker()
         } else if (self.currentDead == .killed) {
+            
+            let num1 = num[1]
+            // 同一の場合return
+            if (!(num0 == 1 && num1 == 1)){
+                if (num0 == num1 || (num0 == 1 && num1 > 1)) {
+                    calendarReset()
+                    return
+                }
+            }
+            
             // 噛まれた場合の処理
             deadImage(name: self.tempHang, isHang: true)
             createResult(row: self.hangRow, column: Int(self.calendarStepper.value) - 2, name: self.tempHang)
             self.hangArray.append(self.tempHang)
             self.memberArray.remove(value: self.tempHang)
             
+            var human1 = self.pickerView.items[num0]
+            var human2 = self.pickerView.items[num1]
             
-            if (num != 1) {
-                createFortuneResult(row: self.killedRow, column: (Int(self.calendarStepper.value) * 2) - 3, name: "", target: self.pickerView.items[num], result: "-", isInit: false)
-                self.memberArray.remove(value: self.pickerView.items[num])
-                deadImage(name: self.pickerView.items[num], isHang: false)
+            if (num0 == 1) {
+                human1 = "-"
             } else {
                 // GJの場合は消さない
-                createResult(row: 2, column: Int(self.calendarStepper.value) - 2, name: "-")
+                self.memberArray.remove(value: self.pickerView.items[num0])
+                deadImage(name: self.pickerView.items[num0], isHang: false)
             }
+            
+            if (num1 == 0 || num1 == 1) {
+                human2 = "-"
+            } else {
+                // GJの場合は消さない
+                self.memberArray.remove(value: self.pickerView.items[num1])
+                deadImage(name: self.pickerView.items[num1], isHang: false)
+            }
+
+            createFortuneResult(row: self.killedRow, column: (Int(self.calendarStepper.value) * 2) - 3, name: "", target: human1, result: human2, isInit: false)
+            
         }
     }
     
