@@ -114,8 +114,6 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(self.personNum)
-        print(self.personList)
         self.squareTablePositionSet()
         
         // 暫定用に何か時間を
@@ -1142,10 +1140,8 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                                 
                                 
                                 // 元々のsubviewは消す
-                                var orgLabel: UILabel? = nil
                                 targetStatusView.subviews.forEach {
                                     if type(of: ($0 as NSObject)).isEqual(UILabel.self) {
-                                        orgLabel = $0 as? UILabel
                                         $0.removeFromSuperview()
                                     }
                                 }
