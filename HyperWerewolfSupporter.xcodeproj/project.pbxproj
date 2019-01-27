@@ -21,6 +21,18 @@
 		39CCFB3621D252960085151E /* AlertPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39CCFB3521D252960085151E /* AlertPickerView.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		394CB48321FDE7BC0076D5B3 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		39335B1421FCC10000268CB4 /* 851MkPOP_001.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = 851MkPOP_001.ttf; sourceTree = "<group>"; };
 		3954099920E273650067E806 /* HyperWerewolfSupporter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HyperWerewolfSupporter.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -103,6 +115,7 @@
 				3954099520E273650067E806 /* Sources */,
 				3954099620E273650067E806 /* Frameworks */,
 				3954099720E273650067E806 /* Resources */,
+				394CB48321FDE7BC0076D5B3 /* CopyFiles */,
 			);
 			buildRules = (
 			);

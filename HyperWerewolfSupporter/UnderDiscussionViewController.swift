@@ -190,11 +190,15 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             let dropDelegate: UIDropInteractionDelegate = self
             let dropInteraction = UIDropInteraction(delegate: dropDelegate)
             
+            innerTable.isUserInteractionEnabled = true
+            
             innerTable.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tableTapped(sender:))))
             
             innerTable.addInteraction(dropInteraction)
             
-            self.memberLabelList[cnt].isUserInteractionEnabled = false
+            
+            
+            self.memberLabelList[cnt].isUserInteractionEnabled = true
             
             innerTable.addSubview(self.memberLabelList[cnt])
             
@@ -670,7 +674,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         resultLabel.textColor = UIColor.black
         resultLabel.textAlignment = NSTextAlignment.center
         resultLabel.adjustsFontSizeToFitWidth = true
-        resultLabel.isUserInteractionEnabled = false
+        resultLabel.isUserInteractionEnabled = true
         return resultLabel
     }
     
@@ -680,7 +684,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         resultLabel.textColor = UIColor.black
         resultLabel.textAlignment = NSTextAlignment.center
         resultLabel.adjustsFontSizeToFitWidth = true
-        resultLabel.isUserInteractionEnabled = false
+        resultLabel.isUserInteractionEnabled = true
         resultLabel.tag = row * 31 + column
         return resultLabel
     }
@@ -857,23 +861,25 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             
             var changeIcon1 = true
             
-            for idx in 0..<self.personList.count {
-                if (self.personList[idx]["name"]! == target.text) {
-                    if self.personList[idx]["icon1"] == nil {
-                        // アイコン1がない場合、アイコン1に追加
-                        self.personList[idx]["icon1"] = addIcon()
-                    } else {
-                        // アイコン2がない場合
-                        if self.personList[idx]["icon2"] == nil {
-                            // 同じ物だったら返す
-                            if (isIcon(str: self.personList[idx]["icon1"]!)) { return }
-                            
-                            // アイコン2がない場合、アイコン1に追加
-                            self.personList[idx]["icon2"] = addIcon()
-                            changeIcon1 = false
-                        } else { return }
+            if (self.currentSelect == .co) {
+                for idx in 0..<self.personList.count {
+                    if (self.personList[idx]["name"]! == target.text) {
+                        if self.personList[idx]["icon1"] == nil {
+                            // アイコン1がない場合、アイコン1に追加
+                            self.personList[idx]["icon1"] = addIcon()
+                        } else {
+                            // アイコン2がない場合
+                            if self.personList[idx]["icon2"] == nil {
+                                // 同じ物だったら返す
+                                if (isIcon(str: self.personList[idx]["icon1"]!)) { return }
+                                
+                                // アイコン2がない場合、アイコン1に追加
+                                self.personList[idx]["icon2"] = addIcon()
+                                changeIcon1 = false
+                            } else { return }
+                        }
+                        break
                     }
-                    break
                 }
             }
             
@@ -936,6 +942,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                 if (self.currentSelect == .co && spiritPersonArray.count < 3) {
                     if (!self.spiritPersonArray.contains(target.text!)) {
                         self.spiritPersonArray.append(target.text!)
+                        self.memberLabelList[self.memberLabelList.index(of: target)!].isUserInteractionEnabled = true
                         for idx in 0..<self.descSubLabelArray.count {
                             if (self.spiritPersonArray.count != 0) {
                                 self.descSubLabelArray[idx].backgroundColor = UIColor.white
@@ -960,6 +967,26 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                             break
                         }
                     }
+                    let row = self.spiritPersonArray.index(of: target.text!)! + self.spiritRow + 1
+                    let column = (Int(self.calendarStepper.value) * 2) - 1
+                    
+                    
+                    // テーブルを一旦削除 (もっといい方法がありそう。。)
+                    for childView in self.resultTable.subviews {
+                        if type(of: (childView as NSObject)).isEqual(UIView.self) {
+                            for grandChildView in childView.subviews {
+                                if type(of: (grandChildView as NSObject)).isEqual(UILabel.self) {
+                                    if grandChildView.tag == row * 31 + column || grandChildView.tag == -row * 31 - column{
+                                        grandChildView.removeFromSuperview()
+                                        break
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    
+                    // TODO:パンダのチェックを入れる
                     switch self.currentSelect {
                     case .black :
                         spiritResultStr = "黒";
@@ -972,8 +999,8 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                     default : break
                     }
                     
-                    self.createFortuneResult(row: self.spiritPersonArray.index(of: target.text!)! + self.spiritRow + 1,
-                                             column: (Int(self.calendarStepper.value) * 2) - 1,
+                    self.createFortuneResult(row: row,
+                                             column: column,
                                              name: "",
                                              target: self.hangArray[Int(self.calendarStepper.value) - 2],
                                              result: spiritResultStr,
