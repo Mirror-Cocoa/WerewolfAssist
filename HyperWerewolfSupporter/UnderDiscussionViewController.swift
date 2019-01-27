@@ -219,9 +219,18 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         
         var rect:CGRect = CGRect.zero
         var pnt:CGPoint = CGPoint.zero
+        
+        // iOS11以降かどうかで分岐する
+        let insets: UIEdgeInsets
+        if #available(iOS 11, *) {
+            insets = view.safeAreaInsets
+        } else {
+            insets = .zero
+        }
+        
         if (tableV.frame.maxY - (self.navigationController?.navigationBar.frame.size.height)! == outerTable.frame.maxY) {
             pnt = CGPoint(x:tableV.frame.minX, y: tableV.frame.maxY)
-        } else if (tableV.frame.minX == outerTable.frame.minX) {
+        } else if (tableV.frame.minX == outerTable.frame.minX + insets.left) {
             if (tableV.frame.minY - (self.navigationController?.navigationBar.frame.size.height)! != outerTable.frame.minY) {
                 pnt = CGPoint(x:tableV.frame.minX - tableV.frame.size.width, y: tableV.frame.minY)
             } else {
@@ -229,7 +238,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             }
         } else if (tableV.frame.minY - (self.navigationController?.navigationBar.frame.size.height)! == outerTable.frame.minY) {
             pnt = CGPoint(x:tableV.frame.minX, y: tableV.frame.minY - tableV.frame.size.height)
-        } else if (tableV.frame.maxX == outerTable.frame.maxX) {
+        } else if (tableV.frame.maxX == outerTable.frame.maxX + insets.left) {
             pnt = CGPoint(x:tableV.frame.maxX, y: tableV.frame.minY)
         }
         
