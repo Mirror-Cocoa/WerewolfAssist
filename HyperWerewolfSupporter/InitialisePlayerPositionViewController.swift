@@ -292,9 +292,7 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
         let overY = outerRect.minY + naviH
         let underY = outerRect.maxY - innerTableSize.height + naviH
         
-        let centerX = (outerRect.maxX + outerRect.minX - innerTableSize.width) / 2 + insets.left
-//        let centerY = (outerRect.maxY + outerRect.minY) / 2 + (innerTableSize.height / 2) - (naviH / 2)
-        let centerY = (outerRect.maxY + outerRect.minY) / 2 + (innerTableSize.height / 2)
+
         
         let margin3x = outerRect.width / 3
         let x3_1 = leftX + margin3x - innerTableSize.width / 2
@@ -304,7 +302,7 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
         let y3_1 = underY - margin3y + innerTableSize.height / 2
         let y3_2 = y3_1 - margin3y
         
-        let margin5y = innerTableSize.width * 1
+        let margin5y = innerTableSize.height * 1.25
         let y5_1 = underY - margin5y
         let y5_2 = y5_1 - margin5y
         let y5_3 = y5_2 - margin5y
@@ -315,6 +313,9 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
         let x6_2 = x6_1 + margin6x
         let x6_3 = x6_2 + margin6x
         let x6_4 = x6_3 + margin6x
+        
+        let centerX = (outerRect.maxX + outerRect.minX - innerTableSize.width) / 2 + insets.left
+        let centerY = y5_2
         
         let initXPosition = outerRect.maxX - ((outerRect.width + innerTableSize.width) / 2) + insets.left
         let initYPosition = underY
@@ -343,19 +344,19 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             case 5:
                 switch pos {
                 case 1: xPosition = leftX;          yPosition = centerY; break
-                case 2: xPosition = x3_1;           yPosition = overY; break
-                case 3: xPosition = x3_2;           yPosition = overY; break
+                case 2: xPosition = leftX;          yPosition = overY; break
+                case 3: xPosition = rightX;         yPosition = overY; break
                 case 4: xPosition = rightX;         yPosition = centerY; break
                 default:break
                 }
                 break
             case 6:
                 switch pos {
-                case 1: xPosition = leftX;          yPosition = y3_1; break
-                case 2: xPosition = leftX;          yPosition = y3_2; break
+                case 1: xPosition = leftX;          yPosition = underY; break
+                case 2: xPosition = leftX;          yPosition = overY; break
                 case 3: xPosition = centerX;        yPosition = overY; break
-                case 4: xPosition = rightX;         yPosition = y3_2; break
-                case 5: xPosition = rightX;         yPosition = y3_1; break
+                case 4: xPosition = rightX;         yPosition = overY; break
+                case 5: xPosition = rightX;         yPosition = underY; break
                 default:break
                 }
                 break
