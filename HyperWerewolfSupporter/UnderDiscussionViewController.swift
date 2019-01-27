@@ -228,19 +228,35 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             insets = .zero
         }
         
-        if (tableV.frame.maxY - (self.navigationController?.navigationBar.frame.size.height)! == outerTable.frame.maxY) {
+        let naviV:Int = round(value: Double((self.navigationController?.navigationBar.frame.size.height)!))
+        let inset:Int = round(value: Double(insets.left))
+        
+        let inUnder = round(value: Double(tableV.frame.maxY)) - naviV
+        let OutUnder = round(value: Double(outerTable.frame.maxY))
+        
+        let inLeft = round(value: Double(tableV.frame.minX))
+        let OutLeft = round(value: Double(outerTable.frame.minX)) + inset
+        
+        let inOver = round(value: Double(tableV.frame.minY)) - naviV
+        let OutOver = round(value: Double(outerTable.frame.minY))
+        
+        let inRight = round(value: Double(tableV.frame.maxX))
+        let OutRight = round(value: Double(outerTable.frame.maxX)) + inset
+        
+        if (inUnder == OutUnder) {
             pnt = CGPoint(x:tableV.frame.minX, y: tableV.frame.maxY)
-        } else if (tableV.frame.minX == outerTable.frame.minX + insets.left) {
-            if (tableV.frame.minY - (self.navigationController?.navigationBar.frame.size.height)! != outerTable.frame.minY) {
+        } else if (inLeft == OutLeft) {
+            if (inOver != OutOver) {
                 pnt = CGPoint(x:tableV.frame.minX - tableV.frame.size.width, y: tableV.frame.minY)
             } else {
                 pnt = CGPoint(x:tableV.frame.minX, y: tableV.frame.minY - tableV.frame.size.height)
             }
-        } else if (tableV.frame.minY - (self.navigationController?.navigationBar.frame.size.height)! == outerTable.frame.minY) {
+        } else if (inOver == OutOver) {
             pnt = CGPoint(x:tableV.frame.minX, y: tableV.frame.minY - tableV.frame.size.height)
-        } else if (tableV.frame.maxX == outerTable.frame.maxX + insets.left) {
+        } else if (inRight == OutRight) {
             pnt = CGPoint(x:tableV.frame.maxX, y: tableV.frame.minY)
         }
+
         
         rect = CGRect(x:pnt.x, y: pnt.y, width:tableV.frame.width, height:tableV.frame.height)
         
@@ -273,6 +289,17 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             self.view.addSubview(statusView)
         }
         
+    }
+    
+    /**
+     * 情報落ち対処
+     */
+    func round(value: Double) -> Int {
+        let number = value as NSNumber
+        let before = NSDecimalNumber(string: number.stringValue)
+        let handler = NSDecimalNumberHandler(roundingMode: .down, scale: 0, raiseOnExactness:false, raiseOnOverflow: false, raiseOnUnderflow: false, raiseOnDivideByZero: false)
+        let after = before.rounding(accordingToBehavior: handler)
+        return after.intValue
     }
     
     /**
