@@ -67,6 +67,23 @@
                                 </attributedString>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jqt-Ag-fga">
+                                <rect key="frame" x="349" y="167" width="171" height="41"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.85490196078431369" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <state key="normal" title="チュートリアル">
+                                    <color key="titleColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <segue destination="CdH-2a-lh1" kind="show" id="gEn-sT-jkb"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.46202266219999999" green="0.83828371759999998" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -176,6 +193,21 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vC0-wH-KOq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1014.0845070422536" y="-607.5"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="8AP-Yr-D09">
+            <objects>
+                <viewController id="CdH-2a-lh1" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="a00-ZR-jyU">
+                        <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="o3h-6L-nV7"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="q1H-sC-ZDa" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1047" y="215"/>
         </scene>
         <!--Person List View Controller-->
         <scene sceneID="kBM-wz-kWH">
@@ -681,6 +713,7 @@
         <image name="time_stop" width="200" height="200"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="EFn-xL-XN5"/>
         <segue reference="3h1-Nf-S0w"/>
     </inferredMetricsTieBreakers>
 </document>
