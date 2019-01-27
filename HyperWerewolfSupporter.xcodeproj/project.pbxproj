@@ -19,6 +19,7 @@
 		39673548217F5FDE00D05D81 /* TableDrawUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39673547217F5FDE00D05D81 /* TableDrawUtil.swift */; };
 		3967354A2184197500D05D81 /* sozai_cman_jp_20181027123932.gif in Resources */ = {isa = PBXBuildFile; fileRef = 396735492184197500D05D81 /* sozai_cman_jp_20181027123932.gif */; };
 		39CCFB3621D252960085151E /* AlertPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39CCFB3521D252960085151E /* AlertPickerView.swift */; };
+		B5D8409057A64EFFB35E4D5F /* Pods_HyperWerewolfSupporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8109EE39BD42B88E9C9D9257 /* Pods_HyperWerewolfSupporter.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,9 @@
 		39673547217F5FDE00D05D81 /* TableDrawUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableDrawUtil.swift; sourceTree = "<group>"; };
 		396735492184197500D05D81 /* sozai_cman_jp_20181027123932.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = sozai_cman_jp_20181027123932.gif; sourceTree = "<group>"; };
 		39CCFB3521D252960085151E /* AlertPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPickerView.swift; sourceTree = "<group>"; };
+		8109EE39BD42B88E9C9D9257 /* Pods_HyperWerewolfSupporter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HyperWerewolfSupporter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C7A9EA049E7ADE775B823120 /* Pods-HyperWerewolfSupporter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HyperWerewolfSupporter.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HyperWerewolfSupporter/Pods-HyperWerewolfSupporter.debug.xcconfig"; sourceTree = "<group>"; };
+		C98D52E69E2258E50C46EB88 /* Pods-HyperWerewolfSupporter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HyperWerewolfSupporter.release.xcconfig"; path = "Pods/Target Support Files/Pods-HyperWerewolfSupporter/Pods-HyperWerewolfSupporter.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +47,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5D8409057A64EFFB35E4D5F /* Pods_HyperWerewolfSupporter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -55,6 +60,8 @@
 				3954099B20E273650067E806 /* HyperWerewolfSupporter */,
 				395409B020E2766B0067E806 /* Resources */,
 				3954099A20E273650067E806 /* Products */,
+				F08BF7CB5AC9257F111C8861 /* Pods */,
+				D603F4518E3E017499B78812 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -93,6 +100,23 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		D603F4518E3E017499B78812 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8109EE39BD42B88E9C9D9257 /* Pods_HyperWerewolfSupporter.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F08BF7CB5AC9257F111C8861 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				C7A9EA049E7ADE775B823120 /* Pods-HyperWerewolfSupporter.debug.xcconfig */,
+				C98D52E69E2258E50C46EB88 /* Pods-HyperWerewolfSupporter.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -100,9 +124,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 395409AB20E273650067E806 /* Build configuration list for PBXNativeTarget "HyperWerewolfSupporter" */;
 			buildPhases = (
+				98FDCBEBBBA0B4EA2BB565D5 /* [CP] Check Pods Manifest.lock */,
 				3954099520E273650067E806 /* Sources */,
 				3954099620E273650067E806 /* Frameworks */,
 				3954099720E273650067E806 /* Resources */,
+				EA9324207300DEF4F6F73F05 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -162,6 +188,53 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		98FDCBEBBBA0B4EA2BB565D5 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-HyperWerewolfSupporter-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EA9324207300DEF4F6F73F05 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-HyperWerewolfSupporter/Pods-HyperWerewolfSupporter-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Gecco/Gecco.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Gecco.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HyperWerewolfSupporter/Pods-HyperWerewolfSupporter-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		3954099520E273650067E806 /* Sources */ = {
@@ -309,6 +382,7 @@
 		};
 		395409AC20E273650067E806 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C7A9EA049E7ADE775B823120 /* Pods-HyperWerewolfSupporter.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -323,6 +397,7 @@
 		};
 		395409AD20E273650067E806 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C98D52E69E2258E50C46EB88 /* Pods-HyperWerewolfSupporter.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
