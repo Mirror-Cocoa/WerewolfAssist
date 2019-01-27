@@ -219,6 +219,8 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         
         var rect:CGRect = CGRect.zero
         var pnt:CGPoint = CGPoint.zero
+        var pntX:CGFloat = 0
+        var pntY:CGFloat = 0
         
         // iOS11以降かどうかで分岐する
         let insets: UIEdgeInsets
@@ -243,26 +245,33 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         let inRight = round(value: Double(tableV.frame.maxX))
         let OutRight = round(value: Double(outerTable.frame.maxX)) + left
         
+        let rectX:CGFloat = 35
+        let rectY:CGFloat = 35
+        
+        let diffX = (tableV.frame.width - rectX) / 2
+        let diffY = (tableV.frame.height - rectY) / 2
+        
         if (inUnder == OutUnder) {
-            pnt = CGPoint(x:tableV.frame.minX, y: tableV.frame.maxY)
+            pntX = tableV.frame.minX + diffX
+            pntY = tableV.frame.maxY
         } else if (inLeft == OutLeft) {
             if (inOver != OutOver) {
-                pnt = CGPoint(x:tableV.frame.minX - tableV.frame.size.width, y: tableV.frame.minY)
+                pntX = tableV.frame.minX - rectX
+                pntY = tableV.frame.minY + diffY
             } else {
-                pnt = CGPoint(x:tableV.frame.minX, y: tableV.frame.minY - tableV.frame.size.height)
+                pntX = tableV.frame.minX + diffX
+                pntY = tableV.frame.minY - rectY
             }
         } else if (inOver == OutOver) {
-            pnt = CGPoint(x:tableV.frame.minX, y: tableV.frame.minY - tableV.frame.size.height)
+            pntX = tableV.frame.minX + diffX
+            pntY = tableV.frame.minY - rectY
         } else if (inRight == OutRight) {
-            pnt = CGPoint(x:tableV.frame.maxX, y: tableV.frame.minY)
+            pntX = tableV.frame.maxX
+            pntY = tableV.frame.minY + diffY
         }
 
-        
-        rect = CGRect(x:pnt.x, y: pnt.y, width:tableV.frame.width, height:tableV.frame.height)
-        
-        let statusView = UIView.init(frame: CGRect(
-            x:rect.origin.x, y: rect.origin.y, width:tableV.frame.width, height:tableV.frame.height
-        ))
+        rect = CGRect(x:pntX, y:pntY, width:rectX, height:rectY)
+        let statusView = UIView.init(frame: rect)
         
 //        statusView.layer.shouldRasterize = true;
         statusView.backgroundColor = UIColor.gray

@@ -314,7 +314,7 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
         let x6_4 = x6_3 + margin6x
         
         let centerX = (outerRect.maxX + outerRect.minX - innerTableSize.width) / 2 + insets.left
-        let centerY = y5_2
+        let centerY = (outerRect.height) / 2 - (innerTableSize.height / 2) + overY
         
         let initXPosition = outerRect.maxX - ((outerRect.width + innerTableSize.width) / 2) + insets.left
         let initYPosition = underY
