@@ -41,10 +41,10 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
         // ユーザがいなければ、トップ画面に戻す
         if (personList.count == 0) {
             // 注意文言アラート
-            let warningAlert: UIAlertController = UIAlertController(title: "人物が未登録です", message: "まずは人物リストから人物を1人以上登録してください", preferredStyle:  UIAlertControllerStyle.alert)
+            let warningAlert: UIAlertController = UIAlertController(title: "人物が未登録です", message: "まずは人物リストから人物を1人以上登録してください", preferredStyle:  UIAlertController.Style.alert)
             
             // キャンセルボタン
-            let warningCancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.default, handler:{
+            let warningCancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertAction.Style.default, handler:{
                 action in
                 self.navigationController!.popViewController(animated: true)
                 
@@ -60,10 +60,10 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             }
             if (!self.hasYourSelf) {
                 // 注意文言アラート
-                let warningAlert: UIAlertController = UIAlertController(title: "「あなた」が未登録です", message: "自分の名前を長押しし、本人登録を行ってください", preferredStyle:  UIAlertControllerStyle.alert)
+                let warningAlert: UIAlertController = UIAlertController(title: "「あなた」が未登録です", message: "自分の名前を長押しし、本人登録を行ってください", preferredStyle:  UIAlertController.Style.alert)
                 
                 // キャンセルボタン
-                let warningCancelAction: UIAlertAction = UIAlertAction(title: "確認", style: UIAlertActionStyle.default, handler:{
+                let warningCancelAction: UIAlertAction = UIAlertAction(title: "確認", style: UIAlertAction.Style.default, handler:{
                     action in
                     self.navigationController!.popViewController(animated: true)
                     
@@ -93,10 +93,10 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
       */
     func initSetAlert () {
         // アラートの初期設定
-        let alert: UIAlertController = UIAlertController(title: "人数を入力してください", message: "4〜16までの数値", preferredStyle:  UIAlertControllerStyle.alert)
+        let alert: UIAlertController = UIAlertController(title: "人数を入力してください", message: "4〜16までの数値", preferredStyle:  UIAlertController.Style.alert)
 
         // キャンセルボタン
-        let cancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.cancel, handler:{
+        let cancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertAction.Style.cancel, handler:{
             action in
             self.navigationController!.popViewController(animated: true)
         })
@@ -104,7 +104,7 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
         alert.addAction(cancelAction)
 
         // OKボタンの処理
-        let defaultAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler:{
+        let defaultAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler:{
             // ボタンが押された時の処理を書く（クロージャ実装）
             action in
             
@@ -120,9 +120,9 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
                             success = true
                         } else {
                             // 注意文言アラート
-                            let warningAlert: UIAlertController = UIAlertController(title: "", message: "人数は4人〜16人の間で入力してください", preferredStyle:  UIAlertControllerStyle.alert)
+                            let warningAlert: UIAlertController = UIAlertController(title: "", message: "人数は4人〜16人の間で入力してください", preferredStyle:  UIAlertController.Style.alert)
                             // キャンセルボタン
-                            let warningCancelAction: UIAlertAction = UIAlertAction(title: "はい", style: UIAlertActionStyle.default, handler:{
+                            let warningCancelAction: UIAlertAction = UIAlertAction(title: "はい", style: UIAlertAction.Style.default, handler:{
                                 action in
                                 self.navigationController!.popViewController(animated: true)
                             })
@@ -131,9 +131,9 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
                         }
                     } else {
                         // 注意文言アラート
-                        let warningAlert: UIAlertController = UIAlertController(title: "", message: "人数は数値で入力してください", preferredStyle:  UIAlertControllerStyle.alert)
+                        let warningAlert: UIAlertController = UIAlertController(title: "", message: "人数は数値で入力してください", preferredStyle:  UIAlertController.Style.alert)
                         // キャンセルボタン
-                        let warningCancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.default, handler:{
+                        let warningCancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertAction.Style.default, handler:{
                             action in
                             self.navigationController!.popViewController(animated: true)
                         })
@@ -163,7 +163,7 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             let label:UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
             label.text = "人数"
             text.leftView = label
-            text.leftViewMode = UITextFieldViewMode.always
+            text.leftViewMode = UITextField.ViewMode.always
             
         })
 
@@ -607,10 +607,10 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
         let alertMsg:String = "登録したい人の名前を入力してください。"
         
         // アラートの初期設定
-        let alert: UIAlertController = UIAlertController(title: alertTitle, message: alertMsg, preferredStyle:  UIAlertControllerStyle.alert)
+        let alert: UIAlertController = UIAlertController(title: alertTitle, message: alertMsg, preferredStyle:  UIAlertController.Style.alert)
         
         // OKボタンの処理
-        let defaultAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler:{
+        let defaultAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler:{
             action in
             let textFields:Array<UITextField>? = alert.textFields as Array<UITextField>?
             
@@ -629,7 +629,7 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             // TableViewを再読み込み
             self.memberList.reloadData()
         })
-        alert.addAction(UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.cancel))
+        alert.addAction(UIAlertAction(title: "キャンセル", style: UIAlertAction.Style.cancel))
         alert.addAction(defaultAction)
             
         // テキストフィールドの設置
@@ -638,7 +638,7 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             let label:UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
             label.text = "人物名"
             text.leftView = label
-            text.leftViewMode = UITextFieldViewMode.always
+            text.leftViewMode = UITextField.ViewMode.always
         })
             
         present(alert, animated: true, completion: nil)

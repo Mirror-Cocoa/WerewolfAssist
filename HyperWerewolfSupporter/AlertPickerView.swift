@@ -67,13 +67,13 @@ class AlertPickerView: UIView {
         pickerView.backgroundColor = self.backgroundColorOfPickerView
         
         
-        let space = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.fixedSpace, target: nil, action: nil)
+        let space = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.fixedSpace, target: nil, action: nil)
         space.width = 12
         
-        let cancelItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.cancel, target: self, action: #selector(cancelPicker(sender:)))
-        let flexSpaceItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: self, action: nil)
+        let cancelItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.cancel, target: self, action: #selector(cancelPicker(sender:)))
+        let flexSpaceItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: self, action: nil)
         
-        let doneButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done, target: self, action: #selector(endPicker(sender:)))
+        let doneButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.done, target: self, action: #selector(endPicker(sender:)))
         
         toolbarItems! += [space, cancelItem, flexSpaceItem, doneButtonItem, space]
         pickerToolbar.setItems(toolbarItems as? [UIBarButtonItem], animated: false)

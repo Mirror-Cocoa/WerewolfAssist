@@ -658,7 +658,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             // contextを閉じる.
             UIGraphicsEndImageContext()
             // 縦横比率を保ちつつ画像をUIImageViewの大きさに合わせる.
-            self.currentView.contentMode = UIViewContentMode.scaleAspectFit
+            self.currentView.contentMode = UIView.ContentMode.scaleAspectFit
             
             // 元々のsubviewは消す
             self.view.subviews.forEach {
@@ -977,7 +977,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             // contextを閉じる.
             UIGraphicsEndImageContext()
             // 縦横比率を保ちつつ画像をUIImageViewの大きさに合わせる.
-            targetStatusView.contentMode = UIViewContentMode.scaleAspectFit
+            targetStatusView.contentMode = UIView.ContentMode.scaleAspectFit
             
             
             

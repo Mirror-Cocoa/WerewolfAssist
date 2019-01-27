@@ -81,7 +81,7 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
         if editing {
             print("編集中")
             self.editButtonItem.title = "完了"
-            let addButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.add, target: self, action: #selector(self.addCell(sender:)))
+            let addButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(self.addCell(sender:)))
             self.navigationItem.setLeftBarButton(addButton, animated: true)
         } else {
             print("通常モード")
@@ -100,9 +100,9 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
     /*
      Cellを挿入または削除しようとした際に呼び出される
      */
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         // 削除のとき.
-        if (editingStyle == UITableViewCellEditingStyle.delete) {
+        if (editingStyle == UITableViewCell.EditingStyle.delete) {
             // 指定されたセルのオブジェクトをpersonListから削除する.
             personList.remove(at: indexPath.row)
             
@@ -124,10 +124,10 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
         let alertMsg:String = String(format: "%@したい人の名前を入力してください。", (editType == .editMode) ? "編集" : "登録")
 
         // アラートの初期設定
-        let alert: UIAlertController = UIAlertController(title: alertTitle, message: alertMsg, preferredStyle:  UIAlertControllerStyle.alert)
+        let alert: UIAlertController = UIAlertController(title: alertTitle, message: alertMsg, preferredStyle:  UIAlertController.Style.alert)
         
         // OKボタンの処理
-        let defaultAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler:{
+        let defaultAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler:{
             // ボタンが押された時の処理を書く（クロージャ実装）
             action in
             let textFields:Array<UITextField>? = alert.textFields as Array<UITextField>?
@@ -152,7 +152,7 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
         })
         
         // キャンセルボタン
-        alert.addAction(UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.cancel))
+        alert.addAction(UIAlertAction(title: "キャンセル", style: UIAlertAction.Style.cancel))
         alert.addAction(defaultAction)
         
         // テキストフィールドの設置
@@ -164,7 +164,7 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
             let label:UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
             label.text = "人物名"
             text.leftView = label
-            text.leftViewMode = UITextFieldViewMode.always
+            text.leftViewMode = UITextField.ViewMode.always
         })
         
         present(alert, animated: true, completion: nil)
@@ -178,7 +178,7 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
     // 長押しした際に呼ばれるメソッド
     // 通常モードでは、「あなた」登録、編集モードではテーブルのソートを行う
     @objc func cellLongPressed(gesture: UILongPressGestureRecognizer) {
-        if (gesture.state == UIGestureRecognizerState.began) {
+        if (gesture.state == UIGestureRecognizer.State.began) {
             let indexPath = personTableView.indexPathForRow(at: gesture.location(in: personTableView))
             if (indexPath != nil) {
                 for i in 0..<personList.count {
