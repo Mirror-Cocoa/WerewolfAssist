@@ -228,20 +228,20 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             insets = .zero
         }
         
-        let naviV:Int = round(value: Double((self.navigationController?.navigationBar.frame.size.height)!))
-        let inset:Int = round(value: Double(insets.left))
+        let top:Int = round(value: Double(insets.top))
+        let left:Int = round(value: Double(insets.left))
         
-        let inUnder = round(value: Double(tableV.frame.maxY)) - naviV
+        let inUnder = round(value: Double(tableV.frame.maxY)) - top
         let OutUnder = round(value: Double(outerTable.frame.maxY))
         
         let inLeft = round(value: Double(tableV.frame.minX))
-        let OutLeft = round(value: Double(outerTable.frame.minX)) + inset
+        let OutLeft = round(value: Double(outerTable.frame.minX)) + left
         
-        let inOver = round(value: Double(tableV.frame.minY)) - naviV
+        let inOver = round(value: Double(tableV.frame.minY)) - top
         let OutOver = round(value: Double(outerTable.frame.minY))
         
         let inRight = round(value: Double(tableV.frame.maxX))
-        let OutRight = round(value: Double(outerTable.frame.maxX)) + inset
+        let OutRight = round(value: Double(outerTable.frame.maxX)) + left
         
         if (inUnder == OutUnder) {
             pnt = CGPoint(x:tableV.frame.minX, y: tableV.frame.maxY)

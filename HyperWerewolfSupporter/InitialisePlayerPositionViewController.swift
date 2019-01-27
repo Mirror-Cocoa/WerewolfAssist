@@ -276,8 +276,7 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
     func innerTablePisitioning(positionCount: Int, outerRect: CGRect) -> [CGRect] {
         let innerTableSize = CGSize(width: outerRect.width / 7, height: outerRect.height / 6)
         var innerTableList: Array<CGRect> = Array(repeating: CGRect.zero, count: self.personNum)
-        let naviH = (self.navigationController?.navigationBar.frame.size.height)!
-        
+
         // iOS11以降かどうかで分岐する
         let insets: UIEdgeInsets
         if #available(iOS 11, *) {
@@ -289,8 +288,8 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
         let leftX = outerRect.minX + insets.left
         let rightX = outerRect.maxX - innerTableSize.width + insets.left
         
-        let overY = outerRect.minY + naviH
-        let underY = outerRect.maxY - innerTableSize.height + naviH
+        let overY = outerRect.minY + insets.top
+        let underY = outerRect.maxY - innerTableSize.height + insets.top
         
 
         
