@@ -114,6 +114,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.hidesBackButton = true
         self.squareTablePositionSet()
         
         // 暫定用に何か時間を
@@ -218,7 +219,6 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     func statusViewSet(tableV: UIView) {
         
         var rect:CGRect = CGRect.zero
-        var pnt:CGPoint = CGPoint.zero
         var pntX:CGFloat = 0
         var pntY:CGFloat = 0
         
