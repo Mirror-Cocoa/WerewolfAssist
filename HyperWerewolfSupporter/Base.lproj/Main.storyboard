@@ -67,11 +67,10 @@
                                 </attributedString>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jqt-Ag-fga">
-                                <rect key="frame" x="349" y="167" width="171" height="41"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="0.85490196078431369" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jqt-Ag-fga">
+                                <rect key="frame" x="410" y="225.5" width="108" height="30"/>
+                                <color key="backgroundColor" red="1" green="0.53582190149999998" blue="0.96127836280000001" alpha="0.38890086210000002" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <state key="normal" title="チュートリアル">
                                     <color key="titleColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
@@ -88,6 +87,8 @@
                         <color key="backgroundColor" red="0.46202266219999999" green="0.83828371759999998" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="centerY" secondItem="RnK-3f-HN8" secondAttribute="bottom" constant="50" id="VdK-DE-Yv0"/>
+                            <constraint firstItem="dx0-eJ-PdK" firstAttribute="bottom" secondItem="jqt-Ag-fga" secondAttribute="bottom" id="Wk4-LZ-3bq"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="jqt-Ag-fga" secondAttribute="trailing" constant="50" id="lcx-i6-ovj"/>
                             <constraint firstItem="6uM-dx-mlc" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="oM3-LR-Nvj"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="centerX" secondItem="dx0-eJ-PdK" secondAttribute="centerX" id="pwv-C6-O7Q"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="centerY" secondItem="6uM-dx-mlc" secondAttribute="centerY" id="qzN-XZ-Rch"/>
