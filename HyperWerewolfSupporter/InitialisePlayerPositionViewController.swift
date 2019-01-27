@@ -293,20 +293,28 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
         let underY = outerRect.maxY - innerTableSize.height + naviH
         
         let centerX = (outerRect.maxX + outerRect.minX - innerTableSize.width) / 2 + insets.left
-        let centerY = (outerRect.maxY + outerRect.minY) / 2 + (innerTableSize.height / 2) - (naviH / 2)
+//        let centerY = (outerRect.maxY + outerRect.minY) / 2 + (innerTableSize.height / 2) - (naviH / 2)
+        let centerY = (outerRect.maxY + outerRect.minY) / 2 + (innerTableSize.height / 2)
         
-        let x3_1 = outerRect.width / 3 + innerTableSize.width / 2 + insets.left
-        let x3_2 = x3_1 * 2 + insets.left
+        let margin3x = outerRect.width / 3
+        let x3_1 = leftX + margin3x - innerTableSize.width / 2
+        let x3_2 = x3_1 + margin3x
         
-        let y3_1 = underY - (outerRect.height / 3) + innerTableSize.height / 2
-        let y3_2 = y3_1 / 2 + innerTableSize.height / 2
+        let margin3y = outerRect.height / 3
+        let y3_1 = underY - margin3y + innerTableSize.height / 2
+        let y3_2 = y3_1 - margin3y
+        
+        let margin5y = innerTableSize.width * 1
+        let y5_1 = underY - margin5y
+        let y5_2 = y5_1 - margin5y
+        let y5_3 = y5_2 - margin5y
+        let y5_4 = y5_3 - margin5y
         
         let margin6x = innerTableSize.width * 1.2
-        
-        let x6_1 = outerRect.minY + margin6x + insets.left
-        let x6_2 = x6_1 + margin6x + insets.left
-        let x6_3 = x6_2 + margin6x + insets.left
-        let x6_4 = x6_3 + margin6x + insets.left
+        let x6_1 = outerRect.minX + margin6x + insets.left
+        let x6_2 = x6_1 + margin6x
+        let x6_3 = x6_2 + margin6x
+        let x6_4 = x6_3 + margin6x
         
         let initXPosition = outerRect.maxX - ((outerRect.width + innerTableSize.width) / 2) + insets.left
         let initYPosition = underY
@@ -490,17 +498,17 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
                 switch pos {
                 case 1: xPosition = x3_1;           yPosition = underY; break
                 case 2: xPosition = leftX;          yPosition = underY; break
-                case 3: xPosition = leftX;          yPosition = y3_1; break
+                case 3: xPosition = leftX;          yPosition = y5_1; break
                 case 4: xPosition = leftX;          yPosition = centerY; break
-                case 5: xPosition = leftX;          yPosition = y3_2; break
+                case 5: xPosition = leftX;          yPosition = y5_3; break
                 case 6: xPosition = leftX;          yPosition = overY; break
                 case 7: xPosition = x3_1;           yPosition = overY; break
                 case 8: xPosition = centerX;        yPosition = overY; break
                 case 9: xPosition = x3_2;           yPosition = overY; break
                 case 10: xPosition = rightX;        yPosition = overY; break
-                case 11: xPosition = rightX;        yPosition = y3_2; break
+                case 11: xPosition = rightX;        yPosition = y5_3; break
                 case 12: xPosition = rightX;        yPosition = centerY; break
-                case 13: xPosition = rightX;        yPosition = y3_1; break
+                case 13: xPosition = rightX;        yPosition = y5_1; break
                 case 14: xPosition = rightX;        yPosition = underY; break
                 case 15: xPosition = x3_2;          yPosition = underY; break
                 default:break
