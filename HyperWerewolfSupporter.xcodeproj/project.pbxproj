@@ -25,18 +25,6 @@
 		B5D8409057A64EFFB35E4D5F /* Pods_HyperWerewolfSupporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8109EE39BD42B88E9C9D9257 /* Pods_HyperWerewolfSupporter.framework */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		394CB48321FDE7BC0076D5B3 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 7;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		39335B1421FCC10000268CB4 /* 851MkPOP_001.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = 851MkPOP_001.ttf; sourceTree = "<group>"; };
 		394CB47F21FDBE760076D5B3 /* AnnotationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnnotationViewController.swift; path = HyperWerewolfSupporter/AnnotationViewController.swift; sourceTree = "<group>"; };
@@ -149,7 +137,6 @@
 				3954099520E273650067E806 /* Sources */,
 				3954099620E273650067E806 /* Frameworks */,
 				3954099720E273650067E806 /* Resources */,
-				394CB48321FDE7BC0076D5B3 /* CopyFiles */,
 				EA9324207300DEF4F6F73F05 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (

@@ -341,10 +341,10 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
                 
             case 5:
                 switch pos {
-                case 1: xPosition = leftX;          yPosition = centerY; break
+                case 1: xPosition = leftX;          yPosition = underY; break
                 case 2: xPosition = leftX;          yPosition = overY; break
                 case 3: xPosition = rightX;         yPosition = overY; break
-                case 4: xPosition = rightX;         yPosition = centerY; break
+                case 4: xPosition = rightX;         yPosition = underY; break
                 default:break
                 }
                 break
