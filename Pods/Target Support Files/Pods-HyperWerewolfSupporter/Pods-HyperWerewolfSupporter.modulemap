@@ -1,0 +1,6 @@
+framework module Pods_HyperWerewolfSupporter {
+  umbrella header "Pods-HyperWerewolfSupporter-umbrella.h"
+
+  export *
+  module * { export * }
+}
