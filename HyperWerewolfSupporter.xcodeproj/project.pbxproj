@@ -9,7 +9,8 @@
 /* Begin PBXBuildFile section */
 		39335B1521FCC10200268CB4 /* 851MkPOP_001.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 39335B1421FCC10000268CB4 /* 851MkPOP_001.ttf */; };
 		394CB48021FDBE760076D5B3 /* AnnotationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394CB47F21FDBE760076D5B3 /* AnnotationViewController.swift */; };
-		394CB48221FDC73F0076D5B3 /* Tutorial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394CB48121FDC73F0076D5B3 /* Tutorial.swift */; };
+		394CB48221FDC73F0076D5B3 /* TutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394CB48121FDC73F0076D5B3 /* TutorialViewController.swift */; };
+		394CB48521FF5CD20076D5B3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394CB48421FF5CD20076D5B3 /* ViewController.swift */; };
 		3954099D20E273650067E806 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3954099C20E273650067E806 /* AppDelegate.swift */; };
 		3954099F20E273650067E806 /* DefaultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3954099E20E273650067E806 /* DefaultViewController.swift */; };
 		395409A220E273650067E806 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 395409A020E273650067E806 /* Main.storyboard */; };
@@ -27,7 +28,8 @@
 /* Begin PBXFileReference section */
 		39335B1421FCC10000268CB4 /* 851MkPOP_001.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = 851MkPOP_001.ttf; sourceTree = "<group>"; };
 		394CB47F21FDBE760076D5B3 /* AnnotationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnnotationViewController.swift; path = HyperWerewolfSupporter/AnnotationViewController.swift; sourceTree = "<group>"; };
-		394CB48121FDC73F0076D5B3 /* Tutorial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tutorial.swift; sourceTree = "<group>"; };
+		394CB48121FDC73F0076D5B3 /* TutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialViewController.swift; sourceTree = "<group>"; };
+		394CB48421FF5CD20076D5B3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		3954099920E273650067E806 /* HyperWerewolfSupporter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HyperWerewolfSupporter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3954099C20E273650067E806 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3954099E20E273650067E806 /* DefaultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultViewController.swift; sourceTree = "<group>"; };
@@ -84,7 +86,8 @@
 				39CCFB3521D252960085151E /* AlertPickerView.swift */,
 				3954099C20E273650067E806 /* AppDelegate.swift */,
 				3954099E20E273650067E806 /* DefaultViewController.swift */,
-				394CB48121FDC73F0076D5B3 /* Tutorial.swift */,
+				394CB48121FDC73F0076D5B3 /* TutorialViewController.swift */,
+				394CB48421FF5CD20076D5B3 /* ViewController.swift */,
 				395409B320E692E70067E806 /* InitialisePlayerPositionViewController.swift */,
 				39673545217333DF00D05D81 /* UnderDiscussionViewController.swift */,
 				39673547217F5FDE00D05D81 /* TableDrawUtil.swift */,
@@ -247,8 +250,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				394CB48521FF5CD20076D5B3 /* ViewController.swift in Sources */,
 				3954099F20E273650067E806 /* DefaultViewController.swift in Sources */,
-				394CB48221FDC73F0076D5B3 /* Tutorial.swift in Sources */,
+				394CB48221FDC73F0076D5B3 /* TutorialViewController.swift in Sources */,
 				39CCFB3621D252960085151E /* AlertPickerView.swift in Sources */,
 				3954099D20E273650067E806 /* AppDelegate.swift in Sources */,
 				394CB48021FDBE760076D5B3 /* AnnotationViewController.swift in Sources */,
@@ -398,6 +402,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YJ8UKHNRL9;
 				INFOPLIST_FILE = HyperWerewolfSupporter/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mycompany.HyperWerewolfSupporter;
@@ -413,6 +418,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YJ8UKHNRL9;
 				INFOPLIST_FILE = HyperWerewolfSupporter/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mycompany.HyperWerewolfSupporter;
