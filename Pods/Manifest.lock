@@ -5,12 +5,12 @@ DEPENDENCIES:
   - Gecco
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - Gecco
 
 SPEC CHECKSUMS:
   Gecco: e662f949821e742997787bad7b730ccc0052e43c
 
-PODFILE CHECKSUM: 5df019a027615b3069c443c4fb6fb84120ee3a65
+PODFILE CHECKSUM: 5007b7a1847759005787544ac74785d10a88e0f0
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.16.2
