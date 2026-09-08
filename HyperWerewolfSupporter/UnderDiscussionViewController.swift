@@ -33,6 +33,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     @IBOutlet weak var timerLabel: UILabel!
     @IBOutlet weak var timerStepper: UIStepper!
     
+    @IBOutlet weak var endButton: UIBarButtonItem!
     var isFirstTime: [Bool] = []
     
     var timer = Timer()
@@ -339,6 +340,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
      * スタートボタン or 一時停止ボタンが押された時
      */
     @IBAction func tapStart(_ sender: Any) {
+        if (!self.endButton.isEnabled) { self.endButton.isEnabled = true }
         // 0秒なら返す
         if(self.timerStepper.value == 0) { return }
 //         状態切り替え
@@ -383,6 +385,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     }
     
     @IBAction func onStepperChange(_ sender: Any) {
+        if (!self.endButton.isEnabled) { self.endButton.isEnabled = true }
         if self.timerStepper.stepValue == 0 {
             self.timerStop()
         }
@@ -404,6 +407,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
      * カレンダーの時間が変わったら
      */
     @IBAction func calendarChange(_ sender: Any) {
+        if (!self.endButton.isEnabled) { self.endButton.isEnabled = true }
         self.calendar.image = UIImage(named: "days_" + String(Int(self.calendarStepper.value)))
         if (!(self.isFirstTime[Int(self.calendarStepper.value) - 1])) {
             self.currentDead = .hang
@@ -694,6 +698,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
      */
     @objc func iconTapped(sender: UITapGestureRecognizer) {
         print(sender.view!)
+        if (!self.endButton.isEnabled) { self.endButton.isEnabled = true }
         if let currentV = sender.view {
             // 画像のコピー
             // ビットマップ画像のcontextを作成.
@@ -807,6 +812,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
      * 説明ラベルが押されたら
      */
     @objc func descTapped(sender: UITapGestureRecognizer) {
+        if (!self.endButton.isEnabled) { self.endButton.isEnabled = true }
         print(self.currentMode)
         if let label = sender.view as? UILabel {
             
@@ -845,6 +851,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
      * テーブルの人間がタップされたら
      */
     @objc func tableTapped(sender: UITapGestureRecognizer) {
+        if (!self.endButton.isEnabled) { self.endButton.isEnabled = true }
         if currentMode == .none {
             return
         }
