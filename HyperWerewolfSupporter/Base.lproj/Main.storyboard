@@ -681,6 +681,7 @@
         <image name="time_stop" width="200" height="200"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="EFn-xL-XN5"/>
         <segue reference="3h1-Nf-S0w"/>
     </inferredMetricsTieBreakers>
 </document>
