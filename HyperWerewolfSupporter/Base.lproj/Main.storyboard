@@ -640,7 +640,7 @@
                         <viewLayoutGuide key="safeArea" id="hDN-od-Jno"/>
                     </view>
                     <navigationItem key="navigationItem" title="議論中" id="gS3-g0-56f">
-                        <barButtonItem key="rightBarButtonItem" title="終了" id="y9s-cL-YW5">
+                        <barButtonItem key="rightBarButtonItem" title="終了" id="y9s-cL-YW5" customClass="endButton">
                             <connections>
                                 <segue destination="BYZ-38-t0r" kind="show" identifier="defaultV" id="3h1-Nf-S0w"/>
                             </connections>
@@ -652,6 +652,7 @@
                         <outlet property="calendarStepper" destination="H7W-Yi-1cb" id="4hx-IQ-2oT"/>
                         <outlet property="currentView" destination="62b-ms-rej" id="PZa-gZ-b7n"/>
                         <outlet property="descriptionLabel" destination="G5f-k3-pUX" id="6Ec-GQ-bH5"/>
+                        <outlet property="endButton" destination="y9s-cL-YW5" id="Swo-J7-PXA"/>
                         <outlet property="fortuneView" destination="FJr-kc-f5t" id="PEq-XD-Nar"/>
                         <outlet property="hunterView" destination="4UB-l7-6Gv" id="OaH-pg-A3b"/>
                         <outlet property="iconView" destination="IOh-3R-KtE" id="OiX-TT-hEB"/>
