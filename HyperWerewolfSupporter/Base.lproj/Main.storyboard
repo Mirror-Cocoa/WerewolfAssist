@@ -640,7 +640,7 @@
                         <viewLayoutGuide key="safeArea" id="hDN-od-Jno"/>
                     </view>
                     <navigationItem key="navigationItem" title="議論中" id="gS3-g0-56f">
-                        <barButtonItem key="rightBarButtonItem" title="終了" id="y9s-cL-YW5" customClass="endButton">
+                        <barButtonItem key="rightBarButtonItem" title="終了" id="y9s-cL-YW5">
                             <connections>
                                 <segue destination="BYZ-38-t0r" kind="show" identifier="defaultV" id="3h1-Nf-S0w"/>
                             </connections>
