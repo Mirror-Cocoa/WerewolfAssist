@@ -21,7 +21,7 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.title = "人物登録"
+        self.navigationItem.title = "参加者登録"
         
         // ナビゲーションバーの右側に編集ボタンを追加.
         self.editButtonItem.title = "追加・削除"
@@ -120,8 +120,8 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
 
     //MARK: - Private Method
     func allocateMode(editType: Mode, personName: String, currentRow: Int) {
-        let alertTitle:String = String(format: "人物の%@を行います。", (editType == .editMode) ? "編集" : "登録")
-        let alertMsg:String = String(format: "%@したい人の名前を入力してください。", (editType == .editMode) ? "編集" : "登録")
+        let alertTitle:String = String(format: "参加者の%@を行います。", (editType == .editMode) ? "編集" : "登録")
+        let alertMsg:String = String(format: "%@したい参加者の名前を\n入力してください。", (editType == .editMode) ? "編集" : "登録")
 
         // アラートの初期設定
         let alert: UIAlertController = UIAlertController(title: alertTitle, message: alertMsg, preferredStyle:  UIAlertController.Style.alert)
@@ -162,7 +162,7 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
                 text.text = (self.personList[currentRow]["name"] != nil) ?  self.personList[currentRow]["name"] : ""
             }
             let label:UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
-            label.text = "人物名"
+            label.text = "参加者名"
             text.leftView = label
             text.leftViewMode = UITextField.ViewMode.always
         })

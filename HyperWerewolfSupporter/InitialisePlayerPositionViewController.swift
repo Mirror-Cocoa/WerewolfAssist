@@ -41,7 +41,7 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
         // ユーザがいなければ、トップ画面に戻す
         if (personList.count == 0) {
             // 注意文言アラート
-            let warningAlert: UIAlertController = UIAlertController(title: "人物が未登録です", message: "まずは人物リストから人物を1人以上登録してください", preferredStyle:  UIAlertController.Style.alert)
+            let warningAlert: UIAlertController = UIAlertController(title: "参加者が未登録です", message: "「参加者を管理」から参加者を\n登録してください", preferredStyle:  UIAlertController.Style.alert)
             
             // キャンセルボタン
             let warningCancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertAction.Style.default, handler:{
@@ -60,7 +60,7 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             }
             if (!self.hasYourSelf) {
                 // 注意文言アラート
-                let warningAlert: UIAlertController = UIAlertController(title: "「あなた」が未登録です", message: "自分の名前を長押しし、本人登録を行ってください", preferredStyle:  UIAlertController.Style.alert)
+                let warningAlert: UIAlertController = UIAlertController(title: "「あなた」が未登録です", message: "自分の名前を長押しし\n本人登録を行ってください", preferredStyle:  UIAlertController.Style.alert)
                 
                 // キャンセルボタン
                 let warningCancelAction: UIAlertAction = UIAlertAction(title: "確認", style: UIAlertAction.Style.default, handler:{
@@ -619,8 +619,8 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
     
     
     @IBAction func memberAdd(_ sender: Any) {
-        let alertTitle:String = "人物の登録を行います。"
-        let alertMsg:String = "登録したい人の名前を入力してください。"
+        let alertTitle:String = "参加者の登録を行います。"
+        let alertMsg:String = "登録したい参加者の名前を\n入力してください。"
         
         // アラートの初期設定
         let alert: UIAlertController = UIAlertController(title: alertTitle, message: alertMsg, preferredStyle:  UIAlertController.Style.alert)
@@ -652,7 +652,7 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
         alert.addTextField(configurationHandler: {(text:UITextField!) -> Void in
             text.placeholder = "入力してください"
             let label:UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
-            label.text = "人物名"
+            label.text = "参加者名"
             text.leftView = label
             text.leftViewMode = UITextField.ViewMode.always
         })

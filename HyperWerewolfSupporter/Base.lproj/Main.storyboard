@@ -18,14 +18,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6uM-dx-mlc">
-                                <rect key="frame" x="209" y="139.5" width="150" height="41"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6uM-dx-mlc" userLabel="参加者モードを開始">
+                                <rect key="frame" x="174.5" y="139.5" width="219" height="41"/>
                                 <color key="backgroundColor" red="0.85490196078431369" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="150" id="nnj-Lb-Qnw"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                <state key="normal" title="Player Mode">
+                                <state key="normal" title="参加者モードを開始">
                                     <color key="titleColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <userDefinedRuntimeAttributes>
@@ -37,14 +37,14 @@
                                     <segue destination="fpf-3p-R7f" kind="show" id="EFn-xL-XN5"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dx0-eJ-PdK">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dx0-eJ-PdK" userLabel="参加者を管理">
                                 <rect key="frame" x="209" y="214.5" width="150" height="41"/>
                                 <color key="backgroundColor" red="0.85490196078431369" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="150" id="Ld7-5S-Mld"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                <state key="normal" title="人物リスト">
+                                <state key="normal" title="参加者を管理">
                                     <color key="titleColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <userDefinedRuntimeAttributes>
@@ -126,9 +126,9 @@
                                             <outlet property="delegate" destination="fpf-3p-R7f" id="an1-GC-ADj"/>
                                         </connections>
                                     </tableView>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bpk-MY-QJU">
-                                        <rect key="frame" x="426" y="12" width="92" height="30"/>
-                                        <state key="normal" title="メンバー追加"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bpk-MY-QJU" userLabel="参加者追加">
+                                        <rect key="frame" x="426" y="12" width="77" height="30"/>
+                                        <state key="normal" title="参加者追加"/>
                                         <connections>
                                             <action selector="memberAdd:" destination="fpf-3p-R7f" eventType="touchDown" id="Ung-xP-d6S"/>
                                         </connections>

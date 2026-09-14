@@ -136,7 +136,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
 //        self.descriptionLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(descTapped(sender:))))
         descriptionLabel.adjustsFontSizeToFitWidth = true
         
-        // メンバーの配列を用意
+        // 参加者の配列を用意
         for val in self.memberLabelList { self.memberArray.append(val.text!) }
     }
     
