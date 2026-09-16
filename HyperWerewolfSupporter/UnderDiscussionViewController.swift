@@ -20,6 +20,9 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
     var innerTableList: [UIView] = []
     var innerTableRectList: [CGRect] = []
     
+    var draggingView: UIView? // 途中のView
+    var canDrop: Bool = false // ドラッグ＆ドロップ時、そこにドロップできるかどうか
+    
     var dragIdx = 0
     var dropIdx = 0
     
@@ -453,12 +456,12 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             self.view.addSubview(statusView)
         }
         
-        print("name? table:", tableV.frame)
-        print("inUnder:", inUnder, "OutUnder:", OutUnder)
-        print("inLeft:", inLeft, "OutLeft:", OutLeft)
-        print("inOver:", inOver, "OutOver:", OutOver)
-        print("inRight:", inRight, "OutRight:", OutRight)
-        print("safeArea:", insets)
+//        print("name? table:", tableV.frame)
+//        print("inUnder:", inUnder, "OutUnder:", OutUnder)
+//        print("inLeft:", inLeft, "OutLeft:", OutLeft)
+//        print("inOver:", inOver, "OutOver:", OutOver)
+//        print("inRight:", inRight, "OutRight:", OutRight)
+//        print("safeArea:", insets)
         
     }
     
@@ -1076,6 +1079,11 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             
         default: break
         }
+        
+        if let label = memberLabelList.first(where: { $0.text == name }) {
+            label.isUserInteractionEnabled = true
+        }
+        
         for idx in 0..<self.descSubLabelArray.count {
             self.descSubLabelArray[idx].backgroundColor = UIColor.white
             self.descSubLabelArray[idx].isUserInteractionEnabled = true
@@ -1126,16 +1134,16 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
      */
     @objc func handlePan(gesture: UIPanGestureRecognizer) {
         if (!self.endButton.isEnabled) { self.endButton.isEnabled = true }
-        print("drug & rocken roll")
-        print(self.currentMode)
-        print(self.currentSelect)
+//        print("drug & rocken roll")
+//        print(self.currentMode)
+//        print(self.currentSelect)
         if currentMode == .none { return }
         if let tableV = gesture.view,
             let participant = getParticipantInfo(from: tableV) {
                 
                 let name = participant.name
                 let targetStatusView = participant.statusView
-            print(name)
+//            print(name)
             
             // 人名を取得
 //            var target = UILabel();
@@ -1196,20 +1204,70 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                 switch self.currentMode {
                 case .fortune:
                     
-                    guard fortunePersonArray.count < 3 else { return }
-                    guard !fortunePersonArray.contains(name) else { return }
+                    guard currentSelect == .white ||
+                                  currentSelect == .black ||
+                                  currentSelect == .melt
+                            else { return }
+
+                            guard fortunePersonArray.contains(name) else { return }
+
+                            guard let sourceView = gesture.view else { return }
+
+                            guard let idx = innerTableList.firstIndex(
+                                where: { $0 === sourceView }) else {
+                                return
+                            }
+
+                            dragIdx = idx
+
+                            print("ドラッグ開始:", name)
+
+                            draggingView = sourceView.snapshotView(afterScreenUpdates: false)
+
+                            if let draggingView {
+                                draggingView.center = gesture.location(in: view)
+                                view.addSubview(draggingView)
+                            }
                     
-                    self.fortunePersonArray.append(name)
-                    
-                    if let label = memberLabelList.first(where: { $0.text == name }) {
-                        label.isUserInteractionEnabled = true
-                    }
-                    
-                    for idx in 0..<self.descSubLabelArray.count {
-                        self.descSubLabelArray[idx].backgroundColor = UIColor.white
-                        self.descSubLabelArray[idx].isUserInteractionEnabled = true
-                    }
-                    createFortuneResult(row: fortunePersonArray.count + fortuneRow, column: 0, name: name, target: "", result: "", isInit: true)
+//                    guard fortunePersonArray.count < 3 else { return }
+//                    guard !fortunePersonArray.contains(name) else { return }
+//                    
+//                    self.fortunePersonArray.append(name)
+//                    
+//                    if let label = memberLabelList.first(where: { $0.text == name }) {
+//                        label.isUserInteractionEnabled = true
+//                    }
+//                    
+//                    for idx in 0..<self.descSubLabelArray.count {
+//                        self.descSubLabelArray[idx].backgroundColor = UIColor.white
+//                        self.descSubLabelArray[idx].isUserInteractionEnabled = true
+//                    }
+//                    createFortuneResult(row: fortunePersonArray.count + fortuneRow, column: 0, name: name, target: "", result: "", isInit: true)
+//                    
+//                    guard let sourceView = gesture.view else { return }
+//
+//                    guard let idx = innerTableList.firstIndex(where: { $0 === sourceView }) else {
+//                        return
+//                    }
+//
+//                    dragIdx = idx
+//
+//                    let point = gesture.location(in: sourceView)
+//
+//                    if let hitView = sourceView.hitTest(point, with: nil),
+//                       let label = hitView as? UILabel {
+//                        
+//                        print("ドラッグ元:", label.text ?? "")
+//                    }
+//                    
+//                    guard let sourceView = gesture.view else { return }
+//
+//                    draggingView = sourceView.snapshotView(afterScreenUpdates: false)
+//
+//                    if let draggingView = draggingView {
+//                        draggingView.center = gesture.location(in: view)
+//                        view.addSubview(draggingView)
+//                    }
                     
                     break
                 case .hunter:
@@ -1302,17 +1360,61 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                 break
             case .changed:// 指を動かしている途中
                 
-                break
+                switch self.currentMode {
+                case .fortune:
+                    switch self.currentSelect {
+                    case .white, .black, .melt:
+                        let point = gesture.location(in: view)
+
+                        dropIdx = -1
+                        canDrop = false
+
+                        for idx in 0..<innerTableList.count {
+                            guard innerTableList[idx].frame.contains(point) else {
+                                continue
+                            }
+
+                            dropIdx = idx
+                            canDrop = dragIdx != dropIdx
+                            break
+                        }
+
+                        draggingView?.center = point
+                        
+                    default: break
+                    }
+                default: break
+                }
+                
                             
                 
             
-            case .ended:// 指を離した
-                break
-                            
-                
+            case .ended:
+                defer {
+                    draggingView?.removeFromSuperview()
+                    draggingView = nil
+                    canDrop = false
+                    dropIdx = -1
+                }
 
-            case .cancelled:// 途中キャンセル
-                break
+                guard canDrop else { return }
+                guard dropIdx >= 0 else { return }
+
+                let fromPerson = name
+                let toPerson = memberLabelList[dropIdx].text ?? ""
+
+                guard !toPerson.isEmpty else { return }
+
+                applyFortuneResult(
+                    fromPerson: fromPerson,
+                    toPerson: toPerson
+                )
+
+            case .cancelled, .failed:
+                draggingView?.removeFromSuperview()
+                draggingView = nil
+                canDrop = false
+                dropIdx = -1
                             
                 
             
@@ -1449,6 +1551,157 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                 memberStatesViewList[idx].superview as Any
             )
         }
+    }
+    
+    
+    func applyFortuneResult(
+        fromPerson: String,
+        toPerson: String
+    ) {
+        guard let fortuneIndex = fortunePersonArray.firstIndex(of: fromPerson) else {
+            return
+        }
+
+        let row = fortuneIndex + fortuneRow + 1
+        let column = (Int(calendarStepper.value) * 2) - 1
+
+        guard let targetIndex = memberLabelList.firstIndex(
+            where: { $0.text == toPerson }
+        ) else {
+            return
+        }
+
+        let targetStatusView = memberStatesViewList[targetIndex]
+
+        let startStr = addResultLabel(
+            fromName: fromPerson,
+            toName: toPerson
+        )
+
+        let fortuneResultStr = getCurrentResultLabel(isLabel: false)
+
+        let resultLabel = createLabel(
+            txt: startStr,
+            v: targetStatusView
+        )
+
+        let dispSize = targetStatusView.frame.size
+
+        let addDict = [
+            toPerson: fortuneResultStr
+        ]
+
+        // ↓ここから旧performDropの更新処理
+        // 占い結果の反映
+//        if (self.currentMode == .fortune) {
+            
+//            let fromPerson = string as String
+//            let toPerson = self.memberLabelList[self.dropIdx].text!
+//            
+//            let row = self.fortunePersonArray.index(of: fromPerson)! + self.fortuneRow + 1
+//            let column = (Int(self.calendarStepper.value) * 2) - 1
+//            
+//            // ステータスビューの反映用
+//            var targetStatusView = UIView()
+//            for idx in 0..<self.memberLabelList.count {
+//                if (self.memberLabelList[idx].text == toPerson) {
+//                    // その人のステータスビューを取得する
+//                    targetStatusView = self.memberStatesViewList[idx]
+//                    break
+//                }
+//            }
+//            
+//            let startStr = self.addResultLabel(fromName: fromPerson, toName: toPerson)
+//            let fortuneResultStr = self.getCurrentResultLabel(isLabel: false)
+//            
+//            let resultLabel = self.createLabel(txt: startStr, v: targetStatusView)
+//            let dispSize = CGSize(width: targetStatusView.frame.size.width, height: targetStatusView.frame.size.height)
+//            let addDict = [toPerson : fortuneResultStr]
+            
+            // 占われた人、 [占い元:[日付] => [占い先:結果]]
+            if let prevFromInfo = self.fortunePersonList[fromPerson] {
+                // 占い元がいる場合、配列の情報を更新。同一条件なら何もしない
+                if (prevFromInfo.contains(addDict)) { return }
+                
+                // 修正前のバックグラウンドを修正(prevDictのtoが、誰かの占い先、霊媒先、占いCO、霊媒CO、共有COでないことを確認してからgrayにする)
+                var isWhiteCO = false
+                var isEvenOnce = false
+                var correnctTarget = ""
+                for (key, _) in prevFromInfo[Int(self.calendarStepper.value) - 1] {
+                    correnctTarget = key
+                    
+                    self.fortunePersonList[fromPerson]![Int(self.calendarStepper.value) - 1] = addDict
+                    
+                    isWhiteCO = self.fortunePersonArray.contains(key) || self.spiritPersonArray.contains(key) || self.sharerPersonArray.contains(key) || self.hunterPersonArray.contains(key)
+                    isEvenOnce = self.existCheck(name: key, targetList: self.fortunePersonList) || self.existCheck(name: key, targetList: self.spiritPersonList)
+
+                }
+                
+                // テーブルを一旦削除 (もっといい方法がありそう。。)
+                for childView in self.resultTable.subviews {
+                    if type(of: (childView as NSObject)).isEqual(UIView.self) {
+                        for grandChildView in childView.subviews {
+                            if type(of: (grandChildView as NSObject)).isEqual(UILabel.self) {
+                                if grandChildView.tag == row * 31 + column || grandChildView.tag == -row * 31 - column{
+                                    grandChildView.removeFromSuperview()
+                                    break
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                
+                var correctStatusView = UIView()
+                for idx in 0..<self.memberLabelList.count {
+                    if (self.memberLabelList[idx].text == correnctTarget) {
+                        // その人のステータスビューを取得する
+                        correctStatusView = self.memberStatesViewList[idx]
+                        break
+                    }
+                }
+                correctStatusView.subviews.forEach {
+                    if $0.tag == row * 31 + column{
+                        $0.removeFromSuperview()
+                    }
+                }
+                // ステータスビューの修正
+                if (!isWhiteCO && !isEvenOnce){
+                    correctStatusView.backgroundColor = UIColor.gray
+                }
+                self.fortunePersonList[fromPerson]![Int(self.calendarStepper.value) - 1] = addDict
+                
+            } else {
+                // 占い元がいない場合、新規追加
+                self.fortunePersonList[fromPerson] = Array<[String:String]>(repeating: ["":""], count: 15)
+                self.fortunePersonList[fromPerson]![Int(self.calendarStepper.value) - 1] = addDict
+            }
+            
+            
+            // 元々のsubviewは消す
+            targetStatusView.subviews.forEach {
+                if type(of: ($0 as NSObject)).isEqual(UILabel.self) {
+                    $0.removeFromSuperview()
+                }
+            }
+            targetStatusView.backgroundColor = UIColor.white
+            
+            
+            resultLabel.frame = CGRect(x:0, y:dispSize.height / 2, width:dispSize.width, height:dispSize.height / 2)
+            resultLabel.tag = row * 31 + column
+            
+            targetStatusView.addSubview(resultLabel)
+            
+            self.createFortuneResult(
+                row: row,
+                column: column,
+                name: "",
+                target: toPerson,
+                result: fortuneResultStr,
+                isInit: false
+            )
+        
+        
     }
     
     
