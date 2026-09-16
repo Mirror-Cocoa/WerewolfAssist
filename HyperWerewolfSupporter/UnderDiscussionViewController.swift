@@ -1089,6 +1089,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
         case .white :
             spiritResultStr = "白";
             spiritStatusView.backgroundColor = UIColor.white
+            spiritStatusView = createBorder4(v: spiritStatusView)
             break
         default : break
         }
