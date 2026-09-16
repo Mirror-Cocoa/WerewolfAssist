@@ -954,6 +954,14 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
         
         // COの場合はCOに移行
         if currentSelect == .co { applyCO(to: participant) }
+        
+        // 霊能の場合は霊能処理に移行
+        if currentMode == .spirit {
+            applySpiritResult(
+                row: spiritPersonArray.count + spiritRow,
+                name: participant.name
+            )
+        }
     }
     
     /*
@@ -1038,6 +1046,63 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
         )
     }
     
+    /*
+     * 霊能結果の反映
+     */
+    func applySpiritResult(row: Int, name: String) {
+
+        if (Int(self.calendarStepper.value) == 0 || self.hangArray.count == 0 || !self.spiritPersonArray.contains(name)) { return }
+        var spiritResultStr = ""
+        // ステータスビューの反映用(前日吊られた人のを反映する)
+        var spiritStatusView = UIView()
+        for idx in 0..<self.memberLabelList.count {
+            if (self.memberLabelList[idx].text == self.hangArray[Int(self.calendarStepper.value) - 2]) {
+                // その人のステータスビューを取得する
+                spiritStatusView = self.memberStatesViewList[idx]
+                break
+            }
+        }
+        let row = self.spiritPersonArray.index(of: name)! + self.spiritRow + 1
+        let column = (Int(self.calendarStepper.value) * 2) - 1
+        
+        
+        // テーブルを一旦削除 (もっといい方法がありそう。。)
+        for childView in self.resultTable.subviews {
+            if type(of: (childView as NSObject)).isEqual(UIView.self) {
+                for grandChildView in childView.subviews {
+                    if type(of: (grandChildView as NSObject)).isEqual(UILabel.self) {
+                        if grandChildView.tag == row * 31 + column || grandChildView.tag == -row * 31 - column{
+                            grandChildView.removeFromSuperview()
+                            break
+                        }
+                    }
+                }
+            }
+        }
+        
+        // TODO: 黒の場合、占い文字列を黒くする。白の場合、枠線を引く
+        switch self.currentSelect {
+        case .black :
+            spiritResultStr = "黒";
+            spiritStatusView.backgroundColor = UIColor.black
+            break
+        case .white :
+            spiritResultStr = "白";
+            spiritStatusView.backgroundColor = UIColor.white
+            break
+        default : break
+        }
+        
+        self.createFortuneResult(row: row,
+                                 column: column,
+                                 name: "",
+                                 target: self.hangArray[Int(self.calendarStepper.value) - 2],
+                                 result: spiritResultStr,
+                                 isInit: false
+        )
+        
+    }
+    
     
     /*
      * テーブルの人間がドラッグ＆ドロップされたら
@@ -1053,126 +1118,41 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
             
             switch gesture.state {
                 
-            case .began:
-                // ドラッグ開始
+            case .began: // ドラッグ開始
                 
-                // 占い・霊能COの時、既存なら何もしない(将来的には同じ人は撤回を実装)
+                
+                
                 switch self.currentMode {
                 case .fortune:
-                    
+                    // 占い師ドラッグ処理
                     guard currentSelect == .white ||
-                                  currentSelect == .black ||
-                                  currentSelect == .melt
-                            else { return }
+                          currentSelect == .black ||
+                          currentSelect == .melt
+                    else { return }
 
-                            guard fortunePersonArray.contains(name) else { return }
+                    guard fortunePersonArray.contains(name) else { return }
 
-                            guard let sourceView = gesture.view else { return }
+                    guard let sourceView = gesture.view else { return }
 
-                            guard let idx = innerTableList.firstIndex(
-                                where: { $0 === sourceView }) else {
-                                return
-                            }
-
-                            dragIdx = idx
-
-                            print("ドラッグ開始:", name)
-
-                            draggingView = sourceView.snapshotView(afterScreenUpdates: false)
-
-                            if let draggingView {
-                                draggingView.center = gesture.location(in: view)
-                                view.addSubview(draggingView)
-                            }
-                    
-                    
-                    break
-                case .hunter:
-                    self.hunterPersonArray.append(name)
-                    break
-                case .sharer:
-                    self.sharerPersonArray.append(name)
-                    break
-                case .madman:
-                    break
-                case .werewolf:
-                    break
-                case .spirit:
-                    
-                    if (self.currentSelect == .co && spiritPersonArray.count < 3) {
-                        if (!self.spiritPersonArray.contains(name)) {
-                            self.spiritPersonArray.append(name)
-                            if let label = memberLabelList.first(where: { $0.text == name }) {
-                                label.isUserInteractionEnabled = true
-                            }
-                            for idx in 0..<self.descSubLabelArray.count {
-                                if (self.spiritPersonArray.count != 0) {
-                                    self.descSubLabelArray[idx].backgroundColor = UIColor.white
-                                    self.descSubLabelArray[idx].isUserInteractionEnabled = true
-                                }
-                            }
-                            createFortuneResult(row: spiritPersonArray.count + self.spiritRow, column: 0, name: name, target: "", result: "", isInit: true)
-                            targetStatusView.backgroundColor = UIColor.white
-                        } else {
-                            return
-                        }
-                    } else if(self.currentSelect == .black || self.currentSelect == .white) {
-                        // 霊能結果の反映
-                        if (Int(self.calendarStepper.value) == 0 || self.hangArray.count == 0 || !self.spiritPersonArray.contains(name)) { return }
-                        var spiritResultStr = ""
-                        // ステータスビューの反映用(前日吊られた人のを反映する)
-                        var spiritStatusView = UIView()
-                        for idx in 0..<self.memberLabelList.count {
-                            if (self.memberLabelList[idx].text == self.hangArray[Int(self.calendarStepper.value) - 2]) {
-                                // その人のステータスビューを取得する
-                                spiritStatusView = self.memberStatesViewList[idx]
-                                break
-                            }
-                        }
-                        let row = self.spiritPersonArray.index(of: name)! + self.spiritRow + 1
-                        let column = (Int(self.calendarStepper.value) * 2) - 1
-                        
-                        
-                        // テーブルを一旦削除 (もっといい方法がありそう。。)
-                        for childView in self.resultTable.subviews {
-                            if type(of: (childView as NSObject)).isEqual(UIView.self) {
-                                for grandChildView in childView.subviews {
-                                    if type(of: (grandChildView as NSObject)).isEqual(UILabel.self) {
-                                        if grandChildView.tag == row * 31 + column || grandChildView.tag == -row * 31 - column{
-                                            grandChildView.removeFromSuperview()
-                                            break
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        
-                        
-                        // TODO:パンダのチェックを入れる
-                        switch self.currentSelect {
-                        case .black :
-                            spiritResultStr = "黒";
-                            spiritStatusView.backgroundColor = UIColor.black
-                            break
-                        case .white :
-                            spiritResultStr = "白";
-                            spiritStatusView.backgroundColor = UIColor.white
-                            break
-                        default : break
-                        }
-                        
-                        self.createFortuneResult(row: row,
-                                                 column: column,
-                                                 name: "",
-                                                 target: self.hangArray[Int(self.calendarStepper.value) - 2],
-                                                 result: spiritResultStr,
-                                                 isInit: false
-                        )
+                    guard let idx = innerTableList.firstIndex(
+                        where: { $0 === sourceView }) else {
                         return
                     }
-                    break
-                case .none:
-                    break
+
+                    dragIdx = idx
+                    draggingView = sourceView.snapshotView(afterScreenUpdates: false)
+
+                    if let draggingView {
+                        draggingView.center = gesture.location(in: view)
+                        view.addSubview(draggingView)
+                    }
+
+                case .hunter: break
+                case .sharer: break
+                case .madman: break
+                case .werewolf: break
+                case .spirit: break
+                case .none: break
                 }
                 break
             case .changed:// 指を動かしている途中
