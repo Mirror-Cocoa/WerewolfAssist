@@ -133,7 +133,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         self.werewolfView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(iconTapped(sender:))))
         self.spiritView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(iconTapped(sender:))))
         
-//        self.descriptionLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(descTapped(sender:))))
+        self.descriptionLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(descTapped(sender:))))
         descriptionLabel.adjustsFontSizeToFitWidth = true
         
         // 参加者の配列を用意
@@ -823,6 +823,24 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         return v
     }
     
+    func createBorder4(v: UIView) -> UIView {
+        //上下左のCALayerを作成
+        let rectArray = [
+            CGRect(x: 0, y: 0, width: v.frame.width, height: 1.0),
+            CGRect(x: 0, y: 0, width: 1.0, height:v.frame.height),
+            CGRect(x: 0, y: v.frame.height, width: v.frame.width, height:-1.0),
+            CGRect(x: v.frame.width, y: 0, width: -1.0, height:v.frame.height)
+        ]
+        
+        for idx in 0..<rectArray.count {
+            let border = CALayer()
+            border.frame = rectArray[idx]
+            border.backgroundColor = UIColor.black.cgColor
+            v.layer.addSublayer(border)
+        }
+        return v
+    }
+    
     func constraintsInit(v: UIView) {
         v.translatesAutoresizingMaskIntoConstraints = false
         v.widthAnchor.constraint(equalTo: self.resultTable.widthAnchor, constant: v.frame.size.width).isActive = true
@@ -1058,6 +1076,16 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             
         default: break
         }
+        for idx in 0..<self.descSubLabelArray.count {
+            self.descSubLabelArray[idx].backgroundColor = UIColor.white
+            self.descSubLabelArray[idx].isUserInteractionEnabled = true
+        }
+        
+        participant.statusView.backgroundColor = UIColor.white
+        drawStatusView(
+            targetStatusView: createBorder4(v: participant.statusView),
+            changeIcon1: true
+        )
     }
     
     /*
@@ -1159,127 +1187,138 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
 //                }
 //            }
             
-            // 占い・霊能COの時、既存なら何もしない(将来的には同じ人は撤回を実装)
-            switch self.currentMode {
-            case .fortune:
+            switch gesture.state {
                 
+            case .began:
+                // ドラッグ開始
                 
-                if (self.currentSelect == .co && fortunePersonArray.count < 3) {
-                    if (!self.fortunePersonArray.contains(name)) {
-                        self.fortunePersonArray.append(name)
-                        if let label = memberLabelList.first(where: { $0.text == name }) {
-                            label.isUserInteractionEnabled = true
-                        }
-                        for idx in 0..<self.descSubLabelArray.count {
-                            if (self.fortunePersonArray.count != 0) {
-                                self.descSubLabelArray[idx].backgroundColor = UIColor.white
-                                self.descSubLabelArray[idx].isUserInteractionEnabled = true
-                            }
-                            
-                        }
-                        createFortuneResult(row: fortunePersonArray.count + fortuneRow, column: 0, name: name, target: "", result: "", isInit: true)
-                        targetStatusView.backgroundColor = UIColor.white
-                    } else {
-                        return
-                    }
-                } else {
-                    return
-                }
-                break
-            case .hunter:
-                targetStatusView.backgroundColor = UIColor.white
-                self.hunterPersonArray.append(name)
-                break
-            case .sharer:
-                targetStatusView.backgroundColor = UIColor.white
-                self.sharerPersonArray.append(name)
-                break
-            case .madman:
-                break
-            case .werewolf:
-                break
-            case .spirit:
-                
-                if (self.currentSelect == .co && spiritPersonArray.count < 3) {
-                    if (!self.spiritPersonArray.contains(name)) {
-                        self.spiritPersonArray.append(name)
-                        if let label = memberLabelList.first(where: { $0.text == name }) {
-                            label.isUserInteractionEnabled = true
-                        }
-                        for idx in 0..<self.descSubLabelArray.count {
-                            if (self.spiritPersonArray.count != 0) {
-                                self.descSubLabelArray[idx].backgroundColor = UIColor.white
-                                self.descSubLabelArray[idx].isUserInteractionEnabled = true
-                            }
-                        }
-                        createFortuneResult(row: spiritPersonArray.count + self.spiritRow, column: 0, name: name, target: "", result: "", isInit: true)
-                        targetStatusView.backgroundColor = UIColor.white
-                    } else {
-                        return
-                    }
-                } else if(self.currentSelect == .black || self.currentSelect == .white) {
-                    // 霊能結果の反映
-                    if (Int(self.calendarStepper.value) == 0 || self.hangArray.count == 0 || !self.spiritPersonArray.contains(name)) { return }
-                    var spiritResultStr = ""
-                    // ステータスビューの反映用(前日吊られた人のを反映する)
-                    var spiritStatusView = UIView()
-                    for idx in 0..<self.memberLabelList.count {
-                        if (self.memberLabelList[idx].text == self.hangArray[Int(self.calendarStepper.value) - 2]) {
-                            // その人のステータスビューを取得する
-                            spiritStatusView = self.memberStatesViewList[idx]
-                            break
-                        }
-                    }
-                    let row = self.spiritPersonArray.index(of: name)! + self.spiritRow + 1
-                    let column = (Int(self.calendarStepper.value) * 2) - 1
+                // 占い・霊能COの時、既存なら何もしない(将来的には同じ人は撤回を実装)
+                switch self.currentMode {
+                case .fortune:
                     
+                    guard fortunePersonArray.count < 3 else { return }
+                    guard !fortunePersonArray.contains(name) else { return }
                     
-                    // テーブルを一旦削除 (もっといい方法がありそう。。)
-                    for childView in self.resultTable.subviews {
-                        if type(of: (childView as NSObject)).isEqual(UIView.self) {
-                            for grandChildView in childView.subviews {
-                                if type(of: (grandChildView as NSObject)).isEqual(UILabel.self) {
-                                    if grandChildView.tag == row * 31 + column || grandChildView.tag == -row * 31 - column{
-                                        grandChildView.removeFromSuperview()
-                                        break
+                    self.fortunePersonArray.append(name)
+                    
+                    if let label = memberLabelList.first(where: { $0.text == name }) {
+                        label.isUserInteractionEnabled = true
+                    }
+                    
+                    for idx in 0..<self.descSubLabelArray.count {
+                        self.descSubLabelArray[idx].backgroundColor = UIColor.white
+                        self.descSubLabelArray[idx].isUserInteractionEnabled = true
+                    }
+                    createFortuneResult(row: fortunePersonArray.count + fortuneRow, column: 0, name: name, target: "", result: "", isInit: true)
+                    
+                    break
+                case .hunter:
+                    self.hunterPersonArray.append(name)
+                    break
+                case .sharer:
+                    self.sharerPersonArray.append(name)
+                    break
+                case .madman:
+                    break
+                case .werewolf:
+                    break
+                case .spirit:
+                    
+                    if (self.currentSelect == .co && spiritPersonArray.count < 3) {
+                        if (!self.spiritPersonArray.contains(name)) {
+                            self.spiritPersonArray.append(name)
+                            if let label = memberLabelList.first(where: { $0.text == name }) {
+                                label.isUserInteractionEnabled = true
+                            }
+                            for idx in 0..<self.descSubLabelArray.count {
+                                if (self.spiritPersonArray.count != 0) {
+                                    self.descSubLabelArray[idx].backgroundColor = UIColor.white
+                                    self.descSubLabelArray[idx].isUserInteractionEnabled = true
+                                }
+                            }
+                            createFortuneResult(row: spiritPersonArray.count + self.spiritRow, column: 0, name: name, target: "", result: "", isInit: true)
+                            targetStatusView.backgroundColor = UIColor.white
+                        } else {
+                            return
+                        }
+                    } else if(self.currentSelect == .black || self.currentSelect == .white) {
+                        // 霊能結果の反映
+                        if (Int(self.calendarStepper.value) == 0 || self.hangArray.count == 0 || !self.spiritPersonArray.contains(name)) { return }
+                        var spiritResultStr = ""
+                        // ステータスビューの反映用(前日吊られた人のを反映する)
+                        var spiritStatusView = UIView()
+                        for idx in 0..<self.memberLabelList.count {
+                            if (self.memberLabelList[idx].text == self.hangArray[Int(self.calendarStepper.value) - 2]) {
+                                // その人のステータスビューを取得する
+                                spiritStatusView = self.memberStatesViewList[idx]
+                                break
+                            }
+                        }
+                        let row = self.spiritPersonArray.index(of: name)! + self.spiritRow + 1
+                        let column = (Int(self.calendarStepper.value) * 2) - 1
+                        
+                        
+                        // テーブルを一旦削除 (もっといい方法がありそう。。)
+                        for childView in self.resultTable.subviews {
+                            if type(of: (childView as NSObject)).isEqual(UIView.self) {
+                                for grandChildView in childView.subviews {
+                                    if type(of: (grandChildView as NSObject)).isEqual(UILabel.self) {
+                                        if grandChildView.tag == row * 31 + column || grandChildView.tag == -row * 31 - column{
+                                            grandChildView.removeFromSuperview()
+                                            break
+                                        }
                                     }
                                 }
                             }
                         }
+                        
+                        
+                        // TODO:パンダのチェックを入れる
+                        switch self.currentSelect {
+                        case .black :
+                            spiritResultStr = "黒";
+                            spiritStatusView.backgroundColor = UIColor.black
+                            break
+                        case .white :
+                            spiritResultStr = "白";
+                            spiritStatusView.backgroundColor = UIColor.white
+                            break
+                        default : break
+                        }
+                        
+                        self.createFortuneResult(row: row,
+                                                 column: column,
+                                                 name: "",
+                                                 target: self.hangArray[Int(self.calendarStepper.value) - 2],
+                                                 result: spiritResultStr,
+                                                 isInit: false
+                        )
+                        return
                     }
-                    
-                    
-                    // TODO:パンダのチェックを入れる
-                    switch self.currentSelect {
-                    case .black :
-                        spiritResultStr = "黒";
-                        spiritStatusView.backgroundColor = UIColor.black
-                        break
-                    case .white :
-                        spiritResultStr = "白";
-                        spiritStatusView.backgroundColor = UIColor.white
-                        break
-                    default : break
-                    }
-                    
-                    self.createFortuneResult(row: row,
-                                             column: column,
-                                             name: "",
-                                             target: self.hangArray[Int(self.calendarStepper.value) - 2],
-                                             result: spiritResultStr,
-                                             isInit: false
-                    )
-                    return
+                    break
+                case .none:
+                    break
                 }
                 break
-            case .none:
+            case .changed:// 指を動かしている途中
+                
                 break
-            }
+                            
+                
             
-            drawStatusView(
-                targetStatusView: targetStatusView,
-                changeIcon1: changeIcon1
-            )
+            case .ended:// 指を離した
+                break
+                            
+                
+
+            case .cancelled:// 途中キャンセル
+                break
+                            
+                
+            
+            default: break
+                
+            }
             
             // 画像のコピー
             // ビットマップ画像のcontextを作成.
@@ -1383,23 +1422,24 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         imageView.contentMode = .scaleAspectFit
         
         // TODO: 後で削除
+        
 //        imageView.backgroundColor = .red
 //        imageView.layer.borderColor = UIColor.yellow.cgColor
 //        imageView.layer.borderWidth = 2
 
         targetStatusView.addSubview(imageView)
         
-        print("image:", image)
-        print("image size:", image.size)
-
-        print("imageView frame:", imageView.frame)
-        print("targetStatusView subviews:", targetStatusView.subviews)
+//        print("image:", image)
+//        print("image size:", image.size)
+//
+//        print("imageView frame:", imageView.frame)
+//        print("targetStatusView subviews:", targetStatusView.subviews)
         
 
         
-        print("target alpha:", targetStatusView.alpha)
-        print("target hidden:", targetStatusView.isHidden)
-        print("target superview:", targetStatusView.superview as Any)
+//        print("target alpha:", targetStatusView.alpha)
+//        print("target hidden:", targetStatusView.isHidden)
+//        print("target superview:", targetStatusView.superview as Any)
         
         for idx in 0..<memberLabelList.count {
             print(
