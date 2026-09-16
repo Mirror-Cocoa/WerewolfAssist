@@ -182,20 +182,34 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             
 
             
-            let dragDelegate: UIDragInteractionDelegate = self
-            let dragInteraction = UIDragInteraction(delegate: dragDelegate)
-            dragInteraction.isEnabled = true    // iPhoneの場合はデフォルトがfalseになっている
-            innerTable.addInteraction(dragInteraction)
-            self.innerTableList.append(innerTable)
+//            let dragDelegate: UIDragInteractionDelegate = self
+//            let dragInteraction = UIDragInteraction(delegate: dragDelegate)
+//            dragInteraction.isEnabled = true    // iPhoneの場合はデフォルトがfalseになっている
+//            innerTable.addInteraction(dragInteraction)
             
-            let dropDelegate: UIDropInteractionDelegate = self
-            let dropInteraction = UIDropInteraction(delegate: dropDelegate)
-            
-            innerTable.isUserInteractionEnabled = true
-            
+//            
+//            let dropDelegate: UIDropInteractionDelegate = self
+//            let dropInteraction = UIDropInteraction(delegate: dropDelegate)
+//            
+//            innerTable.isUserInteractionEnabled = true
+//            
             innerTable.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tableTapped(sender:))))
+//            
+//            innerTable.addInteraction(dropInteraction)
             
-            innerTable.addInteraction(dropInteraction)
+//            let panGesture = UIPanGestureRecognizer(
+//                target: self,
+//                action: #selector(handlePan(_:))
+//            )
+
+            innerTable.addGestureRecognizer(
+                UIPanGestureRecognizer(
+                    target: self,
+                    action: #selector(handlePan(gesture:))
+                )
+            )
+            
+            self.innerTableList.append(innerTable)
             
             
             
@@ -208,18 +222,154 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
         
     }
     
+//    override func viewDidLayoutSubviews() {
+//        super.viewDidLayoutSubviews()
+//        // 一度だけ実行したい処理
+//        _ = self.initViewLayout
+//    }
+//    
+//    private lazy var initViewLayout : Void = {
+//        self.view.layoutIfNeeded()
+//        for innerTableRect in self.innerTableRectList {
+//            self.statusViewSet(tableV: UIView.init(frame: innerTableRect))
+//        }
+//    }()
+//    private var didSetupStatusViews = false
+//
+//    override func viewDidLayoutSubviews() {
+//        super.viewDidLayoutSubviews()
+//
+//        print("viewDidLayoutSubviews:", outerTable.frame)
+//        
+//        view.layoutIfNeeded()
+//
+//        guard !didSetupStatusViews else { return }
+//
+//        // ここでログを見て、outerTableのframeが最終値か確認
+//        print("layout:", outerTable.frame)
+//
+//        for innerTable in innerTableList {
+//            statusViewSet(tableV: innerTable)
+//        }
+//
+//        didSetupStatusViews = true
+//    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        // 一度だけ実行したい処理
-        _ = self.initViewLayout
+
+        view.layoutIfNeeded()
+
+        updateStatusViews()
     }
     
-    private lazy var initViewLayout : Void = {
-        self.view.layoutIfNeeded()
-        for innerTableRect in self.innerTableRectList {
-            self.statusViewSet(tableV: UIView.init(frame: innerTableRect))
+    func updateStatusViews() {
+        for (idx, innerTable) in innerTableList.enumerated() {
+            let frame = calcStatusViewFrame(tableV: innerTable)
+
+            if idx < memberStatesViewList.count {
+                memberStatesViewList[idx].frame = frame
+            } else {
+                let statusView = UIView(frame: frame)
+                statusView.backgroundColor = UIColor.gray
+
+                memberStatesViewList.append(statusView)
+                view.addSubview(statusView)
+            }
         }
-    }()
+    }
+    
+    func calcStatusViewFrame(tableV: UIView) -> CGRect {
+        var pntX: CGFloat = 0
+        var pntY: CGFloat = 0
+
+        let insets: UIEdgeInsets
+        if #available(iOS 11, *) {
+            insets = view.safeAreaInsets
+        } else {
+            insets = .zero
+        }
+
+        let top = round(value: Double(insets.top))
+        let left = round(value: Double(insets.left))
+
+        let inUnder = round(value: Double(tableV.frame.maxY)) - top
+        let outUnder = round(value: Double(outerTable.frame.maxY))
+
+        let inLeft = round(value: Double(tableV.frame.minX))
+        let outLeft = round(value: Double(outerTable.frame.minX)) + left
+
+        let inOver = round(value: Double(tableV.frame.minY)) - top
+        let outOver = round(value: Double(outerTable.frame.minY))
+
+        let inRight = round(value: Double(tableV.frame.maxX))
+        let outRight = round(value: Double(outerTable.frame.maxX)) + left
+
+        let rectX: CGFloat = 35
+        let rectY: CGFloat = 35
+
+        let diffX = (tableV.frame.width - rectX) / 2
+        let diffY = (tableV.frame.height - rectY) / 2
+
+        if inUnder == outUnder {
+            pntX = tableV.frame.minX + diffX
+            pntY = tableV.frame.maxY
+
+        } else if inLeft == outLeft {
+            if inOver != outOver {
+                pntX = tableV.frame.minX - rectX
+                pntY = tableV.frame.minY + diffY
+            } else {
+                pntX = tableV.frame.minX + diffX
+                pntY = tableV.frame.minY - rectY
+            }
+
+        } else if inOver == outOver {
+            pntX = tableV.frame.minX + diffX
+            pntY = tableV.frame.minY - rectY
+
+        } else if inRight == outRight {
+            pntX = tableV.frame.maxX
+            pntY = tableV.frame.minY + diffY
+        }
+        
+//        var rect:CGRect = CGRect.zero
+//        
+//        rect = CGRect(x:pntX, y:pntY, width:rectX, height:rectY)
+//        let statusView = UIView.init(frame: rect)
+//        
+////        statusView.layer.shouldRasterize = true;
+//        statusView.backgroundColor = UIColor.gray
+////            .withAlphaComponent(1.0)
+////        statusView.alpha = 1.0
+////        statusView.layer.opacity = 1.0
+//        
+//        let rectArray = [
+//            CGRect(x: 0, y: 0, width: statusView.frame.width, height: 1.0),
+//            CGRect(x: 0, y: 0, width: 1.0, height:statusView.frame.height),
+//            CGRect(x: 0, y: statusView.frame.height, width: statusView.frame.width, height:-1.0),
+//            CGRect(x: statusView.frame.width, y: 0, width: -1.0, height:statusView.frame.height)
+//        ]
+//        
+//        for idx in 0..<rectArray.count {
+//            let border = CALayer()
+//            border.frame = rectArray[idx]
+//            border.backgroundColor = UIColor.black.cgColor
+//            statusView.layer.addSublayer(border)
+//        }
+//        
+//        if (rect != CGRect.zero) {
+//            self.memberStatesViewList.append(statusView)
+//            self.view.addSubview(statusView)
+//        }
+
+        return CGRect(
+            x: pntX,
+            y: pntY,
+            width: rectX,
+            height: rectY
+        )
+    }
     
     func statusViewSet(tableV: UIView) {
         
@@ -302,6 +452,13 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             self.memberStatesViewList.append(statusView)
             self.view.addSubview(statusView)
         }
+        
+        print("name? table:", tableV.frame)
+        print("inUnder:", inUnder, "OutUnder:", OutUnder)
+        print("inLeft:", inLeft, "OutLeft:", OutLeft)
+        print("inOver:", inOver, "OutOver:", OutOver)
+        print("inRight:", inRight, "OutRight:", OutRight)
+        print("safeArea:", insets)
         
     }
     
@@ -642,7 +799,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             resultTableFrame.topAnchor.constraint(equalTo: self.resultTable.topAnchor, constant: CGFloat(row * self.resultLen)).isActive = true
             self.resultContentView.frame.size.height += CGFloat(row * self.resultLen + self.resultLen)
             
-            resultTableFrame.addSubview(createLabelWithTag(txt: result, v: tableFrame, row: -row, column: -column))
+            resultTableFrame.addSubview(createLabelWithTag(txt: result, v: resultTableFrame, row: -row, column: -column))
         }
     }
     
@@ -851,54 +1008,149 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
      * テーブルの人間がタップされたら
      */
     @objc func tableTapped(sender: UITapGestureRecognizer) {
-        if (!self.endButton.isEnabled) { self.endButton.isEnabled = true }
-        if currentMode == .none {
+        if !self.endButton.isEnabled {
+            self.endButton.isEnabled = true
+        }
+
+        guard currentMode != .none else { return }
+
+        guard
+            let tableV = sender.view,
+            let participant = getParticipantInfo(from: tableV)
+        else {
             return
         }
-        if let tableV = sender.view {
+        
+        // COの場合はCOに移行
+        if currentSelect == .co { applyCO(to: participant) }
+    }
+    
+    /*
+     * CO処理：参加者がCOした場合、右下のテーブルに人名を書き込む
+     */
+    func applyCO(
+        to participant: (name: String, statusView: UIView)
+    ) {
+        let name = participant.name
+        if (!self.endButton.isEnabled) { self.endButton.isEnabled = true }
+
+        print("呼び出し")
+        print(name)
+            
+        switch currentMode {
+        case .fortune:
+            guard !fortunePersonArray.contains(name) else { return }
+            self.fortunePersonArray.append(name)
+            writeCOPersonName(
+                row: fortunePersonArray.count + fortuneRow,
+                name: name
+            )
+            break
+
+        case .spirit:
+            guard !spiritPersonArray.contains(name) else { return }
+            self.spiritPersonArray.append(name)
+            writeCOPersonName(
+                row: spiritPersonArray.count + spiritRow,
+                name: name
+            )
+            break
+            
+        default: break
+        }
+    }
+    
+    /*
+     * COした人名書き込み処理
+     */
+    func writeCOPersonName(row: Int, name: String) {
+        let tableFrame = UIView(
+            frame: CGRect(
+                x: 0,
+                y: 0,
+                width: resultLen,
+                height: resultLen
+            )
+        )
+
+        resultTable.addSubview(tableFrame)
+        constraintsInit(v: tableFrame)
+
+        tableFrame.leadingAnchor
+            .constraint(equalTo: resultTable.leadingAnchor)
+            .isActive = true
+
+        tableFrame.topAnchor
+            .constraint(
+                equalTo: resultTable.topAnchor,
+                constant: CGFloat(row * resultLen)
+            )
+            .isActive = true
+
+        tableFrame.addSubview(
+            createLabel(txt: name, v: tableFrame)
+        )
+    }
+    
+    
+    /*
+     * テーブルの人間がドラッグ＆ドロップされたら
+     */
+    @objc func handlePan(gesture: UIPanGestureRecognizer) {
+        if (!self.endButton.isEnabled) { self.endButton.isEnabled = true }
+        print("drug & rocken roll")
+        print(self.currentMode)
+        print(self.currentSelect)
+        if currentMode == .none { return }
+        if let tableV = gesture.view,
+            let participant = getParticipantInfo(from: tableV) {
+                
+                let name = participant.name
+                let targetStatusView = participant.statusView
+            print(name)
             
             // 人名を取得
-            var target = UILabel();
-            for childView in tableV.subviews {
-                if type(of: (childView as NSObject)).isEqual(UILabel.self) {
-                    target = childView as! UILabel;
-                    break
-                }
-            }
-            
+//            var target = UILabel();
+//            for childView in tableV.subviews {
+//                if type(of: (childView as NSObject)).isEqual(UILabel.self) {
+//                    target = childView as! UILabel;
+//                    break
+//                }
+//            }
+//            var target = name;
             var changeIcon1 = true
             
-            if (self.currentSelect == .co) {
-                for idx in 0..<self.personList.count {
-                    if (self.personList[idx]["name"]! == target.text) {
-                        if self.personList[idx]["icon1"] == nil {
-                            // アイコン1がない場合、アイコン1に追加
-                            self.personList[idx]["icon1"] = addIcon()
-                        } else {
-                            // アイコン2がない場合
-                            if self.personList[idx]["icon2"] == nil {
-                                // 同じ物だったら返す
-                                if (isIcon(str: self.personList[idx]["icon1"]!)) { return }
-                                
-                                // アイコン2がない場合、アイコン1に追加
-                                self.personList[idx]["icon2"] = addIcon()
-                                changeIcon1 = false
-                            } else { return }
-                        }
-                        break
-                    }
-                }
-            }
+//            if (self.currentSelect == .co) {
+//                for idx in 0..<self.personList.count {
+//                    if (self.personList[idx]["name"]! == name) {
+//                        if self.personList[idx]["icon1"] == nil {
+//                            // アイコン1がない場合、アイコン1に追加
+//                            self.personList[idx]["icon1"] = addIcon()
+//                        } else {
+//                            // アイコン2がない場合
+//                            if self.personList[idx]["icon2"] == nil {
+//                                // 同じ物だったら返す
+//                                if (isIcon(str: self.personList[idx]["icon1"]!)) { return }
+//                                
+//                                // アイコン2がない場合、アイコン1に追加
+//                                self.personList[idx]["icon2"] = addIcon()
+//                                changeIcon1 = false
+//                            } else { return }
+//                        }
+//                        break
+//                    }
+//                }
+//            }
             
             // 同じ人のステータスビューを取得
-            var targetStatusView = UIView()
-            for idx in 0..<self.memberLabelList.count {
-                if (self.memberLabelList[idx].text == target.text!) {
-                    // その人のステータスビューを取得する
-                    targetStatusView = self.memberStatesViewList[idx]
-                    break
-                }
-            }
+//            var targetStatusView = UIView()
+//            for idx in 0..<self.memberLabelList.count {
+//                if (self.memberLabelList[idx].text == target.text!) {
+//                    // その人のステータスビューを取得する
+//                    targetStatusView = self.memberStatesViewList[idx]
+//                    break
+//                }
+//            }
             
             // 元々のsubviewは消す
 //            targetStatusView.subviews.forEach {
@@ -913,9 +1165,11 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                 
                 
                 if (self.currentSelect == .co && fortunePersonArray.count < 3) {
-                    if (!self.fortunePersonArray.contains(target.text!)) {
-                        self.fortunePersonArray.append(target.text!)
-                        self.memberLabelList[self.memberLabelList.index(of: target)!].isUserInteractionEnabled = true
+                    if (!self.fortunePersonArray.contains(name)) {
+                        self.fortunePersonArray.append(name)
+                        if let label = memberLabelList.first(where: { $0.text == name }) {
+                            label.isUserInteractionEnabled = true
+                        }
                         for idx in 0..<self.descSubLabelArray.count {
                             if (self.fortunePersonArray.count != 0) {
                                 self.descSubLabelArray[idx].backgroundColor = UIColor.white
@@ -923,7 +1177,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                             }
                             
                         }
-                        createFortuneResult(row: fortunePersonArray.count + fortuneRow, column: 0, name: target.text!, target: "", result: "", isInit: true)
+                        createFortuneResult(row: fortunePersonArray.count + fortuneRow, column: 0, name: name, target: "", result: "", isInit: true)
                         targetStatusView.backgroundColor = UIColor.white
                     } else {
                         return
@@ -934,11 +1188,11 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                 break
             case .hunter:
                 targetStatusView.backgroundColor = UIColor.white
-                self.hunterPersonArray.append(target.text!)
+                self.hunterPersonArray.append(name)
                 break
             case .sharer:
                 targetStatusView.backgroundColor = UIColor.white
-                self.sharerPersonArray.append(target.text!)
+                self.sharerPersonArray.append(name)
                 break
             case .madman:
                 break
@@ -947,23 +1201,25 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
             case .spirit:
                 
                 if (self.currentSelect == .co && spiritPersonArray.count < 3) {
-                    if (!self.spiritPersonArray.contains(target.text!)) {
-                        self.spiritPersonArray.append(target.text!)
-                        self.memberLabelList[self.memberLabelList.index(of: target)!].isUserInteractionEnabled = true
+                    if (!self.spiritPersonArray.contains(name)) {
+                        self.spiritPersonArray.append(name)
+                        if let label = memberLabelList.first(where: { $0.text == name }) {
+                            label.isUserInteractionEnabled = true
+                        }
                         for idx in 0..<self.descSubLabelArray.count {
                             if (self.spiritPersonArray.count != 0) {
                                 self.descSubLabelArray[idx].backgroundColor = UIColor.white
                                 self.descSubLabelArray[idx].isUserInteractionEnabled = true
                             }
                         }
-                        createFortuneResult(row: spiritPersonArray.count + self.spiritRow, column: 0, name: target.text!, target: "", result: "", isInit: true)
+                        createFortuneResult(row: spiritPersonArray.count + self.spiritRow, column: 0, name: name, target: "", result: "", isInit: true)
                         targetStatusView.backgroundColor = UIColor.white
                     } else {
                         return
                     }
                 } else if(self.currentSelect == .black || self.currentSelect == .white) {
                     // 霊能結果の反映
-                    if (Int(self.calendarStepper.value) == 0 || self.hangArray.count == 0 || !self.spiritPersonArray.contains(target.text!)) { return }
+                    if (Int(self.calendarStepper.value) == 0 || self.hangArray.count == 0 || !self.spiritPersonArray.contains(name)) { return }
                     var spiritResultStr = ""
                     // ステータスビューの反映用(前日吊られた人のを反映する)
                     var spiritStatusView = UIView()
@@ -974,7 +1230,7 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                             break
                         }
                     }
-                    let row = self.spiritPersonArray.index(of: target.text!)! + self.spiritRow + 1
+                    let row = self.spiritPersonArray.index(of: name)! + self.spiritRow + 1
                     let column = (Int(self.calendarStepper.value) * 2) - 1
                     
                     
@@ -1020,18 +1276,22 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
                 break
             }
             
+            drawStatusView(
+                targetStatusView: targetStatusView,
+                changeIcon1: changeIcon1
+            )
             
             // 画像のコピー
             // ビットマップ画像のcontextを作成.
-            UIGraphicsBeginImageContextWithOptions(CGSize(width: self.currentView.bounds.size.width, height: self.currentView.bounds.size.height), false, 0.0)
-            // 対象のview内の描画をcontextに複写する.
-            self.currentView.layer.render(in: UIGraphicsGetCurrentContext()!)
-            
-            
-            let dispSize = CGSize(width: targetStatusView.frame.size.width, height: targetStatusView.frame.size.height)
-            
-            // 現在のcontextのビットマップをUIImageとして取得.
-            let imageView = UIImageView(image:UIGraphicsGetImageFromCurrentImageContext()!)
+//            UIGraphicsBeginImageContextWithOptions(CGSize(width: self.currentView.bounds.size.width, height: self.currentView.bounds.size.height), false, 0.0)
+//            // 対象のview内の描画をcontextに複写する.
+//            self.currentView.layer.render(in: UIGraphicsGetCurrentContext()!)
+//            
+//            
+//            let dispSize = CGSize(width: targetStatusView.frame.size.width, height: targetStatusView.frame.size.height)
+//            
+//            // 現在のcontextのビットマップをUIImageとして取得.
+//            let imageView = UIImageView(image:UIGraphicsGetImageFromCurrentImageContext()!)
             
             // TODO:2つの役職まで追加/削除を行う
 //            for idx in 0..<self.memberLabelList.count {
@@ -1047,19 +1307,108 @@ class UnderDiscussionViewController: UIViewController ,UIDragInteractionDelegate
 //                }
 //            }
             
-            imageView.frame = CGRect(x:(changeIcon1) ? 0 : dispSize.width / 2, y: 0, width:dispSize.width / 2, height:dispSize.height / 2)
-            
-            
-            targetStatusView.addSubview(imageView)
-            // contextを閉じる.
-            UIGraphicsEndImageContext()
-            // 縦横比率を保ちつつ画像をUIImageViewの大きさに合わせる.
-            targetStatusView.contentMode = UIView.ContentMode.scaleAspectFit
+//            imageView.frame = CGRect(x:(changeIcon1) ? 0 : dispSize.width / 2, y: 0, width:dispSize.width / 2, height:dispSize.height / 2)
+//            
+//            
+//            targetStatusView.addSubview(imageView)
+//            // contextを閉じる.
+//            UIGraphicsEndImageContext()
+//            // 縦横比率を保ちつつ画像をUIImageViewの大きさに合わせる.
+//            targetStatusView.contentMode = UIView.ContentMode.scaleAspectFit
             
             
             
         }
         
+    }
+    
+    /*
+     タップ / ドラッグ & ドロップ時の共通処理
+     参加者名とstatusViewを取得
+     */
+    func getParticipantInfo(from tableView: UIView) -> (name: String, statusView: UIView)? {
+        guard let idx = innerTableList.firstIndex(where: { $0 === tableView }) else {
+            return nil
+        }
+
+        guard let name = memberLabelList[idx].text else {
+            return nil
+        }
+
+        return (
+            name: name,
+            statusView: memberStatesViewList[idx]
+        )
+    }
+    
+    /*
+     targetStatusViewの共通描画処理
+     */
+    func drawStatusView(
+        targetStatusView: UIView,
+        changeIcon1: Bool
+    ) {
+        // currentViewを画像化
+        UIGraphicsBeginImageContextWithOptions(
+            CGSize(
+                width: self.currentView.bounds.size.width,
+                height: self.currentView.bounds.size.height
+            ),
+            false,
+            0.0
+        )
+
+        self.currentView.layer.render(
+            in: UIGraphicsGetCurrentContext()!
+        )
+
+        guard let image = UIGraphicsGetImageFromCurrentImageContext() else {
+            UIGraphicsEndImageContext()
+            return
+        }
+
+        UIGraphicsEndImageContext()
+
+        let dispSize = targetStatusView.bounds.size
+
+        let imageView = UIImageView(image: image)
+
+        imageView.frame = CGRect(
+            x: changeIcon1 ? 0 : dispSize.width / 2,
+            y: 0,
+            width: dispSize.width / 2,
+            height: dispSize.height / 2
+        )
+
+        imageView.contentMode = .scaleAspectFit
+        
+        // TODO: 後で削除
+//        imageView.backgroundColor = .red
+//        imageView.layer.borderColor = UIColor.yellow.cgColor
+//        imageView.layer.borderWidth = 2
+
+        targetStatusView.addSubview(imageView)
+        
+        print("image:", image)
+        print("image size:", image.size)
+
+        print("imageView frame:", imageView.frame)
+        print("targetStatusView subviews:", targetStatusView.subviews)
+        
+
+        
+        print("target alpha:", targetStatusView.alpha)
+        print("target hidden:", targetStatusView.isHidden)
+        print("target superview:", targetStatusView.superview as Any)
+        
+        for idx in 0..<memberLabelList.count {
+            print(
+                idx,
+                memberLabelList[idx].text ?? "nil",
+                memberStatesViewList[idx],
+                memberStatesViewList[idx].superview as Any
+            )
+        }
     }
     
     
