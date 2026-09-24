@@ -116,6 +116,8 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
     @IBOutlet weak var descriptionLabel: UILabel!
     var descSubLabelArray: [UILabel] = []
     
+    var gameState = GameState()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.hidesBackButton = true
@@ -1570,6 +1572,26 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
         }
     }
     
+    
+    func saveGameState() {
+        let encoder = JSONEncoder()
+
+        guard let data = try? encoder.encode(gameState) else {
+            return
+        }
+
+        UserDefaults.standard.set(data, forKey: "gameState")
+    }
+
+
+    func loadGameState() -> GameState? {
+        guard let data = UserDefaults.standard.data(forKey: "gameState") else {
+            return nil
+        }
+
+        let decoder = JSONDecoder()
+        return try? decoder.decode(GameState.self, from: data)
+    }
 
 }
 

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		39335B1521FCC10200268CB4 /* 851MkPOP_001.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 39335B1421FCC10000268CB4 /* 851MkPOP_001.ttf */; };
+		393F656E3063F2A3002273EF /* GameModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 393F656D3063F2A3002273EF /* GameModels.swift */; };
 		3954099D20E273650067E806 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3954099C20E273650067E806 /* AppDelegate.swift */; };
 		3954099F20E273650067E806 /* DefaultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3954099E20E273650067E806 /* DefaultViewController.swift */; };
 		395409A220E273650067E806 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 395409A020E273650067E806 /* Main.storyboard */; };
@@ -35,6 +36,7 @@
 
 /* Begin PBXFileReference section */
 		39335B1421FCC10000268CB4 /* 851MkPOP_001.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = 851MkPOP_001.ttf; sourceTree = "<group>"; };
+		393F656D3063F2A3002273EF /* GameModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModels.swift; sourceTree = "<group>"; };
 		3954099920E273650067E806 /* HyperWerewolfSupporter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HyperWerewolfSupporter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3954099C20E273650067E806 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3954099E20E273650067E806 /* DefaultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultViewController.swift; sourceTree = "<group>"; };
@@ -61,6 +63,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		393F656F3064ECB2002273EF /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				393F656D3063F2A3002273EF /* GameModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		3954099020E273650067E806 = {
 			isa = PBXGroup;
 			children = (
@@ -81,6 +91,7 @@
 		3954099B20E273650067E806 /* HyperWerewolfSupporter */ = {
 			isa = PBXGroup;
 			children = (
+				393F656F3064ECB2002273EF /* Models */,
 				39CCFB3521D252960085151E /* AlertPickerView.swift */,
 				3954099C20E273650067E806 /* AppDelegate.swift */,
 				3954099E20E273650067E806 /* DefaultViewController.swift */,
@@ -182,6 +193,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3954099F20E273650067E806 /* DefaultViewController.swift in Sources */,
+				393F656E3063F2A3002273EF /* GameModels.swift in Sources */,
 				39CCFB3621D252960085151E /* AlertPickerView.swift in Sources */,
 				3954099D20E273650067E806 /* AppDelegate.swift in Sources */,
 				39673546217333DF00D05D81 /* UnderDiscussionViewController.swift in Sources */,
