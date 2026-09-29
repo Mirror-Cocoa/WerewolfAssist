@@ -707,6 +707,8 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
                 return dict
             }
             
+            under.seatPlayers = self.seatPlayers
+            
             under.outerTable = self.outerTable
             under.memberLabelList = self.memberLabelList
             under.innerTableRectList =  self.innerTableRectList

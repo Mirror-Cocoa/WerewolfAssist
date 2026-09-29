@@ -117,6 +117,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
     var descSubLabelArray: [UILabel] = []
     
     var gameState = GameState()
+    var seatPlayers: [Player] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -145,9 +146,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
         for val in self.memberLabelList { self.memberArray.append(val.text!) }
     }
     
-    /**
-     * 机を描画する
-     */
+    // MARK: 机の位置をセット
     func squareTablePositionSet() {
         var targetPerson = 0
         
@@ -531,6 +530,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
     /*
      * ピッカーのデリゲートメソッド
      */
+    // MARK: - ピッカーのデリゲートメソッド
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return (self.currentDead == .killed) ? 2 : 1
     }
@@ -628,7 +628,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
     }
     
     
-    
+    // MARK: - 結果テーブルの生成
     func createResultTable() {
         let labelTextList = ["", "占", "", "", "", "霊", "", "", "", "吊", "噛"]
         // short = true, long = false
@@ -642,7 +642,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
             }
         }
     }
-    
+    // MARK: - 結果テーブルの初回生成
     func createInitResult(row: Int, title: String) {
         // タイトル部分
         let titleTableFrame = UIView.init(frame: CGRect.init(x: 0, y: 0, width: self.resultLen, height: self.resultLen))
@@ -660,7 +660,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
             createResult(row: row, column: column, name: (row == 0) ? String(column + 1) + "日目" : "")
         }
     }
-    
+    // MARK: - 結果テーブルの生成
     func createResult(row: Int, column: Int, name: String) {
         let longTableFrame = UIView.init(frame: CGRect.init(x: 0, y: 0, width: self.resultLenX2, height: self.resultLen))
         self.resultTable.addSubview(createBorder(v: longTableFrame))
@@ -673,7 +673,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
         // ヘッダーラベルの制定
         longTableFrame.addSubview(createLabel(txt: name, v: longTableFrame))
     }
-    
+    // MARK: - 占い結果の生成（霊媒も）
     func createFortuneResultTable(row: Int, title: String) {
         for column in 0..<31 {
             createFortuneResult(
@@ -786,6 +786,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
     /*
      * アイコンが押されたら
      */
+    // MARK: - アイコン（[占]など）タップ時
     @objc func iconTapped(sender: UITapGestureRecognizer) {
         print(sender.view!)
         if (!self.endButton.isEnabled) { self.endButton.isEnabled = true }
@@ -854,7 +855,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
             self.descriptionLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(descTapped(sender:))))
         }
     }
-    
+    // MARK: - CO 白などの配置
     func descriptionDisplay (labels: [String]) {
         self.descriptionLabel.text = labels[0]
         self.descriptionLabel.backgroundColor = UIColor.cyan
@@ -901,6 +902,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
     /*
      * 説明ラベルが押されたら
      */
+    // MARK: - CO 白などがタップされたら
     @objc func descTapped(sender: UITapGestureRecognizer) {
         if (!self.endButton.isEnabled) { self.endButton.isEnabled = true }
         print(self.currentMode)
@@ -940,6 +942,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
     /*
      * テーブルの人間がタップされたら
      */
+    // MARK: - 参加者タップ時
     @objc func tableTapped(sender: UITapGestureRecognizer) {
         if !self.endButton.isEnabled {
             self.endButton.isEnabled = true
@@ -949,19 +952,19 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
 
         guard
             let tableV = sender.view,
-            let participant = getParticipantInfo(from: tableV)
+            let player = getPlayerInfo(from: tableV)
         else {
             return
         }
         
         // COの場合はCOに移行
-        if currentSelect == .co { applyCO(to: participant) }
+        if currentSelect == .co { applyCO(to: player) }
         
         // 霊能の場合は霊能処理に移行
         if currentMode == .spirit {
             applySpiritResult(
                 row: spiritPersonArray.count + spiritRow,
-                name: participant.name
+                name: player.name
             )
         }
     }
@@ -969,10 +972,11 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
     /*
      * CO処理：参加者がCOした場合、右下のテーブルに人名を書き込む
      */
+    // MARK: - CO処理
     func applyCO(
-        to participant: (name: String, statusView: UIView)
+        to player: (name: String, statusView: UIView)
     ) {
-        let name = participant.name
+        let name = player.name
         if (!self.endButton.isEnabled) { self.endButton.isEnabled = true }
 
         print("呼び出し")
@@ -1009,9 +1013,9 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
             self.descSubLabelArray[idx].isUserInteractionEnabled = true
         }
         
-        participant.statusView.backgroundColor = UIColor.white
+        player.statusView.backgroundColor = UIColor.white
         drawStatusView(
-            targetStatusView: createBorder4(v: participant.statusView),
+            targetStatusView: createBorder4(v: player.statusView),
             changeIcon1: true
         )
     }
@@ -1051,6 +1055,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
     /*
      * 霊能結果の反映
      */
+    // MARK: - 霊能結果反映
     func applySpiritResult(row: Int, name: String) {
 
         if (Int(self.calendarStepper.value) == 0 || self.hangArray.count == 0 || !self.spiritPersonArray.contains(name)) { return }
@@ -1110,14 +1115,15 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
     /*
      * テーブルの人間がドラッグ＆ドロップされたら
      */
+    // MARK: - ドラッグ & ドロップ
     @objc func handlePan(gesture: UIPanGestureRecognizer) {
         if (!self.endButton.isEnabled) { self.endButton.isEnabled = true }
         if currentMode == .none { return }
         if let tableV = gesture.view,
-            let participant = getParticipantInfo(from: tableV) {
+            let player = getPlayerInfo(from: tableV) {
                 
-                let name = participant.name
-                let targetStatusView = participant.statusView
+                let name = player.name
+                let targetStatusView = player.statusView
             
             switch gesture.state {
                 
@@ -1202,8 +1208,24 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
 
                 let fromPerson = name
                 let toPerson = memberLabelList[dropIdx].text ?? ""
+                
+//                guard let fromId = gameState.players.first(where: {
+//                    $0.name == fromPerson
+//                })?.id else {
+//                    return
+//                }
+//                
+//                guard let toId = gameState.players.first(where: {
+//                    $0.name == toPerson
+//                })?.id else {
+//                    return
+//                }
 
                 guard !toPerson.isEmpty else { return }
+                
+                
+                
+//                applyFortuneResult(fromId: UUID, toId: UUID)
 
                 applyFortuneResult(
                     fromPerson: fromPerson,
@@ -1230,7 +1252,8 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
      タップ / ドラッグ & ドロップ時の共通処理
      参加者名とstatusViewを取得
      */
-    func getParticipantInfo(from tableView: UIView) -> (name: String, statusView: UIView)? {
+    // MARK: - タップ / ドラッグ & ドロップ時の共通処理
+    func getPlayerInfo(from tableView: UIView) -> (name: String, statusView: UIView)? {
         guard let idx = innerTableList.firstIndex(where: { $0 === tableView }) else {
             return nil
         }
@@ -1248,6 +1271,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
     /*
      targetStatusViewの共通描画処理
      */
+    // MARK: - targetStatusViewの共通描画処理
     func drawStatusView(
         targetStatusView: UIView,
         changeIcon1: Bool
@@ -1298,10 +1322,11 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
     }
     
     
-    func applyFortuneResult(
-        fromPerson: String,
-        toPerson: String
-    ) {
+    /*
+     占い結果の反映
+     */
+    // MARK: - 占い結果反映
+    func applyFortuneResult(fromPerson: String, toPerson: String) {
         guard let fortuneIndex = fortunePersonArray.firstIndex(of: fromPerson) else {
             return
         }
@@ -1334,7 +1359,39 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
         let addDict = [
             toPerson: fortuneResultStr
         ]
-
+        
+        
+        
+//        1. 既存の name → Player.id を引けるようにする
+//        2. fortuneResults へ保存する
+//        3. 旧 fortunePersonList をまだ消さず並行稼働
+//        4. statusViewを fortuneResults から再描画
+//        5. #23再現テスト
+//        6. 問題なければ旧fortunePersonList依存を減らす
+        
+//        fromPerson
+        
+//        gameState.fortuneResults.removeAll {
+//            $0.from == fromId &&
+//            $0.day == gameState.currentDay
+//        }
+        
+//        switch self.currentSelect {
+//        case .black : return (isLabel) ? "●" : "黒"
+//        case .white : return (isLabel) ? "○" : "白"
+//        case .melt : return "溶"
+//        default : return ""
+//        }
+        
+//        gameState.fortuneResults.append(
+//            FortuneResult(
+//                from: fromId,
+//                to: toId,
+//                day: gameState.currentDay,
+//                result: .white
+//            )
+//        )
+        
         // 占われた人、 [占い元:[日付] => [占い先:結果]]
         if let prevFromInfo = self.fortunePersonList[fromPerson] {
             // 占い元がいる場合、配列の情報を更新。同一条件なら何もしない
@@ -1572,7 +1629,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
         }
     }
     
-    
+    // MARK: - UserDefaultの保存 / 読込
     func saveGameState() {
         let encoder = JSONEncoder()
 
