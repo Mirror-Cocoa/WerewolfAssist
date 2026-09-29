@@ -29,11 +29,6 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
         self.editButtonItem.title = "追加・削除"
         self.navigationItem.rightBarButtonItem = self.editButtonItem
         
-//        if let loadData = userDefaults.object(forKey: "person") {
-//            personList = loadData as! Array<[String:String]>
-//            personList.sort(by: {$0["name"]! < $1["name"]!})
-//        }
-        
         self.gameState = self.loadGameState() ?? GameState()
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(cellLongPressed(gesture:)))
@@ -67,9 +62,6 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "personCell", for: indexPath as IndexPath)
         // Cellに値を設定.
-//        cell.textLabel!.text = personList[indexPath.row]["name"]
-//        cell.detailTextLabel?.text = personList[indexPath.row]["yourself"]
-        
         cell.textLabel!.text = gameState.players[indexPath.row].name
         if (gameState.youPlayerId == gameState.players[indexPath.row].id) {
             cell.detailTextLabel?.text = "あなた"
@@ -117,17 +109,10 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         // 削除のとき.
         if (editingStyle == UITableViewCell.EditingStyle.delete) {
-            // 指定されたセルのオブジェクトをpersonListから削除する.
-//            personList.remove(at: indexPath.row)
-            
-            
+            // 指定されたセルのオブジェクトをplayersから削除する.
             gameState.players.remove(at: indexPath.row)
-            
-            
+
             // UserDefaultに書き込み
-//            self.updateUserDefault()
-            
-            
             self.saveGameState()
             
             // TableViewを再読み込み.
@@ -156,22 +141,11 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
             if (textFields != nil) {
                 for textField:UITextField in textFields! {
                     if (editType == .editMode) {
-                        // テーブルの変更
-//                        self.personList[currentRow]["name"] = textField.text!
-                        
-                        
+                        // 参加者テーブルの変更
                         self.gameState.players[currentRow].name = textField.text!
-                        for player in self.gameState.players {
-                            NSLog("name: %@, uuid: %@", player.name, player.id.uuidString)
-                        }
-                        
                         
                     } else if (editType == .addMode) {
-                        // テーブルの追加
-//                        var personDict = [String:String]()
-//                        personDict["name"] = textField.text!
-//                        self.personList.append(personDict)
-                        
+                        // 参加者テーブルの追加 & UUID追加
                         self.gameState.players.append(
                             Player(
                                 id: UUID(),
@@ -180,13 +154,8 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
                             )
                         )
 
-                        for player in self.gameState.players {
-                            NSLog("name: %@, uuid: %@", player.name, player.id.uuidString)
-                        }
                     }
                     self.saveGameState()
-//                    self.updateUserDefault()
-                    
                 }
             }
             
@@ -202,7 +171,6 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
         alert.addTextField(configurationHandler: {(text:UITextField!) -> Void in
             text.placeholder = "入力してください"
             if (editType == .editMode) {
-//                text.text = (self.personList[currentRow]["name"] != nil) ?  self.personList[currentRow]["name"] : ""
                 if self.gameState.players.indices.contains(currentRow) {
                     text.text = self.gameState.players[currentRow].name
                 } else {
@@ -217,25 +185,14 @@ class PersonListViewController: UIViewController, UITableViewDelegate, UITableVi
         
         present(alert, animated: true, completion: nil)
     }
-//    
-//    func updateUserDefault() {
-//        userDefaults.set(personList, forKey: "person")
-//        userDefaults.synchronize()
-//    }
-//    
+
     // 長押しした際に呼ばれるメソッド
     // 通常モードでは、「あなた」登録、編集モードではテーブルのソートを行う
     @objc func cellLongPressed(gesture: UILongPressGestureRecognizer) {
         if (gesture.state == UIGestureRecognizer.State.began) {
             let indexPath = personTableView.indexPathForRow(at: gesture.location(in: personTableView))
             if (indexPath != nil) {
-//                for i in 0..<personList.count {
-//                    self.personList[i]["yourself"] = nil
-//                }
-//                self.personList[indexPath!.row]["yourself"] = "あなた"
-//                NSLog("\(personList)")
                 gameState.youPlayerId = gameState.players[indexPath!.row].id
-//                updateUserDefault()
                 saveGameState()
                 personTableView.reloadData()
             }
