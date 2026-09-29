@@ -648,11 +648,8 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
                     
                 }
                 
-                self.saveGameState()
-                self.userDefaults.synchronize()
-                
                 // userDefaultsに追加
-                self.userDefaults.set(self.personList, forKey: "person")
+                self.saveGameState()
                 self.userDefaults.synchronize()
             }
             self.checkMarks.append(false)
@@ -696,8 +693,20 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             let under: UnderDiscussionViewController = (segue.destination as? UnderDiscussionViewController)!
             // 次のビューに値渡し
             under.personNum = self.personNum
-            under.personList = self.personList
-//            under.personList = self.gameState.players
+            
+            // 一時的に変換
+            under.personList = seatPlayers.map { player in
+                var dict: [String:String] = [
+                    "name": player.name
+                ]
+
+                if player.id == gameState.youPlayerId {
+                    dict["yourself"] = "true"
+                }
+
+                return dict
+            }
+            
             under.outerTable = self.outerTable
             under.memberLabelList = self.memberLabelList
             under.innerTableRectList =  self.innerTableRectList
