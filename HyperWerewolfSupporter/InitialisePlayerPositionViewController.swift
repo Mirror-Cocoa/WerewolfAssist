@@ -29,17 +29,22 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
     
     var hasYourSelf = false
     
+    var gameState = GameState()
+    var seatPlayers: [Player] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // ユーザ情報を取得
-        if let loadData = userDefaults.object(forKey: "person") {
-            personList = loadData as! Array<[String:String]>
-            personList.sort(by: {$0["name"]! < $1["name"]!})
-        }
+//        if let loadData = userDefaults.object(forKey: "person") {
+//            personList = loadData as! Array<[String:String]>
+//            personList.sort(by: {$0["name"]! < $1["name"]!})
+//        }
+        
+        gameState = self.loadGameState() ?? GameState()
         
         // ユーザがいなければ、トップ画面に戻す
-        if (personList.count == 0) {
+        if (gameState.players.count == 0) {
             // 注意文言アラート
             let warningAlert: UIAlertController = UIAlertController(title: "参加者が未登録です", message: "「参加者を管理」から参加者を\n登録してください", preferredStyle:  UIAlertController.Style.alert)
             
@@ -52,12 +57,13 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             warningAlert.addAction(warningCancelAction)
             self.present(warningAlert, animated: true, completion: nil)
         } else {
-            for idx in 0..<personList.count {
-                if (self.personList[idx]["yourself"] != nil) {
-                    self.hasYourSelf = true
-                    break
-                }
-            }
+//            for idx in 0..<gameState.players.count {
+//                if (self.personList[idx]["yourself"] != nil) {
+//                    self.hasYourSelf = true
+//                    break
+//                }
+//            }
+            self.hasYourSelf = gameState.youPlayerId != nil
             if (!self.hasYourSelf) {
                 // 注意文言アラート
                 let warningAlert: UIAlertController = UIAlertController(title: "「あなた」が未登録です", message: "自分の名前を長押しし\n本人登録を行ってください", preferredStyle:  UIAlertController.Style.alert)
@@ -73,9 +79,21 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
                 
             } else {
                 
-                self.checkMarks = [Bool](repeating: false, count: personList.count)
-                self.checkMarks[0] = true
-                self.checkTrueList.append(0)
+//                self.checkMarks = [Bool](repeating: false, count: personList.count)
+                checkMarks = [Bool](repeating: false, count: gameState.players.count)
+//                self.checkMarks[0] = true
+//                self.checkTrueList.append(0)
+                
+                checkTrueList = []
+
+                if let youPlayerId = gameState.youPlayerId,
+                   let index = gameState.players.firstIndex(where: {
+                       $0.id == youPlayerId
+                   }) {
+
+                    checkMarks[index] = true
+                    checkTrueList.append(index)
+                }
                 
                 memberList.dataSource = self
                 memberList.delegate = self
@@ -147,6 +165,8 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             if (success){
                 // 大テーブルをセット
                 self.memberList.reloadData()
+                // 「あなた」を0番めにする
+                self.setupSeatPlayers()
                 self.squareTablePositionSet()
             }
         })
@@ -198,6 +218,27 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
 ////        createStepper().value = Double(personNum)
 //    }
     
+    /*
+     0番めを「あなた」にする
+     */
+    func setupSeatPlayers() {
+        guard let youPlayerId = gameState.youPlayerId,
+              let youPlayer = gameState.players.first(where: {
+                  $0.id == youPlayerId
+              }) else {
+            seatPlayers = gameState.players
+            return
+        }
+
+        seatPlayers = [youPlayer]
+
+        seatPlayers.append(
+            contentsOf: gameState.players.filter {
+                $0.id != youPlayerId
+            }
+        )
+    }
+    
     /**
      * 机を描画する
      */
@@ -205,17 +246,32 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
         
         self.innerTableRectList = innerTablePisitioning(positionCount: self.personNum, outerRect: outerTable.frame)
         
-        var targetPerson = 0
+//        var targetPerson = 0
+//        
+//        for _ in 0..<self.seatPlayers.count {
+//            let isYou = gameState.youPlayerId == gameState.players[targetPerson].id
+////            if (self.personList[targetPerson]["yourself"] != nil) {
+//            if (isYou) {
+//                break
+//            }
+//            targetPerson += 1
+//        }
         
-        for _ in 0..<personList.count {
-            if (self.personList[targetPerson]["yourself"] != nil) {
-                break
-            }
-            targetPerson += 1
-        }
+//        for _ in 0..<gameState.players.count {
+//            let isYou = gameState.youPlayerId == gameState.players[targetPerson].id
+////            if (self.personList[targetPerson]["yourself"] != nil) {
+//            if (isYou) {
+//                break
+//            }
+//            targetPerson += 1
+//        }
         
-        self.personList.insert(self.personList[targetPerson], at:0)
-        self.personList.remove(at: targetPerson + 1)
+//        self.personList.insert(self.personList[targetPerson], at:0)
+//        self.personList.remove(at: targetPerson + 1)
+//        gameState.players.insert(gameState.players[targetPerson], at:0)
+//        gameState.players.remove(at: targetPerson + 1)
+        
+        
         
         var cnt = 0
         
@@ -257,11 +313,22 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             let dropInteraction = UIDropInteraction(delegate: dropDelegate)
             innerTable.addInteraction(dropInteraction)
             
-            self.memberLabelList[cnt].text = (cnt == 0) ? personList[cnt]["name"] : ""
+//            self.memberLabelList[cnt].text = (cnt == 0) ? personList[cnt]["name"] : ""
+            let isYou = gameState.youPlayerId == seatPlayers[cnt].id
+//            self.memberLabelList[cnt].text = (isYou) ? gameState.players[cnt].name : ""
+//            memberLabelList[cnt].text =
+//                cnt < seatPlayers.count
+//                    ? seatPlayers[cnt].name
+//                    : ""
+            if cnt == 0 {
+                memberLabelList[cnt].text = seatPlayers.first?.name ?? ""
+            } else {
+                memberLabelList[cnt].text = ""
+            }
             self.memberLabelList[cnt].textColor = UIColor.black
             self.memberLabelList[cnt].textAlignment = NSTextAlignment.center
             self.memberLabelList[cnt].adjustsFontSizeToFitWidth = true
-            self.memberLabelList[cnt].isUserInteractionEnabled = (cnt != 0)
+            self.memberLabelList[cnt].isUserInteractionEnabled = !isYou
             
             innerTable.addSubview(self.memberLabelList[cnt])
             
@@ -548,7 +615,7 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
      Cellの総数を返す
      */
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return personList.count
+        return gameState.players.count
     }
     
     /*
@@ -561,15 +628,31 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             // Cellに値を設定.
             var targetPerson = 0
             
-            for _ in 0..<personList.count {
-                if (self.personList[targetPerson]["yourself"] != nil) {
+            for _ in 0..<gameState.players.count {
+                let isYou = gameState.youPlayerId == gameState.players[targetPerson].id
+    //            if (self.personList[targetPerson]["yourself"] != nil) {
+                if (isYou) {
                     break
                 }
                 targetPerson += 1
             }
-            self.personList.insert(self.personList[targetPerson], at:0)
-            self.personList.remove(at: targetPerson + 1)
-            cell.textLabel!.text = (indexPath.row < personList.count) ? personList[indexPath.row]["name"] : "モブ"
+            
+//            gameState.players.insert(gameState.players[targetPerson], at:0)
+//            gameState.players.remove(at: targetPerson + 1)
+
+            
+//            for _ in 0..<personList.count {
+//                if (self.personList[targetPerson]["yourself"] != nil) {
+//                    break
+//                }
+//                targetPerson += 1
+//            }
+//            self.personList.insert(self.personList[targetPerson], at:0)
+//            self.personList.remove(at: targetPerson + 1)
+//            cell.textLabel!.text = (indexPath.row < personList.count) ? personList[indexPath.row]["name"] : "モブ"
+//            cell.textLabel!.text = (indexPath.row < gameState.players.count) ? gameState.players[indexPath.row].name : "モブ"
+
+            cell.textLabel?.text = gameState.players[indexPath.row].name
             cell.accessoryType = (self.checkMarks[indexPath.row]) ? .checkmark :.none
         }
         return cell
@@ -582,7 +665,9 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
         if let cell = tableView.cellForRow(at: indexPath as IndexPath) {
             let isAdd = !self.checkMarks[indexPath.row]
             // チェックをつける際
-            if (self.personList[indexPath.row]["yourself"] == nil) {
+            var isYou = gameState.youPlayerId != gameState.players[indexPath.row].id
+//            if (self.personList[indexPath.row]["yourself"] == nil) {
+            if (isYou) {
 
                 if (isAdd) {
                     // 人数オーバーしていたら何もしない
@@ -608,7 +693,8 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
                 self.checkMarks[indexPath.row] = !self.checkMarks[indexPath.row]
                 
                 for person in 0..<personNum {
-                    self.memberLabelList[person].text = (person < self.checkTrueList.count) ?  self.personList[self.checkTrueList[person]]["name"] : ""
+//                    self.memberLabelList[person].text = (person < self.checkTrueList.count) ?  self.personList[self.checkTrueList[person]]["name"] : ""
+                    self.memberLabelList[person].text = (person < self.checkTrueList.count) ?  self.gameState.players[self.checkTrueList[person]].name : ""
                 }
             }
         }
@@ -633,10 +719,22 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             if (textFields != nil) {
                 for textField:UITextField in textFields! {
                     // テーブルの追加
-                    var personDict = [String:String]()
-                    personDict["name"] = textField.text!
-                    self.personList.append(personDict)
+//                    var personDict = [String:String]()
+//                    personDict["name"] = textField.text!
+//                    self.personList.append(personDict)
+                    self.gameState.players.append(
+                        Player(
+                            id: UUID(),
+                            name: textField.text!,
+                            death: nil
+                        )
+                    )
+                    
                 }
+                
+                self.saveGameState()
+                self.userDefaults.synchronize()
+                
                 // userDefaultsに追加
                 self.userDefaults.set(self.personList, forKey: "person")
                 self.userDefaults.synchronize()
@@ -662,52 +760,54 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
     }
     
     func dragInteraction(_ interaction: UIDragInteraction, itemsForBeginning session: UIDragSession) -> [UIDragItem] {
-        
-        for idx in 1..<self.innerTableList.count {
-            // ドラッグされた位置を取得します
-            let points = session.location(in: self.innerTableList[idx])
-            // ドラッグされた位置にラベルがあれば、そのラベルの文字列をドラッグします。
-            // Note: UILabelをhitTestで見つけるためには、ラベルのuserInteractionEnabledを
-            // trueにしておく必要があります。
-            if let hitView = self.innerTableList[idx].hitTest(points, with: nil) {
-                if let label = hitView as? UILabel {
-                    let text = (label.text ?? "") as NSString
-                    let dragItem = UIDragItem(itemProvider: NSItemProvider(object: text))
-                    dragItem.localObject = label  // ドラッグ対象を紐付けておく
-                    self.dragIdx = idx
-                    return [dragItem]
-                }
-            }
-        }
-
-        // ドラッグ位置にラベルがなければドラッグ可能ではありません。
+//        
+//        for idx in 1..<self.innerTableList.count {
+//            // ドラッグされた位置を取得します
+//            let points = session.location(in: self.innerTableList[idx])
+//            // ドラッグされた位置にラベルがあれば、そのラベルの文字列をドラッグします。
+//            // Note: UILabelをhitTestで見つけるためには、ラベルのuserInteractionEnabledを
+//            // trueにしておく必要があります。
+//            if let hitView = self.innerTableList[idx].hitTest(points, with: nil) {
+//                if let label = hitView as? UILabel {
+//                    let text = (label.text ?? "") as NSString
+//                    let dragItem = UIDragItem(itemProvider: NSItemProvider(object: text))
+//                    dragItem.localObject = label  // ドラッグ対象を紐付けておく
+//                    self.dragIdx = idx
+//                    return [dragItem]
+//                }
+//            }
+//        }
+//
+//        // ドラッグ位置にラベルがなければドラッグ可能ではありません。
         return []
     }
     
     func dropInteraction(_ interaction: UIDropInteraction,
                          sessionDidUpdate session: UIDropSession) -> UIDropProposal {
-        // 自分以外は .forbidden を返します。
-        guard self.innerTableList[0] != self.innerTableList[0].hitTest(
-            session.location(in: self.innerTableList[0]), with: nil) else {
-            return UIDropProposal(operation: .forbidden)
-        }
-        
-        // 現在の位置を取得
-        let currentPoint = session.location(in: self.view)
-        
-        // ドロップ先のinnerTableを取得
-        for idx in 1..<self.innerTableList.count {
-            if (self.innerTableList[idx].frame.minX <= currentPoint.x && currentPoint.x <= self.innerTableList[idx].frame.maxX &&
-                self.innerTableList[idx].frame.minY <= currentPoint.y && currentPoint.y <= self.innerTableList[idx].frame.maxY) {
-                self.dropIdx = idx
-                // 同一人物ならforbidden
-                if (self.dragIdx == self.dropIdx) { return UIDropProposal(operation: .forbidden) }
-                break
-            }
-        }
-        
-        // ドラッグ中のアイテムが文字列を含んでいる場合はドロップできます。
+//        // 自分以外は .forbidden を返します。
+//        guard self.innerTableList[0] != self.innerTableList[0].hitTest(
+//            session.location(in: self.innerTableList[0]), with: nil) else {
+//            return UIDropProposal(operation: .forbidden)
+//        }
+//        
+//        // 現在の位置を取得
+//        let currentPoint = session.location(in: self.view)
+//        
+//        // ドロップ先のinnerTableを取得
+//        for idx in 1..<self.innerTableList.count {
+//            if (self.innerTableList[idx].frame.minX <= currentPoint.x && currentPoint.x <= self.innerTableList[idx].frame.maxX &&
+//                self.innerTableList[idx].frame.minY <= currentPoint.y && currentPoint.y <= self.innerTableList[idx].frame.maxY) {
+//                self.dropIdx = idx
+//                // 同一人物ならforbidden
+//                if (self.dragIdx == self.dropIdx) { return UIDropProposal(operation: .forbidden) }
+//                break
+//            }
+//        }
+//        
+//        // ドラッグ中のアイテムが文字列を含んでいる場合はドロップできます。
         return (session.canLoadObjects(ofClass: NSString.self)) ? UIDropProposal(operation: .copy) :  UIDropProposal(operation: .cancel)
+//        
+//        return nil
     }
     
     /*
@@ -721,24 +821,24 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
     
     func dropInteraction(_ interaction: UIDropInteraction,
                          performDrop session: UIDropSession) {
-        for item in session.items {
-            // 文字列をロードできないアイテムはスキップします
-            if item.itemProvider.canLoadObject(ofClass: NSString.self) {
-                item.itemProvider.loadObject(ofClass: NSString.self) { (object, error) in
-                    // アイテムのロードは非同期に行われます
-                    // ロードが終わるとここにやってきます
-                    if let string = object as? NSString {
-                        // UIへの反映はメインスレッドで行います
-                        DispatchQueue.main.async {
-                            // ラベルの入れ替え
-                            let tmp = self.memberLabelList[self.dropIdx].text
-                            self.memberLabelList[self.dropIdx].text = string as String
-                            self.memberLabelList[self.dragIdx].text = tmp
-                        }
-                    }
-                }
-            }
-        }
+//        for item in session.items {
+//            // 文字列をロードできないアイテムはスキップします
+//            if item.itemProvider.canLoadObject(ofClass: NSString.self) {
+//                item.itemProvider.loadObject(ofClass: NSString.self) { (object, error) in
+//                    // アイテムのロードは非同期に行われます
+//                    // ロードが終わるとここにやってきます
+//                    if let string = object as? NSString {
+//                        // UIへの反映はメインスレッドで行います
+//                        DispatchQueue.main.async {
+//                            // ラベルの入れ替え
+//                            let tmp = self.memberLabelList[self.dropIdx].text
+//                            self.memberLabelList[self.dropIdx].text = string as String
+//                            self.memberLabelList[self.dragIdx].text = tmp
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -762,10 +862,32 @@ class InitialisePlayerPositionViewController: UIViewController, UITableViewDeleg
             // 次のビューに値渡し
             under.personNum = self.personNum
             under.personList = self.personList
+//            under.personList = self.gameState.players
             under.outerTable = self.outerTable
             under.memberLabelList = self.memberLabelList
             under.innerTableRectList =  self.innerTableRectList
         }
+    }
+    
+    //MARK: - UserDefaultの保存 / 読込
+    func saveGameState() {
+        let encoder = JSONEncoder()
+
+        guard let data = try? encoder.encode(gameState) else {
+            return
+        }
+
+        UserDefaults.standard.set(data, forKey: "gameState")
+    }
+
+
+    func loadGameState() -> GameState? {
+        guard let data = UserDefaults.standard.data(forKey: "gameState") else {
+            return nil
+        }
+
+        let decoder = JSONDecoder()
+        return try? decoder.decode(GameState.self, from: data)
     }
     
     

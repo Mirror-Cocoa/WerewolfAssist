@@ -13,6 +13,7 @@ import Foundation
  */
 struct GameState: Codable {
     var players: [Player] = []
+    var youPlayerId: UUID?
     var fortuneResults: [FortuneResult] = []
     var spiritResults: [SpiritResult] = []
     var roleCOs: [RoleCO] = []
