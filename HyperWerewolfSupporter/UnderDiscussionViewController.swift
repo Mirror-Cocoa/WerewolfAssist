@@ -49,21 +49,13 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
     // pickerのviewをセット
     var pickerView: AlertPickerView!
     
-    enum Mode {
-        case fortune, hunter, sharer, madman, werewolf, spirit, none
-    }
-    
-    enum Dead {
-        case hang, killed, none
-    }
-    
-    enum Select {
+    enum DiscussionAction {
         case co, white, black, melt, lw, none
     }
     
-    var currentMode: Mode = .none
-    var currentDead: Dead = .none
-    var currentSelect: Select = .none
+    var currentRole: Role = .none
+    var currentDead: DeathCause = .none
+    var currentAction: DiscussionAction = .none
     
     let resultLen = 29
     let resultLenX2 = 58
@@ -812,8 +804,8 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
         
             // ラベルの設定
             if currentV.frame.minY == self.iconView.frame.minY {
-                self.currentMode = .fortune
-                self.currentSelect = .co
+                self.currentRole = .fortune
+                self.currentAction = .co
                 descriptionDisplay(labels: self.fortuneArray)
                 
             }
@@ -823,32 +815,32 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
                 let calcWidth = CGFloat(currentV.frame.origin.x / viewWidth)
                 switch calcWidth {
                 case 0:
-                    self.currentMode = .spirit
-                    self.currentSelect = .co
+                    self.currentRole = .spirit
+                    self.currentAction = .co
                     descriptionDisplay(labels: self.spiritArray)
                     break
                 case 1:
-                    self.currentMode = .hunter
-                    self.currentSelect = .co
+                    self.currentRole = .hunter
+                    self.currentAction = .co
                     descriptionDisplay(labels: self.hunterArray)
                     break
                 case 2:
-                    self.currentMode = .sharer
-                    self.currentSelect = .co
+                    self.currentRole = .sharer
+                    self.currentAction = .co
                     descriptionDisplay(labels: self.sharerArray)
                     break
                 case 3:
-                    self.currentMode = .madman
-                    self.currentSelect = .co
+                    self.currentRole = .madman
+                    self.currentAction = .co
                     descriptionDisplay(labels: self.madmanArray)
                     break
                 case 4:
-                    self.currentMode = .werewolf
-                    self.currentSelect = .co
+                    self.currentRole = .werewolf
+                    self.currentAction = .co
                     descriptionDisplay(labels: self.werewolfArray)
                     break
                 default:
-                    self.currentMode = .none
+                    self.currentRole = .none
                     break
                 }
             }
@@ -866,8 +858,8 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
         for idx in 0..<labels.count - 1 {
             self.descSubLabelArray.append(UILabel.init(frame: .zero))
             
-            if (self.currentMode == .fortune && self.fortunePersonArray.count == 0 ||
-                self.currentMode == .spirit && self.spiritPersonArray.count == 0) {
+            if (self.currentRole == .fortune && self.fortunePersonArray.count == 0 ||
+                self.currentRole == .spirit && self.spiritPersonArray.count == 0) {
                 self.descSubLabelArray[idx].backgroundColor = UIColor.gray
             } else {
                 self.descSubLabelArray[idx].backgroundColor = UIColor.white
@@ -887,8 +879,8 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
             self.descSubLabelArray[idx].widthAnchor.constraint(equalTo: (prevLabel?.widthAnchor)!).isActive = true
             self.descSubLabelArray[idx].heightAnchor.constraint(equalTo: (prevLabel?.heightAnchor)!).isActive = true
             
-            if (self.currentMode == .fortune && self.fortunePersonArray.count != 0 ||
-                self.currentMode == .spirit && self.spiritPersonArray.count != 0) {
+            if (self.currentRole == .fortune && self.fortunePersonArray.count != 0 ||
+                self.currentRole == .spirit && self.spiritPersonArray.count != 0) {
                 self.descSubLabelArray[idx].isUserInteractionEnabled = true
             }
             
@@ -905,30 +897,30 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
     // MARK: - CO 白などがタップされたら
     @objc func descTapped(sender: UITapGestureRecognizer) {
         if (!self.endButton.isEnabled) { self.endButton.isEnabled = true }
-        print(self.currentMode)
+        print(self.currentRole)
         if let label = sender.view as? UILabel {
             
             // 背景色を修正
             self.descriptionLabel.backgroundColor = (self.descriptionLabel.text != label.text) ? UIColor.white : UIColor.cyan
             for idx in 0..<self.descSubLabelArray.count {
-                if (self.currentMode == .fortune && self.fortunePersonArray.count != 0 ||
-                    self.currentMode == .spirit && self.spiritPersonArray.count != 0) {
+                if (self.currentRole == .fortune && self.fortunePersonArray.count != 0 ||
+                    self.currentRole == .spirit && self.spiritPersonArray.count != 0) {
                     self.descSubLabelArray[idx].backgroundColor = (self.descSubLabelArray[idx].text != label.text) ? UIColor.white : UIColor.cyan
                 }
             }
             
             switch label.text {
                 case "CO" :
-                    self.currentSelect = .co
+                    self.currentAction = .co
                     break
                 case "白" :
-                    self.currentSelect = .white
+                    self.currentAction = .white
                     break
                 case "黒" :
-                    self.currentSelect = .black
+                    self.currentAction = .black
                     break
                 case "溶" :
-                    self.currentSelect = .melt
+                    self.currentAction = .melt
                     break
                 case "疑惑" : break
                 case "LWCO" : break
@@ -948,7 +940,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
             self.endButton.isEnabled = true
         }
 
-        guard currentMode != .none else { return }
+        guard currentRole != .none else { return }
 
         guard
             let tableV = sender.view,
@@ -958,10 +950,10 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
         }
         
         // COの場合はCOに移行
-        if currentSelect == .co { applyCO(to: player) }
+        if currentAction == .co { applyCO(to: player) }
         
         // 霊能の場合は霊能処理に移行
-        if currentMode == .spirit {
+        if currentRole == .spirit {
             applySpiritResult(
                 row: spiritPersonArray.count + spiritRow,
                 name: player.name
@@ -981,8 +973,10 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
 
         print("呼び出し")
         print(name)
+        
+        
             
-        switch currentMode {
+        switch currentRole {
         case .fortune:
             guard !fortunePersonArray.contains(name) else { return }
             self.fortunePersonArray.append(name)
@@ -1052,6 +1046,73 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
         )
     }
     
+    // MARK: - CO処理2
+    func applyCO(to player: Player, role: Role) {
+
+        let playerCOs = gameState.roleCOs.filter {
+            $0.playerId == player.id
+        }
+
+        guard !playerCOs.contains(where: {
+            $0.role == role
+        }) else {
+            return
+        }
+
+        guard playerCOs.count < 2 else {
+            return
+        }
+
+        gameState.roleCOs.append(
+            RoleCO(
+                playerId: player.id,
+                role: role
+            )
+        )
+
+        saveGameState()
+        refreshStatusView(for: player.id)
+
+        if role == .fortune {
+            setupFortuneCO(for: player)
+        }
+    }
+    
+    func setupFortuneCO(for player: Player) {
+        // TODO
+    }
+    
+    func refreshStatusView(for playerId: UUID) {
+//        今の UnderDiscussionViewController では、CO時の表示更新を tableTapped の中で直接やっています。
+//        具体的にはこの流れです。
+//
+//        @objc func tableTapped(sender: UITapGestureRecognizer) {
+//            ...
+//        }
+//        その中で、
+//        var targetStatusView = UIView()
+//
+//        for idx in 0..<self.memberLabelList.count {
+//            if self.memberLabelList[idx].text == target.text! {
+//                targetStatusView = self.memberStatesViewList[idx]
+//                break
+//            }
+//        }
+//        で対象のステータスViewを探して、
+//        targetStatusView.backgroundColor = UIColor.white
+//        したり、
+//        targetStatusView.addSubview(imageView)
+//        してCOアイコンを描いています。
+        
+        // playerIdから座席indexを取得
+        // statusViewを取得
+        // roleCOsを取得
+        // 一度COアイコンを消す
+        // roleCOsを元に描き直す
+    }
+
+
+    
     /*
      * 霊能結果の反映
      */
@@ -1088,7 +1149,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
         }
         
         // TODO: 黒の場合、占い文字列を黒くする。白の場合、枠線を引く
-        switch self.currentSelect {
+        switch self.currentAction {
         case .black :
             spiritResultStr = "黒";
             spiritStatusView.backgroundColor = UIColor.black
@@ -1118,7 +1179,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
     // MARK: - ドラッグ & ドロップ
     @objc func handlePan(gesture: UIPanGestureRecognizer) {
         if (!self.endButton.isEnabled) { self.endButton.isEnabled = true }
-        if currentMode == .none { return }
+        if currentRole == .none { return }
         if let tableV = gesture.view,
             let player = getPlayerInfo(from: tableV) {
                 
@@ -1131,12 +1192,12 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
                 
                 
                 
-                switch self.currentMode {
+                switch self.currentRole {
                 case .fortune:
                     // 占い師ドラッグ処理
-                    guard currentSelect == .white ||
-                          currentSelect == .black ||
-                          currentSelect == .melt
+                    guard currentAction == .white ||
+                          currentAction == .black ||
+                          currentAction == .melt
                     else { return }
 
                     guard fortunePersonArray.contains(name) else { return }
@@ -1166,9 +1227,9 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
                 break
             case .changed:// 指を動かしている途中
                 
-                switch self.currentMode {
+                switch self.currentRole {
                 case .fortune:
-                    switch self.currentSelect {
+                    switch self.currentAction {
                     case .white, .black, .melt:
                         let point = gesture.location(in: view)
 
@@ -1376,7 +1437,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
 //            $0.day == gameState.currentDay
 //        }
         
-//        switch self.currentSelect {
+//        switch self.currentAction {
 //        case .black : return (isLabel) ? "●" : "黒"
 //        case .white : return (isLabel) ? "○" : "白"
 //        case .melt : return "溶"
@@ -1518,7 +1579,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
     }
     
     func getCurrentResultLabel(isLabel: Bool) -> String{
-        switch self.currentSelect {
+        switch self.currentAction {
         case .black : return (isLabel) ? "●" : "黒"
         case .white : return (isLabel) ? "○" : "白"
         case .melt : return "溶"
@@ -1527,7 +1588,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
     }
     
     func addIcon(idx: Int) {
-        switch self.currentMode {
+        switch self.currentRole {
         case .fortune:
             iconAddDel(idx: idx, icon: "F")
             break
@@ -1554,7 +1615,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
     
     
     func iconChoice(idx: Int) {
-        switch self.currentMode {
+        switch self.currentRole {
         case .fortune:
             iconAddDel(idx: idx, icon: "F")
             break
@@ -1604,7 +1665,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
     }
     
     func isIcon(str: String) -> Bool {
-        switch self.currentMode {
+        switch self.currentRole {
         case .fortune: return (str == "F")
         case .hunter: return (str == "H")
         case .sharer: return (str == "SH")
@@ -1618,7 +1679,7 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
  
     
     func addIcon() -> String {
-        switch self.currentMode {
+        switch self.currentRole {
         case .fortune: return "F"
         case .hunter: return "H"
         case .sharer: return "SH"
@@ -1626,6 +1687,18 @@ class UnderDiscussionViewController: UIViewController, AlertPickerViewDelegate, 
         case .werewolf: return "W"
         case .spirit: return "SP"
         case .none: return ""
+        }
+    }
+    
+    func selectedRole() -> Role? {
+        switch currentRole {
+        case .fortune: return .fortune
+        case .hunter: return .hunter
+        case .sharer: return .sharer
+        case .madman: return .madman
+        case .werewolf: return .werewolf
+        case .spirit: return .spirit
+        default: return nil
         }
     }
     

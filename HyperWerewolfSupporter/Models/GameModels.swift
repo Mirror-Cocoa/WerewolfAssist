@@ -23,7 +23,7 @@ struct GameState: Codable {
 // 死因
 enum DeathCause: Codable {
     // 吊り or 噛み or 溶け
-    case executed, attacked, melted
+    case hang, killed, melted, none
 }
 
 struct DeathInfo: Codable {
